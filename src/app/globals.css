@@ -1,26 +1,73 @@
-@import "tailwindcss";
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root{
+    --bg:#0f151c;
+    --accent:#2ee7d8;
+    color-scheme:dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,body{height:100%}
+
+body{
+    background:var(--bg);
+    color:#f1f5f9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+a,button,input,textarea,select{
+    transition:color .2s ease,opacity .2s ease,border-color .2s ease,background-color .2s ease,transform .2s ease,box-shadow .2s ease;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.container-narrow {
+    @apply mx-auto px-8;
+    max-width: 1680px;
 }
+.container-wide {
+    @apply mx-auto px-8;
+    max-width: 1800px;
+}
+
+.card{@apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm}
+.card-hover{transition:box-shadow .2s ease,background-color .2s ease,transform .2s ease}
+.card-hover:hover{background-color:rgba(255,255,255,.06);box-shadow:inset 0 0 0 2px rgba(46,231,216,.35)}
+
+.btn{@apply inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium}
+.btn-primary{border-color:var(--accent);color:var(--accent)}
+.btn-primary:hover{background-color:rgba(46,231,216,.12)}
+.btn-soft{@apply border-white/15 text-white}
+.btn-soft:hover{border-color:var(--accent);color:var(--accent)}
+.btn-ghost{@apply border-transparent text-white}
+.btn-ghost:hover{@apply border-white/15}
+
+.btn-danger-ghost { @apply border-transparent text-red-400; }
+.btn-danger-ghost:hover { @apply border-red-400/20 bg-red-400/10; }
+.btn-danger-ghost:disabled { @apply text-red-400/30 cursor-not-allowed; }
+
+.input{@apply w-full rounded-xl bg-black/40 border border-white/15 px-3 py-2 outline-none}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(46,231,216,.2)}
+
+.text-dim{@apply text-white/70}
+
+.toolbar{@apply flex flex-wrap gap-2}
+.toolbar button{@apply btn btn-soft px-3 py-1}
+
+.chip{@apply inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 text-xs}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+
+.text-accent{color:var(--accent)}
+.bg-accent{background-color:var(--accent)}
+.border-accent{border-color:var(--accent)}
+
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.09),rgba(255,255,255,.05));background-size:200% 100%;animation:sheen 1.2s linear infinite}
+@keyframes sheen{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-sm{height:160px}
+.skel-lg{height:220px}
+
+.no-glow .card{box-shadow:none!important;filter:none!important}
+.no-glow .card::before,.no-glow .card::after,.no-glow .hero::before,.no-glow .hero::after,.no-glow main::before,.no-glow main::after{content:none!important;display:none!important}
+.no-glow .glass,.no-glow .panel{backdrop-filter:none!important}
+
+.card{@apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm}
+

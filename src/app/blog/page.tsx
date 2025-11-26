@@ -1,0 +1,100 @@
+import { prisma, withDbRetry } from "@/lib/prisma";
+import Link from "next/link";
+import PostCard from "@/components/PostCard";
+
+type Search = { q?: string; page?: string };
+
+type ListItem = {
+    id: number | string;
+    slug?: string | null;
+    title?: string | null;
+    description?: string | null;
+    coverImageUrl?: string | null;
+    createdAt?: Date | string | null;
+    updatedAt?: Date | string | null;
+    tags?: { name: string; slug?: string }[];
+};
+
+export const revalidate = 0;
+
+export default async function BlogIndex(props: { searchParams: Promise<Search> }) {
+    const { q = "", page = "1" } = await props.searchParams;
+    const query = (q ?? "").toString().trim();
+    const pageNum = Math.max(1, Number(page) || 1);
+    const pageSize = 12;
+
+    const where: any = { status: "published" };
+    if (query) {
+        where.OR = [
+            { title: { contains: query, mode: "insensitive" } },
+            { description: { contains: query, mode: "insensitive" } },
+        ];
+    }
+
+    let total = 0;
+    let rows: ListItem[] = [];
+
+    try {
+        total = await withDbRetry((p) => p.post.count({ where }));
+        rows = await withDbRetry((p) =>
+            p.post.findMany({
+                where,
+                orderBy: { createdAt: "desc" },
+                skip: (pageNum - 1) * pageSize,
+                take: pageSize,
+                select: {
+                    id: true,
+                    slug: true,
+                    title: true,
+                    description: true,
+                    coverImageUrl: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    tags: { select: { name: true, slug: true } },
+                },
+            })
+        );
+    } catch {
+        total = 0;
+        rows = [];
+    }
+
+    const list = rows.filter(Boolean).filter((p) => !!p.slug && !!p.title);
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+
+    return (
+        <div className="grid gap-6">
+            <div className="card p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+                <form className="grid gap-2 md:grid-cols-[1fr_auto]">
+                    <input name="q" defaultValue={query} placeholder="Search posts..." className="input" />
+                    <button className="btn btn-primary">Search</button>
+                </form>
+                <div className="text-sm text-dim">Page {pageNum} of {pages}</div>
+            </div>
+
+            {list.length === 0 ? (
+                <div className="card p-6 text-dim">No posts found.</div>
+            ) : (
+                <section className="grid gap-6">
+                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 items-stretch auto-rows-fr">
+                        {list.map((p) => (
+                            <PostCard key={p.id} post={p} bordered />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <div className="flex gap-2 justify-center">
+                {Array.from({ length: pages }).map((_, i) => {
+                    const n = i + 1;
+                    const sp = new URLSearchParams({ q: query, page: String(n) }).toString();
+                    return (
+                        <Link key={n} href={`/blog?${sp}`} className={`btn ${n === pageNum ? "btn-primary" : "btn-soft"}`}>
+                            {n}
+                        </Link>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id                 Int           @id @default(autoincrement())
+  slug               String        @unique
+  title              String
+  description        String?
+  contentMarkdown    String?
+  coverImageUrl      String?
+  coverImagePublicId String?
+  status             PostStatus    @default(draft)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  tags               Tag[]
+  reaction           PostReaction?
+  i18n               PostI18n[]
+
+  @@index([status, createdAt])
+  @@index([createdAt])
+}
+
+model PostI18n {
+  id              Int      @id @default(autoincrement())
+  postId          Int
+  locale          String   @db.Char(2)
+  title           String
+  description     String?
+  contentMarkdown String?
+  post            Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, locale])
+  @@index([locale])
+}
+
+model Tag {
+  id    Int      @id @default(autoincrement())
+  slug  String   @unique
+  name  String   @unique
+  posts Post[]
+  i18n  TagI18n[]
+
+  @@index([name])
+}
+
+model TagI18n {
+  id     Int    @id @default(autoincrement())
+  tagId  Int
+  locale String @db.Char(2)
+  name   String
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, locale])
+  @@index([locale, name])
+}
+
+model PostReaction {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @unique
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  likes     Int      @default(0)
+  love      Int      @default(0)
+  wow       Int      @default(0)
+  fire      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum PostStatus {
+  draft
+  published
+}
