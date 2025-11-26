@@ -66,10 +66,10 @@ antotopedia_12/
 │  │  ├─ admin/                                    # Admin area for content management
 │  │  │  ├─ editor/                                # Post editor feature
 │  │  │  │  ├─ [id]/                               # Dynamic route for editing an existing post by id
-│  │  │  │  │  └─ page.tsx                         # Edit post page (load and update post by id)
+│  │  │  │  │  └─ TagsPageView.tsx                         # Edit post page (load and update post by id)
 │  │  │  │  ├─ new/                                # Route for creating a new post
-│  │  │  │  │  └─ page.tsx                         # New post creation page
-│  │  │  └─ page.tsx                               # Admin dashboard entry page
+│  │  │  │  │  └─ TagsPageView.tsx                         # New post creation page
+│  │  │  └─ TagsPageView.tsx                               # Admin dashboard entry page
 │  │  ├─ api/                                      # Server-only API routes
 │  │  │  ├─ auth/                                  # Authentication API group
 │  │  │  │  ├─ login/                              # Login endpoint
@@ -85,7 +85,7 @@ antotopedia_12/
 │  │  │  │  │  └─ route.ts                         # GET/PUT/DELETE handlers for a post by id
 │  │  │  │  └─ route.ts                            # GET/POST handlers for listing/creating posts
 │  │  │  ├─ tags/                                  # Tag-related API group
-│  │  │  │  ├─ page.tsx                            # Server-rendered tags explorer page
+│  │  │  │  ├─ TagsPageView.tsx                            # Server-rendered tags explorer page
 │  │  │  │  ├─ route.ts                            # GET handler returning tags with counts
 │  │  │  │  ├─ TagFilters.tsx                      # UI controls for filtering/sorting tags
 │  │  │  │  └─ TagList.tsx                         # UI list/grid/cloud render for tags
@@ -93,18 +93,18 @@ antotopedia_12/
 │  │  │     └─ route.ts                            # POST handler to upload files (e.g., to Cloudinary)
 │  │  ├─ blog/                                     # Public blog routes
 │  │  │  ├─ [slug]/                                # Dynamic route for a single post by slug
-│  │  │  │  └─ page.tsx                            # Post detail page (content, TOC, reactions)
-│  │  │  └─ page.tsx                               # Blog index with search and pagination
+│  │  │  │  └─ TagsPageView.tsx                            # Post detail page (content, TOC, reactions)
+│  │  │  └─ TagsPageView.tsx                               # Blog index with search and pagination
 │  │  ├─ login/                                    # Public login route
-│  │  │  └─ page.tsx                               # Login page with credentials form
+│  │  │  └─ TagsPageView.tsx                               # Login page with credentials form
 │  │  ├─ tags/                                     # Public tags routes
 │  │  │  ├─ [slug]/                                # Dynamic route listing posts by tag
-│  │  │  │  └─ page.tsx                            # Tag details page with posts under the tag
-│  │  │  └─ page.tsx                               # Tags index with filters, search, and views
+│  │  │  │  └─ TagsPageView.tsx                            # Tag details page with posts under the tag
+│  │  │  └─ TagsPageView.tsx                               # Tags index with filters, search, and views
 │  │  ├─ favicon.ico                               # Site favicon
 │  │  ├─ globals.css                               # Global styles and Tailwind component classes
 │  │  ├─ layout.tsx                                # Root layout: HTML shell, navbar, footer
-│  │  └─ page.tsx                                  # Home page: hero, recent posts, side widgets
+│  │  └─ TagsPageView.tsx                                  # Home page: hero, recent posts, side widgets
 │  ├─ components/                                  # Reusable UI components
 │  │  ├─ editor/                                   # Editor UI building blocks
 │  │  │  ├─ color/                                 # Editor color tools
@@ -171,11 +171,11 @@ antotopedia_12/
 
 ## Key Files Explained
 
-* `src/app/page.tsx` — Home. Shows different layout for guests vs logged users (QuickLinks on the right, Recent, Popular, Trending).
-* `src/app/blog/page.tsx` — Blog list with search and pagination. Chooses one featured card and grid for the rest.
-* `src/app/blog/[slug]/page.tsx` — Single post with TOC, reading progress, share bar, related posts, previous/next, like button, safe Markdown.
-* `src/app/admin/editor/new/page.tsx` — Create a post in the editor.
-* `src/app/admin/editor/[id]/page.tsx` — Edit existing post.
+* `src/app/TagsPageView.tsx` — Home. Shows different layout for guests vs logged users (QuickLinks on the right, Recent, Popular, Trending).
+* `src/app/blog/TagsPageView.tsx` — Blog list with search and pagination. Chooses one featured card and grid for the rest.
+* `src/app/blog/[slug]/TagsPageView.tsx` — Single post with TOC, reading progress, share bar, related posts, previous/next, like button, safe Markdown.
+* `src/app/admin/editor/new/TagsPageView.tsx` — Create a post in the editor.
+* `src/app/admin/editor/[id]/TagsPageView.tsx` — Edit existing post.
 * `src/app/api/posts/route.ts` — GET list, POST create.
 * `src/app/api/posts/[id]/route.ts` — GET one post, PATCH update, DELETE.
 * `src/app/api/tags/route.ts` — GET tags list with counts (used for Trending).
