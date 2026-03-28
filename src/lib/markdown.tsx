@@ -10,18 +10,23 @@ import { defaultSchema } from "hast-util-sanitize";
 import { visit } from "unist-util-visit";
 
 const colorRegex = /^color\s*:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z()%,.\s-]+)\s*;?$/;
+const fontSizeRegex = /^font-size\s*:\s*[\d.]+(?:px|em|rem)\s*;?$/;
+const backgroundRegex = /^background\s*:\s*.+;?\s*;?$/;
+const paddingRegex = /^padding\s*:\s*.+;?$/;
+const borderRadiusRegex = /^border-radius\s*:\s*.+;?$/;
 
 const schema = {
     ...defaultSchema,
     attributes: {
         ...(defaultSchema as any).attributes,
-        span: [...((((defaultSchema as any).attributes || {}).span) || []), ["style", colorRegex]],
+        span: [...((((defaultSchema as any).attributes || {}).span) || []), ["style", colorRegex], ["style", fontSizeRegex]],
+        mark: [...((((defaultSchema as any).attributes || {}).mark) || []), ["style", backgroundRegex], ["style", paddingRegex], ["style", borderRadiusRegex]],
         code: [...((((defaultSchema as any).attributes || {}).code) || []), ["className", /^language-[\w-]+$/]],
         pre: [...((((defaultSchema as any).attributes || {}).pre) || []), ["className", ".*"]],
         a: [...((((defaultSchema as any).attributes || {}).a) || []), ["target", /^_blank$/], ["rel", /^(noopener|noreferrer|nofollow)(\s+(noopener|noreferrer|nofollow))*$/]],
         img: [...((((defaultSchema as any).attributes || {}).img) || []), ["className", ".*"], ["alt", ".*"], ["src", ".*"], ["title", ".*"]],
     },
-    tagNames: [...(((defaultSchema as any).tagNames) || []), "span"],
+    tagNames: [...(((defaultSchema as any).tagNames) || []), "span", "mark"],
 };
 
 function remarkUnwrapImages() {
@@ -168,7 +173,7 @@ const components: Components = {
     },
     code(props: any) {
         const { inline, className, children } = props || {};
-        if (inline) return <code className="px-1.5 py-0.5 rounded bg-white/10 border border-white/10">{children}</code>;
+        if (inline) return <code className="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[#2ee7d8] font-semibold">{children}</code>;
         return <code className={className}>{children}</code>;
     },
     pre(props: any) {
@@ -181,7 +186,7 @@ const components: Components = {
         return <CodeBlock code={code} language={lang} />;
     },
     a(props: any) {
-        return <a {...props} target="_blank" rel="noopener noreferrer nofollow" className="text-accent underline" />;
+        return <a {...props} target="_blank" rel="noopener noreferrer nofollow" className="text-[#2ee7d8] underline decoration-1 underline-offset-[3px] hover:decoration-2 hover:text-[#5df4e9] hover:shadow-[0_0_8px_rgba(46,231,216,0.4)] transition-all font-medium" />;
     },
     img(props: any) {
         const rawSrc = String(props.src || "");

@@ -6,6 +6,12 @@ import Toolbar from "./Toolbar";
 import StatusPanel from "./StatusPanel";
 import PostMetadata from "./PostMetadata";
 import { Markdown } from "@/lib/markdown";
+import dynamic from "next/dynamic";
+
+const CodeEditor = dynamic(
+  () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
+  { ssr: false }
+);
 
 type LocaleCode = "en" | "uk";
 
@@ -167,6 +173,26 @@ export default function Editor({ initial }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [fontSize, setFontSize] = useState(15);
+  const [showLineNumbers, setShowLineNumbers] = useState(true);
+  const [fontFamily, setFontFamily] = useState<string>("JetBrains Mono");
+  const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
+  const [previewTheme, setPreviewTheme] = useState<"default" | "warm" | "cool" | "nature" | "minimal">("default");
+  const [showFormatInfo, setShowFormatInfo] = useState(false);
+
+  const fontFamilies = [
+    { name: "JetBrains Mono", value: '"JetBrains Mono", monospace' },
+    { name: "Fira Code", value: '"Fira Code", monospace' },
+    { name: "SF Mono", value: '"SF Mono", Monaco, monospace' },
+    { name: "Cascadia Code", value: '"Cascadia Code", monospace' },
+    { name: "Source Code Pro", value: '"Source Code Pro", monospace' },
+    { name: "Roboto Mono", value: '"Roboto Mono", monospace' },
+    { name: "Ubuntu Mono", value: '"Ubuntu Mono", monospace' },
+    { name: "Consolas", value: 'Consolas, "Courier New", monospace' },
+    { name: "Monaco", value: 'Monaco, Consolas, monospace' },
+  ];
+
+  const selectedFontValue = fontFamilies.find(f => f.name === fontFamily)?.value || fontFamilies[0].value;
 
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -389,8 +415,60 @@ export default function Editor({ initial }: Props) {
           applyWrapAt(`<span style="color:${hex}">`, "</span>", selRef.current),
       clearColor: () =>
           applyWrapAt(`<span style="color:inherit">`, "</span>", selRef.current),
+      textSize: (size: "small" | "normal" | "large" | "xlarge") => {
+        const sizeMap = {
+          small: "0.875em",
+          normal: "1em",
+          large: "1.25em",
+          xlarge: "1.5em",
+        };
+        applyWrapAt(`<span style="font-size:${sizeMap[size]}">`, "</span>", selRef.current);
+      },
+      highlight: (color: string) =>
+          applyWrapAt(`<mark style="background:${color};padding:2px 4px;border-radius:3px">`, "</mark>", selRef.current),
+      copyFormat: () => {
+        const ta = editorRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart ?? 0;
+        const end = ta.selectionEnd ?? 0;
+        const selected = form.contentMarkdown.slice(start, end);
+
+        // Extract formatting from selected text
+        const formatMatch = selected.match(/^(<[^>]+>).*(<\/[^>]+>)$/);
+        if (formatMatch) {
+          setCopiedFormat(formatMatch[1] + "{text}" + formatMatch[2]);
+          alert("Format copied! Select new text and click 'Paste Format'");
+        } else {
+          alert("No format detected. Select formatted text (with HTML tags).");
+        }
+      },
+      pasteFormat: () => {
+        if (!copiedFormat) {
+          alert("No format copied. Use 'Copy Format' first.");
+          return;
+        }
+        const ta = editorRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart ?? 0;
+        const end = ta.selectionEnd ?? 0;
+        const selected = form.contentMarkdown.slice(start, end);
+
+        const formatted = copiedFormat.replace("{text}", selected);
+        const next = form.contentMarkdown.slice(0, start) + formatted + form.contentMarkdown.slice(end);
+        setForm((f) => ({ ...f, contentMarkdown: next }));
+        setTranslations((t) => ({
+          ...t,
+          [activeLocale]: {
+            ...t[activeLocale],
+            contentMarkdown: next,
+          },
+        }));
+      },
+      insertPreset: (preset: string) => {
+        insertAtCursor("\n\n" + preset + "\n\n");
+      },
     };
-  }, [applyWrapAt]);
+  }, [applyWrapAt, form.contentMarkdown, activeLocale, copiedFormat]);
 
   const normalizeTags = (raw: string) =>
       raw
@@ -888,8 +966,25 @@ export default function Editor({ initial }: Props) {
                   actions.clearColor();
                 }}
                 onBeforeColorOpenAction={captureSelection}
+                onTextSizeAction={(size) => {
+                  actions.textSize(size);
+                }}
+                onHighlightAction={(color) => {
+                  actions.highlight(color);
+                }}
+                onCopyFormatAction={() => {
+                  captureSelection();
+                  actions.copyFormat();
+                }}
+                onPasteFormatAction={() => {
+                  captureSelection();
+                  actions.pasteFormat();
+                }}
+                onInsertPresetAction={(preset) => {
+                  actions.insertPreset(preset);
+                }}
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                   className={`btn ${
                       activeTab === "write" ? "btn-primary" : "btn-soft"
@@ -935,12 +1030,97 @@ export default function Editor({ initial }: Props) {
               >
                 Upload image
               </button>
+
+              {/* Editor Controls */}
+              {activeTab === "write" && (
+                <>
+                  <span className="mx-1 w-px h-6 bg-white/10" />
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <label className="flex items-center gap-2 text-xs text-dim cursor-pointer hover:text-accent transition">
+                      <input
+                        type="checkbox"
+                        checked={showLineNumbers}
+                        onChange={(e) => setShowLineNumbers(e.target.checked)}
+                        className="w-4 h-4 rounded border-white/20 bg-black/40 checked:bg-accent checked:border-accent cursor-pointer"
+                      />
+                      <span>Line numbers</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-dim cursor-pointer hover:text-accent transition">
+                      <input
+                        type="checkbox"
+                        checked={showFormatInfo}
+                        onChange={(e) => setShowFormatInfo(e.target.checked)}
+                        className="w-4 h-4 rounded border-white/20 bg-black/40 checked:bg-accent checked:border-accent cursor-pointer"
+                      />
+                      <span>Format info</span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-dim">Font:</span>
+                      <select
+                        value={fontFamily}
+                        onChange={(e) => setFontFamily(e.target.value)}
+                        className="text-xs bg-black/40 border border-white/15 rounded-lg px-2 py-1 text-white hover:border-accent/60 transition cursor-pointer"
+                      >
+                        {fontFamilies.map((font) => (
+                          <option key={font.name} value={font.name}>
+                            {font.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-dim">Size:</span>
+                      <button
+                        type="button"
+                        className="btn btn-ghost px-2 py-1 text-xs"
+                        onClick={() => setFontSize(Math.max(12, fontSize - 1))}
+                        title="Decrease font size"
+                      >
+                        −
+                      </button>
+                      <span className="text-xs text-accent font-medium min-w-[2rem] text-center">
+                        {fontSize}px
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-ghost px-2 py-1 text-xs"
+                        onClick={() => setFontSize(Math.min(24, fontSize + 1))}
+                        title="Increase font size"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+              {/* Preview Theme Selector */}
+              {activeTab === "preview" && (
+                <>
+                  <span className="mx-1 w-px h-6 bg-white/10" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-dim">Theme:</span>
+                    <select
+                      value={previewTheme}
+                      onChange={(e) => setPreviewTheme(e.target.value as any)}
+                      className="text-xs bg-black/40 border border-white/15 rounded-lg px-2 py-1 text-white hover:border-accent/60 transition cursor-pointer"
+                    >
+                      <option value="default">Default (Cyan)</option>
+                      <option value="warm">Warm (Orange)</option>
+                      <option value="cool">Cool (Blue)</option>
+                      <option value="nature">Nature (Green)</option>
+                      <option value="minimal">Minimal (Gray)</option>
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
             {activeTab === "write" && (
-                <textarea
-                    ref={editorRef}
-                    className="input min-h-[460px] font-mono"
+                <div className="relative">
+                  <CodeEditor
+                    ref={editorRef as any}
                     value={form.contentMarkdown}
+                    language="markdown"
+                    placeholder="Write your post in Markdown…"
                     onChange={(e) => {
                       const v = e.target.value;
                       setForm((f) => ({
@@ -956,14 +1136,74 @@ export default function Editor({ initial }: Props) {
                       }));
                     }}
                     onKeyDown={handleTabKey}
-                    onPaste={handlePaste}
-                    onDrop={onDropTextarea}
-                    onDragOver={onDragOver}
+                    onPaste={handlePaste as any}
+                    onDrop={onDropTextarea as any}
+                    onDragOver={onDragOver as any}
                     onSelect={captureSelection}
                     onKeyUp={captureSelection}
                     onMouseUp={captureSelection}
-                    placeholder="Write your post in Markdown…"
-                />
+                    padding={16}
+                    data-enable-grammarly="false"
+                    style={{
+                      fontFamily: selectedFontValue,
+                      fontSize: `${fontSize}px`,
+                      lineHeight: '1.7',
+                      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                      borderRadius: '0.75rem',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      minHeight: '460px',
+                      color: '#e8eaed',
+                      paddingLeft: showLineNumbers ? '3.5rem' : '1rem',
+                    }}
+                    className={`markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`}
+                  />
+                  {showLineNumbers && (
+                    <div
+                      className="absolute left-0 top-0 bottom-0 w-12 pt-4 pb-4 pl-2 pr-1 text-right text-white/30 pointer-events-none select-none overflow-hidden"
+                      style={{
+                        fontSize: `${fontSize}px`,
+                        lineHeight: '1.7',
+                        fontFamily: selectedFontValue,
+                      }}
+                    >
+                      {form.contentMarkdown.split('\n').map((_, i) => (
+                        <div key={i}>{i + 1}</div>
+                      ))}
+                    </div>
+                  )}
+                  {showFormatInfo && (
+                    <div className="absolute bottom-2 right-2 bg-black/90 border border-white/20 rounded-lg px-3 py-2 text-xs backdrop-blur-sm">
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="text-white/70">Format:</span>
+                        {(() => {
+                          const ta = editorRef.current;
+                          if (!ta) return <span className="text-white/50">Select text</span>;
+                          const start = ta.selectionStart ?? 0;
+                          const end = ta.selectionEnd ?? 0;
+                          if (start === end) return <span className="text-white/50">Select text</span>;
+                          const selected = form.contentMarkdown.slice(start, end);
+
+                          const badges: string[] = [];
+                          if (selected.includes("**")) badges.push("Bold");
+                          if (selected.includes("_") || selected.includes("*")) badges.push("Italic");
+                          if (selected.includes("~~")) badges.push("Strike");
+                          if (selected.includes("`")) badges.push("Code");
+                          if (selected.includes("<span")) badges.push("Styled");
+                          if (selected.includes("<mark")) badges.push("Highlighted");
+                          if (selected.includes("##")) badges.push("Heading");
+
+                          return badges.length ? (
+                            badges.map(b => (
+                              <span key={b} className="bg-accent/20 text-accent px-2 py-0.5 rounded-full text-[10px] font-medium">
+                                {b}
+                              </span>
+                            ))
+                          ) : <span className="text-white/50">No formatting</span>;
+                        })()}
+                      </div>
+                    </div>
+                  )}
+                </div>
             )}
             {activeTab === "markdown" && (
                 <pre className="rounded-xl border border-white/10 bg-black/40 p-3 overflow-auto whitespace-pre-wrap">
@@ -971,7 +1211,7 @@ export default function Editor({ initial }: Props) {
             </pre>
             )}
             {activeTab === "preview" && (
-                <div className="rounded-xl border border-white/10 bg-black/20 p-4 max-h-[520px] overflow-auto">
+                <div className={`rounded-xl border border-white/10 bg-black/20 p-6 max-h-[520px] overflow-auto theme-${previewTheme}`}>
                   <Markdown value={form.contentMarkdown} />
                 </div>
             )}
