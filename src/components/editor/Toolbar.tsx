@@ -102,163 +102,258 @@ function example() {
     ];
 
     return (
-        <div className="card p-2">
-            <div className="toolbar">
-                <button className="btn btn-soft px-3 py-1" onClick={props.onH2Action}>H2</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onH3Action}>H3</button>
-                <span className="mx-1 w-px h-6 bg-white/10" />
-                <button className="btn btn-soft px-3 py-1" onClick={props.onBoldAction}>Bold</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onItalicAction}>Italic</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onStrikeAction}>Strike</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onCodeInlineAction}>Code</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onCodeBlockAction}>Code block</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onQuoteAction}>Quote</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onListAction}>List</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onLinkAction}>Link</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onImageAction}>Image</button>
-                <button className="btn btn-soft px-3 py-1" onClick={props.onTableAction}>Table</button>
-
-                <span className="mx-1 w-px h-6 bg-white/10" />
-
-                {/* Text Size Menu */}
-                <div className="relative">
+        <div className="card p-2 overflow-x-auto">
+            <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0">
+                {/* Headings Group */}
+                <div className="flex gap-1 items-center">
                     <button
-                        className="btn btn-soft px-3 py-1"
-                        onClick={() => {
-                            props.onBeforeColorOpenAction?.();
-                            setShowTextSize(!showTextSize);
-                            setShowHighlight(false);
-                        }}
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onH2Action}
+                        title="Heading 2"
                     >
-                        Size
+                        <span className="text-base">📝 H2</span>
                     </button>
-                    {showTextSize && (
-                        <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[140px]">
-                            <button
-                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-xs"
-                                onClick={() => {
-                                    props.onTextSizeAction?.("small");
-                                    setShowTextSize(false);
-                                }}
-                            >
-                                Small
-                            </button>
-                            <button
-                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
-                                onClick={() => {
-                                    props.onTextSizeAction?.("normal");
-                                    setShowTextSize(false);
-                                }}
-                            >
-                                Normal
-                            </button>
-                            <button
-                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-base"
-                                onClick={() => {
-                                    props.onTextSizeAction?.("large");
-                                    setShowTextSize(false);
-                                }}
-                            >
-                                Large
-                            </button>
-                            <button
-                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-lg"
-                                onClick={() => {
-                                    props.onTextSizeAction?.("xlarge");
-                                    setShowTextSize(false);
-                                }}
-                            >
-                                X-Large
-                            </button>
-                        </div>
-                    )}
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onH3Action}
+                        title="Heading 3"
+                    >
+                        <span className="text-base">📄 H3</span>
+                    </button>
                 </div>
 
-                {/* Highlight Menu */}
-                <div className="relative">
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
+
+                {/* Text Formatting Group */}
+                <div className="flex gap-1 items-center flex-wrap">
                     <button
-                        className="btn btn-soft px-3 py-1"
-                        onClick={() => {
-                            props.onBeforeColorOpenAction?.();
-                            setShowHighlight(!showHighlight);
-                            setShowTextSize(false);
-                        }}
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onBoldAction}
+                        title="Bold (Ctrl/Cmd+B)"
                     >
-                        Highlight
+                        <span className="font-bold text-base">𝐁</span>
                     </button>
-                    {showHighlight && (
-                        <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[160px] max-h-[320px] overflow-y-auto">
-                            <div className="grid grid-cols-2 gap-1">
-                                {highlightColors.map((item) => (
-                                    <button
-                                        key={item.name}
-                                        className="text-left px-3 py-2 rounded-lg hover:bg-white/10 transition flex items-center gap-2"
-                                        onClick={() => {
-                                            props.onHighlightAction?.(item.color);
-                                            setShowHighlight(false);
-                                        }}
-                                    >
-                                        <span
-                                            className="w-4 h-4 rounded border border-white/30 flex-shrink-0"
-                                            style={{ background: item.color }}
-                                        />
-                                        <span className="text-xs">{item.name}</span>
-                                    </button>
-                                ))}
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onItalicAction}
+                        title="Italic (Ctrl/Cmd+I)"
+                    >
+                        <span className="italic text-base">𝐼</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onStrikeAction}
+                        title="Strikethrough"
+                    >
+                        <span className="text-base">S̶</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onCodeInlineAction}
+                        title="Inline Code"
+                    >
+                        <span className="text-base">💻</span>
+                    </button>
+                </div>
+
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
+
+                {/* Content Group */}
+                <div className="flex gap-1 items-center flex-wrap">
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onCodeBlockAction}
+                        title="Code Block"
+                    >
+                        <span className="text-base">📟</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onQuoteAction}
+                        title="Quote Block"
+                    >
+                        <span className="text-base">💬</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onListAction}
+                        title="List"
+                    >
+                        <span className="text-base">📋</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onLinkAction}
+                        title="Insert Link"
+                    >
+                        <span className="text-base">🔗</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onImageAction}
+                        title="Insert Image"
+                    >
+                        <span className="text-base">🖼️</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={props.onTableAction}
+                        title="Insert Table"
+                    >
+                        <span className="text-base">📊</span>
+                    </button>
+                </div>
+
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
+
+                {/* Styling Group */}
+                <div className="flex gap-1 items-center flex-wrap">
+                    {/* Text Size Menu */}
+                    <div className="relative">
+                        <button
+                            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                            onClick={() => {
+                                props.onBeforeColorOpenAction?.();
+                                setShowTextSize(!showTextSize);
+                                setShowHighlight(false);
+                                setShowPresets(false);
+                            }}
+                            title="Text Size"
+                        >
+                            <span className="text-base">📏 Size</span>
+                        </button>
+                        {showTextSize && (
+                            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[160px] left-0 md:left-auto">
+                                <button
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-xs touch-manipulation"
+                                    onClick={() => {
+                                        props.onTextSizeAction?.("small");
+                                        setShowTextSize(false);
+                                    }}
+                                >
+                                    🔹 Small Text
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm touch-manipulation"
+                                    onClick={() => {
+                                        props.onTextSizeAction?.("normal");
+                                        setShowTextSize(false);
+                                    }}
+                                >
+                                    ▫️ Normal Text
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-base touch-manipulation"
+                                    onClick={() => {
+                                        props.onTextSizeAction?.("large");
+                                        setShowTextSize(false);
+                                    }}
+                                >
+                                    🔸 Large Text
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-lg touch-manipulation"
+                                    onClick={() => {
+                                        props.onTextSizeAction?.("xlarge");
+                                        setShowTextSize(false);
+                                    }}
+                                >
+                                    🔶 X-Large Text
+                                </button>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
+
+                    {/* Highlight Menu */}
+                    <div className="relative">
+                        <button
+                            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                            onClick={() => {
+                                props.onBeforeColorOpenAction?.();
+                                setShowHighlight(!showHighlight);
+                                setShowTextSize(false);
+                                setShowPresets(false);
+                            }}
+                            title="Highlight Color"
+                        >
+                            <span className="text-base">🎨 Highlight</span>
+                        </button>
+                        {showHighlight && (
+                            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[280px] max-h-[420px] overflow-y-auto left-0 md:left-auto">
+                                <div className="grid grid-cols-2 gap-2">
+                                    {highlightColors.map((item) => (
+                                        <button
+                                            key={item.name}
+                                            className="text-left px-4 py-3 rounded-lg hover:bg-white/10 transition flex items-center gap-3 min-h-[44px] touch-manipulation"
+                                            onClick={() => {
+                                                props.onHighlightAction?.(item.color);
+                                                setShowHighlight(false);
+                                            }}
+                                        >
+                                            <span className="text-xl">{item.icon}</span>
+                                            <span className="text-sm">{item.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <ColorMenu
+                        onPickAction={props.onPickAction}
+                        onClearAction={props.onClearAction}
+                        onBeforeColorOpenAction={props.onBeforeColorOpenAction}
+                    />
                 </div>
 
-                <ColorMenu
-                    onPickAction={props.onPickAction}
-                    onClearAction={props.onClearAction}
-                    onBeforeColorOpenAction={props.onBeforeColorOpenAction}
-                />
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
 
-                <span className="mx-1 w-px h-6 bg-white/10" />
+                {/* Format Painter Group */}
+                <div className="flex gap-1 items-center flex-wrap">
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={() => {
+                            props.onBeforeColorOpenAction?.();
+                            props.onCopyFormatAction?.();
+                        }}
+                        title="Copy formatting from selected text"
+                    >
+                        <span className="text-base">📋</span>
+                    </button>
+                    <button
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                        onClick={() => {
+                            props.onBeforeColorOpenAction?.();
+                            props.onPasteFormatAction?.();
+                        }}
+                        title="Paste formatting to selected text"
+                    >
+                        <span className="text-base">📄</span>
+                    </button>
+                </div>
 
-                {/* Format Painter */}
-                <button
-                    className="btn btn-soft px-3 py-1"
-                    onClick={() => {
-                        props.onBeforeColorOpenAction?.();
-                        props.onCopyFormatAction?.();
-                    }}
-                    title="Copy formatting from selected text"
-                >
-                    📋 Copy Format
-                </button>
-                <button
-                    className="btn btn-soft px-3 py-1"
-                    onClick={() => {
-                        props.onBeforeColorOpenAction?.();
-                        props.onPasteFormatAction?.();
-                    }}
-                    title="Paste formatting to selected text"
-                >
-                    📄 Paste Format
-                </button>
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
 
                 {/* Text Presets */}
                 <div className="relative">
                     <button
-                        className="btn btn-soft px-3 py-1"
+                        className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
                         onClick={() => {
                             props.onBeforeColorOpenAction?.();
                             setShowPresets(!showPresets);
                             setShowTextSize(false);
                             setShowHighlight(false);
                         }}
+                        title="Insert Template"
                     >
-                        ⚡ Presets
+                        <span className="text-base">⚡ Presets</span>
                     </button>
                     {showPresets && (
-                        <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px] max-h-[400px] overflow-y-auto">
+                        <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
                             {textPresets.map((preset) => (
                                 <button
                                     key={preset.name}
-                                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation"
                                     onClick={() => {
                                         props.onInsertPresetAction?.(preset.content);
                                         setShowPresets(false);

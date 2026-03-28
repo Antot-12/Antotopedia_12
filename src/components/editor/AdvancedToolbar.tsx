@@ -53,72 +53,73 @@ export default function AdvancedToolbar(props: Props) {
   ];
 
   return (
-    <div className="card p-2 mt-2">
+    <div className="card p-2 mt-2 overflow-x-auto">
       <div className="flex items-center gap-2 text-xs text-white/70 mb-2 uppercase tracking-wide">
-        Advanced Formatting
+        ⭐ Advanced Formatting
       </div>
 
-      <div className="toolbar">
+      <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0">
         {/* List Tools */}
         <div className="relative">
           <button
-            className="btn btn-soft px-3 py-1"
+            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
             onClick={() => {
               setShowLists(!showLists);
               setShowCallouts(false);
               setShowLayouts(false);
               setShowTemplates(false);
             }}
+            title="List Formatting Tools"
           >
-            📝 Lists
+            <span className="text-base">📝 Lists</span>
           </button>
           {showLists && (
-            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[180px]">
+            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] left-0 md:left-auto">
               <button
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
                   props.onConvertToBullets?.();
                   setShowLists(false);
                 }}
               >
-                • Convert to Bullets
+                <span className="text-base">•</span> Convert to Bullets
               </button>
               <button
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
                   props.onConvertToNumbers?.();
                   setShowLists(false);
                 }}
               >
-                1. Convert to Numbers
+                <span className="text-base">1.</span> Convert to Numbers
               </button>
               <button
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
                   props.onConvertToTasks?.();
                   setShowLists(false);
                 }}
               >
-                ☑ Convert to Tasks
+                <span className="text-base">☑</span> Convert to Tasks
               </button>
               <div className="border-t border-white/10 my-2" />
               <button
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
                   props.onIndent?.();
                   setShowLists(false);
                 }}
               >
-                → Indent
+                <span className="text-base">→</span> Indent
               </button>
               <button
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
                   props.onOutdent?.();
                   setShowLists(false);
                 }}
               >
-                ← Outdent
+                <span className="text-base">←</span> Outdent
               </button>
             </div>
           )}
@@ -127,42 +128,43 @@ export default function AdvancedToolbar(props: Props) {
         {/* Callouts/Alerts */}
         <div className="relative">
           <button
-            className="btn btn-soft px-3 py-1"
+            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
             onClick={() => {
               setShowCallouts(!showCallouts);
               setShowLists(false);
               setShowLayouts(false);
               setShowTemplates(false);
             }}
+            title="Insert Callouts & Dividers"
           >
-            💬 Callouts
+            <span className="text-base">💬 Callouts</span>
           </button>
           {showCallouts && (
-            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[180px]">
+            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
               {calloutTypes.map((type) => (
                 <button
                   key={type.style}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm flex items-center gap-2"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
                   onClick={() => {
                     props.onInsertCallout?.(type.style);
                     setShowCallouts(false);
                   }}
                 >
-                  <span>{type.icon}</span>
-                  <span>{type.name}</span>
+                  <span className="text-lg">{type.icon}</span>
+                  <span>{type.name} Callout</span>
                 </button>
               ))}
               <div className="border-t border-white/10 my-2" />
               {dividerStyles.map((div) => (
                 <button
                   key={div.style}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation"
                   onClick={() => {
                     props.onInsertDivider?.(div.style);
                     setShowCallouts(false);
                   }}
                 >
-                  {div.name} Divider
+                  ✨ {div.name} Divider
                 </button>
               ))}
             </div>
@@ -172,28 +174,29 @@ export default function AdvancedToolbar(props: Props) {
         {/* Layouts */}
         <div className="relative">
           <button
-            className="btn btn-soft px-3 py-1"
+            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
             onClick={() => {
               setShowLayouts(!showLayouts);
               setShowLists(false);
               setShowCallouts(false);
               setShowTemplates(false);
             }}
+            title="Insert Column Layouts"
           >
-            ⚡ Layouts
+            <span className="text-base">⚡ Layouts</span>
           </button>
           {showLayouts && (
-            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px]">
+            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] left-0 md:left-auto">
               {layouts.map((layout) => (
                 <button
                   key={layout.layout}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm flex items-center gap-2"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
                   onClick={() => {
                     props.onInsertLayout?.(layout.layout);
                     setShowLayouts(false);
                   }}
                 >
-                  <span className="text-lg">{layout.icon}</span>
+                  <span className="text-xl">{layout.icon}</span>
                   <span>{layout.name}</span>
                 </button>
               ))}
@@ -204,28 +207,29 @@ export default function AdvancedToolbar(props: Props) {
         {/* Blog Templates */}
         <div className="relative">
           <button
-            className="btn btn-soft px-3 py-1"
+            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
             onClick={() => {
               setShowTemplates(!showTemplates);
               setShowLists(false);
               setShowCallouts(false);
               setShowLayouts(false);
             }}
+            title="Insert Blog Templates"
           >
-            🎨 Templates
+            <span className="text-base">🎨 Templates</span>
           </button>
           {showTemplates && (
-            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px] max-h-[400px] overflow-y-auto">
+            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
               {blogTemplates.map((template) => (
                 <button
                   key={template.template}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition text-sm flex items-center gap-2"
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
                   onClick={() => {
                     props.onInsertBlogTemplate?.(template.template);
                     setShowTemplates(false);
                   }}
                 >
-                  <span>{template.icon}</span>
+                  <span className="text-lg">{template.icon}</span>
                   <span>{template.name}</span>
                 </button>
               ))}

@@ -14,10 +14,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const locale = await getLocale();
     return (
         <html lang={locale}>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+        </head>
         <body className="no-glow min-h-screen grid grid-rows-[auto_1fr_auto]">
         <DevSWKiller />
         <Navbar />
-        <main className="w-full max-w-7xl mx-auto px-6 py-8">{children}</main>
+        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">{children}</main>
         <Footer />
         </body>
         </html>

@@ -63,20 +63,20 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
     const pages = Math.max(1, Math.ceil(total / pageSize));
 
     return (
-        <div className="grid gap-6">
-            <div className="card p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
-                <form className="grid gap-2 md:grid-cols-[1fr_auto]">
-                    <input name="q" defaultValue={query} placeholder="Search posts..." className="input" />
-                    <button className="btn btn-primary">Search</button>
+        <div className="grid gap-4 sm:gap-6">
+            <div className="card p-3 sm:p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+                <form className="grid gap-2 sm:gap-3 md:grid-cols-[1fr_auto]">
+                    <input name="q" defaultValue={query} placeholder="Search posts..." className="input text-sm sm:text-base" />
+                    <button className="btn btn-primary text-sm sm:text-base">Search</button>
                 </form>
-                <div className="text-sm text-dim">Page {pageNum} of {pages}</div>
+                <div className="text-xs sm:text-sm text-dim">Page {pageNum} of {pages}</div>
             </div>
 
             {list.length === 0 ? (
-                <div className="card p-6 text-dim">No posts found.</div>
+                <div className="card p-4 sm:p-6 text-dim text-sm sm:text-base">No posts found.</div>
             ) : (
-                <section className="grid gap-6">
-                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 items-stretch auto-rows-fr">
+                <section className="grid gap-4 sm:gap-6">
+                    <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 items-stretch auto-rows-fr">
                         {list.map((p) => (
                             <PostCard key={p.id} post={p} bordered />
                         ))}
@@ -84,12 +84,12 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
                 </section>
             )}
 
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
                 {Array.from({ length: pages }).map((_, i) => {
                     const n = i + 1;
                     const sp = new URLSearchParams({ q: query, page: String(n) }).toString();
                     return (
-                        <Link key={n} href={`/blog?${sp}`} className={`btn ${n === pageNum ? "btn-primary" : "btn-soft"}`}>
+                        <Link key={n} href={`/blog?${sp}`} className={`btn text-xs sm:text-sm px-3 sm:px-4 ${n === pageNum ? "btn-primary" : "btn-soft"}`}>
                             {n}
                         </Link>
                     );

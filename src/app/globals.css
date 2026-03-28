@@ -21,11 +21,11 @@ a,button,input,textarea,select{
 }
 
 .container-narrow {
-    @apply mx-auto px-8;
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
     max-width: 1680px;
 }
 .container-wide {
-    @apply mx-auto px-8;
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
     max-width: 1800px;
 }
 
@@ -1050,6 +1050,18 @@ details[open] > :not(summary) {
   font-size: 1.0625rem;
 }
 
+/* Remove margins from paragraphs inside list items */
+.prose li > p {
+  margin: 0;
+  display: inline;
+}
+
+/* Keep spacing for multiple paragraphs in list items */
+.prose li > p + p {
+  display: block;
+  margin-top: 0.5rem;
+}
+
 .prose ul > li::marker {
   color: var(--accent);
 }
@@ -1121,3 +1133,227 @@ details[open] > :not(summary) {
   background: rgba(46, 231, 216, 0.5);
 }
 
+
+
+/* ============================================
+   MOBILE & TOUCH OPTIMIZATIONS
+   ============================================ */
+
+/* Touch-friendly buttons and interactive elements */
+@media (max-width: 768px) {
+  /* Ensure all buttons are touch-friendly (minimum 44x44px) */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Toolbar specific mobile adjustments */
+  .toolbar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .toolbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  /* Card padding adjustments for mobile */
+  .card {
+    padding: 0.75rem;
+  }
+
+  /* Container adjustments for mobile */
+  .container-narrow,
+  .container-wide {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Input fields touch optimization */
+  .input,
+  textarea {
+    font-size: 16px; /* Prevents auto-zoom on iOS */
+    min-height: 44px;
+  }
+
+  /* Dropdown menus mobile positioning */
+  .toolbar > div > div[class*="absolute"] {
+    position: fixed !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    max-width: calc(100vw - 2rem);
+    width: auto !important;
+  }
+
+  /* Ensure menu items are touch-friendly */
+  .toolbar button,
+  [class*="dropdown"] button,
+  [class*="menu"] button {
+    min-height: 44px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  /* Modal/Dialog improvements for mobile */
+  [class*="fixed inset-0"] > div {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+
+  /* Emoji picker mobile adjustments */
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Tablet breakpoint adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .container-narrow {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .container-wide {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Improved touch manipulation */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(46, 231, 216, 0.1);
+}
+
+/* Better visual feedback for touch */
+@media (hover: none) {
+  .btn:active {
+    transform: scale(0.98);
+    background-color: rgba(46, 231, 216, 0.15);
+  }
+
+  .card-hover:active {
+    transform: scale(0.99);
+  }
+}
+
+/* Prevent text selection on buttons for better touch experience */
+.btn,
+.toolbar button,
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling for mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Safe area insets for notch devices */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Improved dropdown positioning on mobile */
+@media (max-width: 768px) {
+  [class*="z-50"][class*="absolute"] {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* Better focus states for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Fix for list item content alignment and display */
+.prose li {
+  display: list-item;
+  position: relative;
+}
+
+.prose li > * {
+  display: inline;
+}
+
+.prose li > p {
+  display: inline;
+  margin: 0;
+}
+
+.prose li strong {
+  display: inline;
+}
+
+.prose li em {
+  display: inline;
+}
+
+/* Ensure proper spacing between list content elements */
+.prose ul li,
+.prose ol li {
+  padding-left: 0.5rem;
+}
+
+/* Fix for nested content in lists */
+.prose li > *:first-child {
+  margin-top: 0;
+}
+
+.prose li > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Fix for CodeEditor text selection duplication */
+.markdown-editor [class*="w-tc-editor-preview"] {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.markdown-editor textarea {
+  position: relative;
+  z-index: 1;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+}
+
+/* Ensure the syntax highlighting overlay does not interfere with selection */
+.markdown-editor > div {
+  pointer-events: none;
+}
+
+.markdown-editor > textarea {
+  pointer-events: auto;
+}

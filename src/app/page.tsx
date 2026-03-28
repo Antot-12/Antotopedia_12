@@ -66,11 +66,11 @@ export default async function HomePage() {
     const popular = posts.slice(6, 12);
 
     return (
-        <div className="grid gap-10">
+        <div className="grid gap-6 sm:gap-8 lg:gap-10">
             <Hero title={dict.hero.title} subtitle={dict.hero.subtitle_short} />
             {user ? (
-                <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
-                    <div className="grid gap-6">
+                <div className="grid gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
+                    <div className="grid gap-4 sm:gap-6">
                         <QuickSearch />
                         <RecentPosts
                             featured={featured as any}
@@ -85,14 +85,14 @@ export default async function HomePage() {
                             }}
                         />
                     </div>
-                    <div className="flex flex-col gap-4 sticky top-24 self-start">
+                    <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
                         <QuickActions />
                         <TrendingTags initial={tags as any} />
                     </div>
                 </div>
             ) : (
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
-                    <div className="grid gap-8">
+                <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
+                    <div className="grid gap-6 sm:gap-8">
                         <RecentPosts
                             featured={featured as any}
                             posts={recent as any}
@@ -106,18 +106,18 @@ export default async function HomePage() {
                             }}
                         />
                         {popular.length > 0 && (
-                            <div className="grid gap-4">
-                                <h2 className="text-2xl font-semibold">{dict.common.popular}</h2>
-                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch auto-rows-fr">
+                            <div className="grid gap-3 sm:gap-4">
+                                <h2 className="text-xl sm:text-2xl font-semibold">{dict.common.popular}</h2>
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 items-stretch auto-rows-fr">
                                     {popular.map((p) => (
                                         <Link
                                             key={p.id}
                                             href={`/blog/${p.slug}`}
-                                            className="card card-hover p-4 ring-1 ring-white/10 hover:ring-accent/50 h-full"
+                                            className="card card-hover p-3 sm:p-4 ring-1 ring-white/10 hover:ring-accent/50 h-full"
                                         >
-                                            <div className="text-sm text-accent mb-1">Pick</div>
-                                            <div className="font-medium">{p.title}</div>
-                                            <div className="text-dim text-sm line-clamp-2">
+                                            <div className="text-xs sm:text-sm text-accent mb-1">Pick</div>
+                                            <div className="font-medium text-sm sm:text-base">{p.title}</div>
+                                            <div className="text-dim text-xs sm:text-sm line-clamp-2">
                                                 {p.description}
                                             </div>
                                         </Link>
@@ -126,7 +126,7 @@ export default async function HomePage() {
                             </div>
                         )}
                     </div>
-                    <div className="flex flex-col gap-4 sticky top-24 self-start">
+                    <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
                         <QuickLinks />
                         <TrendingTags initial={tags as any} />
                     </div>

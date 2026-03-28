@@ -171,6 +171,19 @@ const components: Components = {
             </h3>
         );
     },
+    p(props: any) {
+        // Check if parent is a list item - if so, render content inline without wrapper
+        const { node } = props;
+        if (node?.position?.start && node?.position?.end) {
+            // If we're inside a list item, unwrap the paragraph
+            return <>{props.children}</>;
+        }
+        return <p>{props.children}</p>;
+    },
+    li(props: any) {
+        // Custom list item renderer to ensure inline content
+        return <li>{props.children}</li>;
+    },
     code(props: any) {
         const { inline, className, children } = props || {};
         if (inline) return <code className="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[#2ee7d8] font-semibold">{children}</code>;
