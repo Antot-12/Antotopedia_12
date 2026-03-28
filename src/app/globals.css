@@ -1347,6 +1347,20 @@ button:focus-visible,
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
+  /* Make textarea text transparent so only syntax highlighting shows */
+  color: transparent !important;
+  caret-color: var(--accent) !important;
+}
+
+/* Show text when selecting */
+.markdown-editor textarea::selection {
+  background-color: rgba(46, 231, 216, 0.3);
+  color: #e8eaed;
+}
+
+.markdown-editor textarea::-moz-selection {
+  background-color: rgba(46, 231, 216, 0.3);
+  color: #e8eaed;
 }
 
 /* Ensure the syntax highlighting overlay does not interfere with selection */
