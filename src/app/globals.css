@@ -1365,23 +1365,13 @@ div.markdown-editor textarea,
   caret-color: var(--accent) !important;
 }
 
-/* Hide the textarea text layer but keep it functional */
-.markdown-editor textarea.w-tc-editor-text {
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  caret-color: var(--accent) !important;
+/* Show text selection */
+.markdown-editor textarea::selection {
+  background-color: rgba(46, 231, 216, 0.3);
 }
 
-/* Show text when selecting */
-.markdown-editor textarea.w-tc-editor-text::selection {
+.markdown-editor textarea::-moz-selection {
   background-color: rgba(46, 231, 216, 0.3);
-  color: #9ca3af !important;
-  -webkit-text-fill-color: #9ca3af !important;
-}
-
-.markdown-editor textarea.w-tc-editor-text::-moz-selection {
-  background-color: rgba(46, 231, 216, 0.3);
-  color: #9ca3af !important;
 }
 
 /* Ensure the syntax highlighting overlay does not interfere with selection */
