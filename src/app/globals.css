@@ -1333,9 +1333,20 @@ button:focus-visible,
   margin-bottom: 0;
 }
 
-/* Hide the syntax highlighting preview layer completely */
-.markdown-editor [class*="w-tc-editor-preview"] {
+/* Hide the syntax highlighting preview layer completely - ALL VARIATIONS */
+.markdown-editor [class*="w-tc-editor-preview"],
+.markdown-editor [class*="preview"],
+.markdown-editor pre[class*="language"],
+.w-tc-editor [class*="preview"],
+.w-tc-editor-preview,
+[data-color-mode] [class*="preview"] {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
 }
 
 /* Make textarea fully visible and functional */
@@ -1347,10 +1358,12 @@ button:focus-visible,
   -moz-user-select: text !important;
   caret-color: var(--accent) !important;
   pointer-events: auto !important;
-  color: #9ca3af !important;
+  color: #d1d5db !important;
+  -webkit-text-fill-color: #d1d5db !important;
 }
 
-.markdown-editor.with-line-numbers [class*="w-tc-editor-preview"] {
+.markdown-editor.with-line-numbers [class*="w-tc-editor-preview"],
+.markdown-editor.with-line-numbers [class*="preview"] {
   display: none !important;
 }
 
@@ -1363,7 +1376,8 @@ div.markdown-editor textarea,
 [data-color-mode="dark"] .w-tc-editor-text {
   caret-color: var(--accent) !important;
   pointer-events: auto !important;
-  color: #9ca3af !important;
+  color: #d1d5db !important;
+  -webkit-text-fill-color: #d1d5db !important;
 }
 
 /* Show text selection */
