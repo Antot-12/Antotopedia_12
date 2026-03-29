@@ -102,7 +102,7 @@ function example() {
     ];
 
     return (
-        <div className="card p-2 overflow-x-auto">
+        <div className="card p-2 overflow-x-auto overflow-y-visible">
             <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0">
                 {/* Headings Group */}
                 <div className="flex gap-1 items-center">

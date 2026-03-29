@@ -1115,7 +1115,7 @@ export default function Editor({ initial }: Props) {
               )}
             </div>
             {activeTab === "write" && (
-                <div className="relative">
+                <div className={`relative markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`}>
                   <CodeEditor
                     ref={editorRef as any}
                     value={form.contentMarkdown}
@@ -1155,7 +1155,6 @@ export default function Editor({ initial }: Props) {
                       caretColor: 'var(--accent)',
                       paddingLeft: showLineNumbers ? '3.5rem' : '1rem',
                     }}
-                    className={`markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`}
                   />
                   {showLineNumbers && (
                     <div
