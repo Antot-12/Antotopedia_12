@@ -12,6 +12,7 @@ type Props = {
   onInsertDivider?: (style: string) => void;
   onInsertLayout?: (layout: string) => void;
   onInsertBlogTemplate?: (template: string) => void;
+  onInsertMath?: (type: "inline" | "block") => void;
 };
 
 export default function AdvancedToolbar(props: Props) {
@@ -19,6 +20,7 @@ export default function AdvancedToolbar(props: Props) {
   const [showCallouts, setShowCallouts] = useState(false);
   const [showLayouts, setShowLayouts] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showMath, setShowMath] = useState(false);
 
   const calloutTypes = [
     { name: "Info", icon: "ℹ️", color: "blue", style: "info" },
@@ -213,6 +215,7 @@ export default function AdvancedToolbar(props: Props) {
               setShowLists(false);
               setShowCallouts(false);
               setShowLayouts(false);
+              setShowMath(false);
             }}
             title="Insert Blog Templates"
           >
@@ -233,6 +236,53 @@ export default function AdvancedToolbar(props: Props) {
                   <span>{template.name}</span>
                 </button>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* Math Equations */}
+        <div className="relative">
+          <button
+            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+            onClick={() => {
+              setShowMath(!showMath);
+              setShowLists(false);
+              setShowCallouts(false);
+              setShowLayouts(false);
+              setShowTemplates(false);
+            }}
+            title="Insert Math Equation"
+          >
+            <span className="text-base">∑ Math</span>
+          </button>
+          {showMath && (
+            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px] left-0 md:left-auto">
+              <button
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
+                onClick={() => {
+                  props.onInsertMath?.("inline");
+                  setShowMath(false);
+                }}
+              >
+                <span className="text-lg">∫</span>
+                <div>
+                  <div className="font-medium">Inline Math</div>
+                  <div className="text-xs text-white/60">$x^2 + y^2 = z^2$</div>
+                </div>
+              </button>
+              <button
+                className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
+                onClick={() => {
+                  props.onInsertMath?.("block");
+                  setShowMath(false);
+                }}
+              >
+                <span className="text-lg">∑</span>
+                <div>
+                  <div className="font-medium">Block Math</div>
+                  <div className="text-xs text-white/60">$$E = mc^2$$</div>
+                </div>
+              </button>
             </div>
           )}
         </div>

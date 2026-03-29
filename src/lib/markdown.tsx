@@ -3,11 +3,14 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import rehypeKatex from "rehype-katex";
 import rehypeExternalLinks from "rehype-external-links";
 import { defaultSchema } from "hast-util-sanitize";
 import { visit } from "unist-util-visit";
+import "katex/dist/katex.min.css";
 
 const colorRegex = /^color\s*:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z()%,.\s-]+)\s*;?$/;
 const fontSizeRegex = /^font-size\s*:\s*[\d.]+(?:px|em|rem)\s*;?$/;
@@ -19,14 +22,15 @@ const schema = {
     ...defaultSchema,
     attributes: {
         ...(defaultSchema as any).attributes,
-        span: [...((((defaultSchema as any).attributes || {}).span) || []), ["style", colorRegex], ["style", fontSizeRegex]],
+        span: [...((((defaultSchema as any).attributes || {}).span) || []), ["style", colorRegex], ["style", fontSizeRegex], ["className", /^katex.*$/]],
         mark: [...((((defaultSchema as any).attributes || {}).mark) || []), ["style", backgroundRegex], ["style", paddingRegex], ["style", borderRadiusRegex]],
         code: [...((((defaultSchema as any).attributes || {}).code) || []), ["className", /^language-[\w-]+$/]],
         pre: [...((((defaultSchema as any).attributes || {}).pre) || []), ["className", ".*"]],
-        a: [...((((defaultSchema as any).attributes || {}).a) || []), ["target", /^_blank$/], ["rel", /^(noopener|noreferrer|nofollow)(\s+(noopener|noreferrer|nofollow))*$/]],
+        a: [...((((defaultSchema as any).attributes || {}).a) || []), ["target", /^_blank$/], ["rel", /^(noopener|noreferrer|nofollow)(\s+(noopener|noreferrer|nofollow))*$/], ["id", /^fn-.*$/], ["href", /^#fn.*$/]],
         img: [...((((defaultSchema as any).attributes || {}).img) || []), ["className", ".*"], ["alt", ".*"], ["src", ".*"], ["title", ".*"]],
+        div: [...((((defaultSchema as any).attributes || {}).div) || []), ["className", /^math.*$/]],
     },
-    tagNames: [...(((defaultSchema as any).tagNames) || []), "span", "mark"],
+    tagNames: [...(((defaultSchema as any).tagNames) || []), "span", "mark", "div", "sup"],
 };
 
 function remarkUnwrapImages() {
@@ -236,11 +240,12 @@ const components: Components = {
 };
 
 export function Markdown({ value, className }: { value: string; className?: string }) {
-    const plugins = useMemo(() => [remarkGfm, remarkUnwrapImages], []);
+    const plugins = useMemo(() => [remarkGfm, remarkMath, remarkUnwrapImages], []);
     const rehype = useMemo(
         () => [
             rehypeRaw,
             [rehypeSanitize, schema],
+            rehypeKatex,
             [rehypeExternalLinks, { target: "_blank", rel: ["nofollow", "noopener", "noreferrer"] }],
         ],
         []

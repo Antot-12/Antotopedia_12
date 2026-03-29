@@ -23,6 +23,7 @@ export default async function Navbar() {
                 <nav className="flex items-center gap-1 sm:gap-2">
                     <Link href="/blog" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.blog}</Link>
                     <Link href="/tags" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.tags}</Link>
+                    <Link href="/search" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4" title="Search">🔍</Link>
                     {user ? (
                         <>
                             <Link href="/admin" className="btn btn-primary text-xs sm:text-sm px-2 sm:px-4">{dict.nav.admin}</Link>

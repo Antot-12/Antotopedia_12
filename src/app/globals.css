@@ -1341,6 +1341,11 @@ button:focus-visible,
   -moz-user-select: none;
 }
 
+/* Ensure the syntax highlighting preview layer also has proper padding */
+.markdown-editor.with-line-numbers [class*="w-tc-editor-preview"] {
+  padding-left: 3.5rem !important;
+}
+
 .markdown-editor textarea {
   position: relative;
   z-index: 1;
@@ -1349,7 +1354,15 @@ button:focus-visible,
   -moz-user-select: text !important;
   /* Make textarea text transparent so only syntax highlighting shows */
   color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
   caret-color: var(--accent) !important;
+}
+
+/* More specific selector for the CodeEditor textarea */
+.markdown-editor.w-tc-editor textarea,
+.markdown-editor [data-color-mode="dark"] textarea {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 /* Show text when selecting */
@@ -1370,4 +1383,74 @@ button:focus-visible,
 
 .markdown-editor > textarea {
   pointer-events: auto;
+}
+
+/* Math equations styling (KaTeX) */
+.prose .katex {
+  font-size: 1.1em;
+}
+
+.prose .katex-display {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prose .katex-display > .katex {
+  text-align: center;
+  white-space: normal;
+}
+
+.prose .katex .katex-html {
+  color: #e8eaed;
+}
+
+.prose .katex .mord,
+.prose .katex .mbin,
+.prose .katex .mrel {
+  color: #e8eaed;
+}
+
+.prose .katex .mopen,
+.prose .katex .mclose {
+  color: var(--accent);
+}
+
+/* Footnotes styling */
+.prose .footnotes {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(46, 231, 216, 0.3);
+  font-size: 0.9em;
+}
+
+.prose .footnotes ol {
+  padding-left: 1.5rem;
+}
+
+.prose .footnotes li {
+  margin-top: 0.5rem;
+}
+
+.prose .footnotes li:target {
+  background: rgba(46, 231, 216, 0.1);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.prose sup a[id^="fnref-"] {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0 0.25rem;
+}
+
+.prose sup a[id^="fnref-"]:hover {
+  text-decoration: underline;
 }
