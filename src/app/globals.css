@@ -1335,10 +1335,11 @@ button:focus-visible,
 
 /* Fix for CodeEditor text selection duplication */
 .markdown-editor [class*="w-tc-editor-preview"] {
-  pointer-events: none;
+  pointer-events: none !important;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
+  z-index: 1 !important;
 }
 
 /* Ensure the syntax highlighting preview layer also has proper padding */
@@ -1348,11 +1349,12 @@ button:focus-visible,
 
 .markdown-editor textarea {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   caret-color: var(--accent) !important;
+  pointer-events: auto !important;
 }
 
 /* More specific selectors for the CodeEditor textarea with higher specificity */
@@ -1363,6 +1365,8 @@ div.markdown-editor textarea,
 .markdown-editor .w-tc-editor-text,
 [data-color-mode="dark"] .w-tc-editor-text {
   caret-color: var(--accent) !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
 }
 
 /* Show text selection */
