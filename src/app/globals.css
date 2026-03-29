@@ -1352,17 +1352,13 @@ button:focus-visible,
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
-  /* Make textarea text transparent so only syntax highlighting shows */
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
   caret-color: var(--accent) !important;
 }
 
 /* More specific selector for the CodeEditor textarea */
 .markdown-editor.w-tc-editor textarea,
 .markdown-editor [data-color-mode="dark"] textarea {
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
+  caret-color: var(--accent) !important;
 }
 
 /* Show text when selecting */
@@ -1453,4 +1449,105 @@ button:focus-visible,
 
 .prose sup a[id^="fnref-"]:hover {
   text-decoration: underline;
+}
+
+/* Image Gallery Styling */
+.prose .image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.prose .image-gallery img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.prose .image-gallery img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(46, 231, 216, 0.2);
+}
+
+/* Video and Audio Styling */
+.prose video,
+.prose audio {
+  width: 100%;
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prose video {
+  max-height: 500px;
+}
+
+/* React Image Crop custom styling */
+.ReactCrop {
+  max-width: 100%;
+}
+
+.ReactCrop__crop-selection {
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced Tooltips for Editor Buttons */
+.toolbar button {
+  position: relative;
+}
+
+.toolbar button::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(46, 231, 216, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.toolbar button:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.toolbar button::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.95);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.toolbar button:hover::before {
+  opacity: 1;
+}
+
+/* Mobile: don't show tooltips on touch devices */
+@media (hover: none) {
+  .toolbar button::after,
+  .toolbar button::before {
+    display: none;
+  }
 }

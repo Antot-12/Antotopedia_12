@@ -157,7 +157,7 @@ export default function AdvancedSearch() {
           <div>
             <label className="text-sm text-white/70 mb-2 block">Filter by tags:</label>
             <div className="flex flex-wrap gap-2">
-              {availableTags.slice(0, 20).map((tag) => (
+              {Array.isArray(availableTags) && availableTags.slice(0, 20).map((tag) => (
                 <button
                   key={tag.slug}
                   onClick={() => toggleTag(tag.slug)}
@@ -235,7 +235,7 @@ export default function AdvancedSearch() {
                 )}
                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/60">
                   <span>{new Date(result.createdAt).toLocaleDateString()}</span>
-                  {result.tags.length > 0 && (
+                  {Array.isArray(result.tags) && result.tags.length > 0 && (
                     <>
                       <span>•</span>
                       {result.tags.slice(0, 3).map((tag) => (

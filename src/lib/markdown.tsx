@@ -28,9 +28,12 @@ const schema = {
         pre: [...((((defaultSchema as any).attributes || {}).pre) || []), ["className", ".*"]],
         a: [...((((defaultSchema as any).attributes || {}).a) || []), ["target", /^_blank$/], ["rel", /^(noopener|noreferrer|nofollow)(\s+(noopener|noreferrer|nofollow))*$/], ["id", /^fn-.*$/], ["href", /^#fn.*$/]],
         img: [...((((defaultSchema as any).attributes || {}).img) || []), ["className", ".*"], ["alt", ".*"], ["src", ".*"], ["title", ".*"]],
-        div: [...((((defaultSchema as any).attributes || {}).div) || []), ["className", /^math.*$/]],
+        div: [...((((defaultSchema as any).attributes || {}).div) || []), ["className", /^(math.*|image-gallery)$/]],
+        video: [...((((defaultSchema as any).attributes || {}).video) || []), ["src", ".*"], ["controls", ".*"], ["width", ".*"], ["height", ".*"], ["className", ".*"]],
+        audio: [...((((defaultSchema as any).attributes || {}).audio) || []), ["src", ".*"], ["controls", ".*"], ["className", ".*"]],
+        source: [...((((defaultSchema as any).attributes || {}).source) || []), ["src", ".*"], ["type", ".*"]],
     },
-    tagNames: [...(((defaultSchema as any).tagNames) || []), "span", "mark", "div", "sup"],
+    tagNames: [...(((defaultSchema as any).tagNames) || []), "span", "mark", "div", "sup", "video", "audio", "source"],
 };
 
 function remarkUnwrapImages() {

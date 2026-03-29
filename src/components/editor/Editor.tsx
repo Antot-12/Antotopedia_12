@@ -1152,9 +1152,7 @@ export default function Editor({ initial }: Props) {
                       borderRadius: '0.75rem',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       minHeight: '460px',
-                      color: 'transparent',
-                      WebkitTextFillColor: 'transparent',
-                      caretColor: '#2ee7d8',
+                      color: '#9ca3af',
                       paddingLeft: showLineNumbers ? '3.5rem' : '1rem',
                     }}
                     className={`markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`}
