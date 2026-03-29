@@ -1353,8 +1353,6 @@ button:focus-visible,
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   caret-color: var(--accent) !important;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
 }
 
 /* More specific selectors for the CodeEditor textarea with higher specificity */
@@ -1365,20 +1363,25 @@ div.markdown-editor textarea,
 .markdown-editor .w-tc-editor-text,
 [data-color-mode="dark"] .w-tc-editor-text {
   caret-color: var(--accent) !important;
+}
+
+/* Hide the textarea text layer but keep it functional */
+.markdown-editor textarea.w-tc-editor-text {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
+  caret-color: var(--accent) !important;
 }
 
 /* Show text when selecting */
-.markdown-editor textarea::selection {
+.markdown-editor textarea.w-tc-editor-text::selection {
   background-color: rgba(46, 231, 216, 0.3);
-  color: #9ca3af;
-  -webkit-text-fill-color: #9ca3af;
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
 }
 
-.markdown-editor textarea::-moz-selection {
+.markdown-editor textarea.w-tc-editor-text::-moz-selection {
   background-color: rgba(46, 231, 216, 0.3);
-  color: #9ca3af;
+  color: #9ca3af !important;
 }
 
 /* Ensure the syntax highlighting overlay does not interfere with selection */
