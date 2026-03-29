@@ -24,8 +24,38 @@ type Props = {
     onCopyFormatAction?: () => void;
     onPasteFormatAction?: () => void;
     onInsertPresetAction?: (preset: string) => void;
-    onFontSizeAction?: (change: "increase" | "decrease") => void;
+    onFontSizeAction?: (size: string) => void;
     onFontFamilyAction?: (font: string) => void;
+    onUnderlineAction?: () => void;
+    onSubscriptAction?: () => void;
+    onSuperscriptAction?: () => void;
+    onTextAlignAction?: (align: "left" | "center" | "right" | "justify") => void;
+    onBackgroundColorAction?: (color: string) => void;
+    onLetterSpacingAction?: (spacing: string) => void;
+    onLineHeightAction?: (height: string) => void;
+    onTextTransformAction?: (transform: string) => void;
+    onHorizontalRuleAction?: () => void;
+    onCollapsibleAction?: () => void;
+    onFootnoteAction?: () => void;
+    onTaskListAction?: () => void;
+    onEmojiAction?: (emoji: string) => void;
+    onSpecialCharAction?: (char: string) => void;
+    onMathAction?: () => void;
+    onMermaidAction?: () => void;
+    onHtmlEmbedAction?: () => void;
+    onVideoEmbedAction?: () => void;
+    onAudioEmbedAction?: () => void;
+    onGifAction?: () => void;
+    onYoutubeEmbedAction?: () => void;
+    onUndoAction?: () => void;
+    onRedoAction?: () => void;
+    onFindReplaceAction?: () => void;
+    onClearFormattingAction?: () => void;
+    onShowHelpAction?: () => void;
+    wordCount?: number;
+    charCount?: number;
+    onToggleExtendedToolbar?: () => void;
+    showExtendedToolbar?: boolean;
 };
 
 export default function Toolbar(props: Props) {
@@ -33,15 +63,58 @@ export default function Toolbar(props: Props) {
     const [showHighlight, setShowHighlight] = useState(false);
     const [showPresets, setShowPresets] = useState(false);
     const [showFontFamily, setShowFontFamily] = useState(false);
+    const [showFontSize, setShowFontSize] = useState(false);
+    const [showTextAlign, setShowTextAlign] = useState(false);
+    const [showBackgroundColor, setShowBackgroundColor] = useState(false);
+    const [showLetterSpacing, setShowLetterSpacing] = useState(false);
+    const [showLineHeight, setShowLineHeight] = useState(false);
+    const [showTextTransform, setShowTextTransform] = useState(false);
+    const [showEmoji, setShowEmoji] = useState(false);
+    const [showSpecialChars, setShowSpecialChars] = useState(false);
+    const [showMedia, setShowMedia] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
+
+    const fontSizes = [
+        { name: "10px", value: "10px" },
+        { name: "12px", value: "12px" },
+        { name: "14px", value: "14px" },
+        { name: "16px", value: "16px" },
+        { name: "18px", value: "18px" },
+        { name: "20px", value: "20px" },
+        { name: "24px", value: "24px" },
+        { name: "28px", value: "28px" },
+        { name: "32px", value: "32px" },
+        { name: "36px", value: "36px" },
+        { name: "48px", value: "48px" },
+        { name: "64px", value: "64px" },
+    ];
 
     const fontFamilies = [
+        { name: "System Sans-serif", value: "system-ui, sans-serif" },
         { name: "Sans-serif", value: "sans-serif" },
         { name: "Serif", value: "serif" },
         { name: "Monospace", value: "monospace" },
+        { name: "Arial", value: "Arial, sans-serif" },
+        { name: "Helvetica", value: "Helvetica, sans-serif" },
+        { name: "Times New Roman", value: "Times New Roman, serif" },
+        { name: "Georgia", value: "Georgia, serif" },
+        { name: "Courier New", value: "Courier New, monospace" },
+        { name: "Verdana", value: "Verdana, sans-serif" },
+        { name: "Trebuchet MS", value: "Trebuchet MS, sans-serif" },
+        { name: "Comic Sans MS", value: "Comic Sans MS, cursive" },
+        { name: "Impact", value: "Impact, sans-serif" },
         { name: "JetBrains Mono", value: "JetBrains Mono, monospace" },
         { name: "Fira Code", value: "Fira Code, monospace" },
+        { name: "Source Code Pro", value: "Source Code Pro, monospace" },
+        { name: "Consolas", value: "Consolas, monospace" },
         { name: "Inter", value: "Inter, sans-serif" },
         { name: "Roboto", value: "Roboto, sans-serif" },
+        { name: "Open Sans", value: "Open Sans, sans-serif" },
+        { name: "Lato", value: "Lato, sans-serif" },
+        { name: "Montserrat", value: "Montserrat, sans-serif" },
+        { name: "Poppins", value: "Poppins, sans-serif" },
+        { name: "Playfair Display", value: "Playfair Display, serif" },
+        { name: "Merriweather", value: "Merriweather, serif" },
     ];
 
     const highlightColors = [
@@ -114,9 +187,78 @@ function example() {
         },
     ];
 
+    const emojis = [
+        "😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃", "😉", "😊",
+        "😇", "🥰", "😍", "🤩", "😘", "😗", "😚", "😙", "😋", "😛", "😜", "🤪",
+        "😝", "🤑", "🤗", "🤭", "🤫", "🤔", "🤐", "🤨", "😐", "😑", "😶", "😏",
+        "😒", "🙄", "😬", "🤥", "😌", "😔", "😪", "🤤", "😴", "😷", "🤒", "🤕",
+        "🤢", "🤮", "🤧", "🥵", "🥶", "🥴", "😵", "🤯", "🤠", "🥳", "😎", "🤓",
+        "🧐", "😕", "😟", "🙁", "☹️", "😮", "😯", "😲", "😳", "🥺", "😦", "😧",
+        "😨", "😰", "😥", "😢", "😭", "😱", "😖", "😣", "😞", "😓", "😩", "😫",
+        "🥱", "😤", "😡", "😠", "🤬", "👍", "👎", "👌", "✌️", "🤞", "🤟", "🤘",
+        "🤙", "👈", "👉", "👆", "👇", "☝️", "👏", "🙌", "👐", "🤲", "🤝", "🙏",
+        "✨", "💫", "⭐", "🌟", "✅", "❌", "❗", "❓", "💯", "🔥", "💧", "💦",
+        "💨", "🌈", "☀️", "🌙", "⭐", "💖", "💗", "💓", "💕", "💞", "💘", "❤️",
+    ];
+
+    const specialChars = [
+        "©", "®", "™", "§", "¶", "†", "‡", "•", "°", "¢", "£", "¥", "€",
+        "←", "→", "↑", "↓", "↔", "↕", "⇐", "⇒", "⇑", "⇓", "⇔", "⇕",
+        "∀", "∂", "∃", "∅", "∇", "∈", "∉", "∋", "∏", "∑", "−", "∗", "√",
+        "∝", "∞", "∠", "∧", "∨", "∩", "∪", "∫", "∴", "∼", "≅", "≈", "≠",
+        "≡", "≤", "≥", "⊂", "⊃", "⊄", "⊆", "⊇", "⊕", "⊗", "⊥", "⋅",
+        "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "λ", "μ", "π", "σ", "φ", "ψ", "ω",
+        "Α", "Β", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Φ", "Ψ", "Ω",
+    ];
+
+    const letterSpacings = [
+        { name: "Tighter", value: "-0.05em" },
+        { name: "Tight", value: "-0.025em" },
+        { name: "Normal", value: "0" },
+        { name: "Wide", value: "0.025em" },
+        { name: "Wider", value: "0.05em" },
+        { name: "Widest", value: "0.1em" },
+    ];
+
+    const lineHeights = [
+        { name: "Tight", value: "1.25" },
+        { name: "Snug", value: "1.375" },
+        { name: "Normal", value: "1.5" },
+        { name: "Relaxed", value: "1.625" },
+        { name: "Loose", value: "2" },
+    ];
+
+    const backgroundColors = [
+        { name: "Yellow", color: "rgba(255, 235, 59, 0.2)" },
+        { name: "Green", color: "rgba(76, 175, 80, 0.2)" },
+        { name: "Blue", color: "rgba(33, 150, 243, 0.2)" },
+        { name: "Pink", color: "rgba(233, 30, 99, 0.2)" },
+        { name: "Orange", color: "rgba(255, 152, 0, 0.2)" },
+        { name: "Purple", color: "rgba(156, 39, 176, 0.2)" },
+        { name: "Cyan", color: "rgba(0, 188, 212, 0.2)" },
+        { name: "Red", color: "rgba(244, 67, 54, 0.2)" },
+    ];
+
+    const closeAllMenus = () => {
+        setShowTextSize(false);
+        setShowHighlight(false);
+        setShowPresets(false);
+        setShowFontFamily(false);
+        setShowFontSize(false);
+        setShowTextAlign(false);
+        setShowBackgroundColor(false);
+        setShowLetterSpacing(false);
+        setShowLineHeight(false);
+        setShowTextTransform(false);
+        setShowEmoji(false);
+        setShowSpecialChars(false);
+        setShowMedia(false);
+        setShowAdvanced(false);
+    };
+
     return (
-        <div className="card p-2 overflow-x-auto overflow-y-visible relative z-[100]">
-            <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0">
+        <div className="card p-2 relative z-[100]" style={{ overflow: 'visible' }}>
+            <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0 overflow-x-auto">
                 {/* Headings Group */}
                 <div className="flex gap-1 items-center">
                     <button
@@ -221,22 +363,44 @@ function example() {
 
                 {/* Styling Group */}
                 <div className="flex gap-1 items-center flex-wrap">
-                    {/* Text Size Controls */}
-                    <div className="flex gap-1 items-center">
+                    {/* Font Size Menu */}
+                    <div className="relative">
                         <button
-                            className="btn btn-soft px-2 py-2 min-h-[44px] touch-manipulation"
-                            onClick={() => props.onFontSizeAction?.("decrease")}
-                            title="Decrease font size of selection"
+                            className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
+                            onClick={() => {
+                                props.onBeforeColorOpenAction?.();
+                                setShowFontSize(!showFontSize);
+                                setShowFontFamily(false);
+                                setShowHighlight(false);
+                                setShowPresets(false);
+                            }}
+                            title="Change text size"
                         >
-                            <span className="text-lg font-bold">A-</span>
+                            <span className="text-base">📏 Size</span>
                         </button>
-                        <button
-                            className="btn btn-soft px-2 py-2 min-h-[44px] touch-manipulation"
-                            onClick={() => props.onFontSizeAction?.("increase")}
-                            title="Increase font size of selection"
-                        >
-                            <span className="text-lg font-bold">A+</span>
-                        </button>
+                        {showFontSize && (
+                            <div
+                                className="fixed z-[999999] p-2 bg-black/95 border-2 border-accent rounded-xl shadow-xl backdrop-blur-sm min-w-[160px]"
+                                style={{
+                                    boxShadow: '0 0 0 2px rgba(46, 231, 216, 0.3), 0 8px 32px rgba(0, 0, 0, 0.9)',
+                                    top: 'auto',
+                                    left: 'auto'
+                                }}
+                            >
+                                {fontSizes.map((size) => (
+                                    <button
+                                        key={size.value}
+                                        className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition touch-manipulation"
+                                        onClick={() => {
+                                            props.onFontSizeAction?.(size.value);
+                                            setShowFontSize(false);
+                                        }}
+                                    >
+                                        {size.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Font Family Menu */}
@@ -246,7 +410,7 @@ function example() {
                             onClick={() => {
                                 props.onBeforeColorOpenAction?.();
                                 setShowFontFamily(!showFontFamily);
-                                setShowTextSize(false);
+                                setShowFontSize(false);
                                 setShowHighlight(false);
                                 setShowPresets(false);
                             }}
@@ -255,7 +419,14 @@ function example() {
                             <span className="text-base">🔤 Font</span>
                         </button>
                         {showFontFamily && (
-                            <div className="absolute z-[9999] mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[180px] left-0 md:left-auto">
+                            <div
+                                className="fixed z-[999999] p-2 bg-black/95 border-2 border-accent rounded-xl shadow-xl backdrop-blur-sm min-w-[180px]"
+                                style={{
+                                    boxShadow: '0 0 0 2px rgba(46, 231, 216, 0.3), 0 8px 32px rgba(0, 0, 0, 0.9)',
+                                    top: 'auto',
+                                    left: 'auto'
+                                }}
+                            >
                                 {fontFamilies.map((font) => (
                                     <button
                                         key={font.value}
@@ -280,7 +451,8 @@ function example() {
                             onClick={() => {
                                 props.onBeforeColorOpenAction?.();
                                 setShowHighlight(!showHighlight);
-                                setShowTextSize(false);
+                                setShowFontSize(false);
+                                setShowFontFamily(false);
                                 setShowPresets(false);
                             }}
                             title="Highlight Color"
@@ -288,7 +460,14 @@ function example() {
                             <span className="text-base">🎨 Highlight</span>
                         </button>
                         {showHighlight && (
-                            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[280px] max-h-[420px] overflow-y-auto left-0 md:left-auto">
+                            <div
+                                className="fixed z-[999999] p-3 bg-black/95 border-2 border-accent rounded-xl shadow-xl backdrop-blur-sm min-w-[280px] max-h-[420px] overflow-y-auto"
+                                style={{
+                                    boxShadow: '0 0 0 2px rgba(46, 231, 216, 0.3), 0 8px 32px rgba(0, 0, 0, 0.9)',
+                                    top: 'auto',
+                                    left: 'auto'
+                                }}
+                            >
                                 <div className="grid grid-cols-2 gap-2">
                                     {highlightColors.map((item) => (
                                         <button
@@ -350,7 +529,8 @@ function example() {
                         onClick={() => {
                             props.onBeforeColorOpenAction?.();
                             setShowPresets(!showPresets);
-                            setShowTextSize(false);
+                            setShowFontSize(false);
+                            setShowFontFamily(false);
                             setShowHighlight(false);
                         }}
                         title="Insert Template"
@@ -358,7 +538,14 @@ function example() {
                         <span className="text-base">⚡ Presets</span>
                     </button>
                     {showPresets && (
-                        <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
+                        <div
+                            className="fixed z-[999999] p-3 bg-black/95 border-2 border-accent rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto"
+                            style={{
+                                boxShadow: '0 0 0 2px rgba(46, 231, 216, 0.3), 0 8px 32px rgba(0, 0, 0, 0.9)',
+                                top: 'auto',
+                                left: 'auto'
+                            }}
+                        >
                             {textPresets.map((preset) => (
                                 <button
                                     key={preset.name}
@@ -374,6 +561,18 @@ function example() {
                         </div>
                     )}
                 </div>
+
+                {/* Toggle Extended Toolbar Button */}
+                <span className="mx-1 w-px h-8 bg-white/10 hidden md:block" />
+                <button
+                    className={`btn ${props.showExtendedToolbar ? 'btn-primary' : 'btn-soft'} px-3 py-2 min-h-[44px] touch-manipulation hover:scale-105 transition-transform`}
+                    onClick={props.onToggleExtendedToolbar}
+                    title={props.showExtendedToolbar ? "Hide Extended Toolbar" : "Show Extended Toolbar"}
+                >
+                    <span className="text-base">
+                        {props.showExtendedToolbar ? '🔼 Less' : '🔽 More'}
+                    </span>
+                </button>
             </div>
         </div>
     );

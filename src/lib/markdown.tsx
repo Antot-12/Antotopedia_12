@@ -11,6 +11,7 @@ import rehypeExternalLinks from "rehype-external-links";
 import { defaultSchema } from "hast-util-sanitize";
 import { visit } from "unist-util-visit";
 import "katex/dist/katex.min.css";
+import CodeBlock from "@/components/CodeBlock";
 
 const colorRegex = /^color\s*:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z()%,.\s-]+)\s*;?$/;
 const fontSizeRegex = /^font-size\s*:\s*[\d.]+(?:px|em|rem)\s*;?$/;
@@ -113,26 +114,6 @@ export function extractToc(md?: string | null) {
     return items.slice(0, 50);
 }
 
-function CodeBlock({ code, language }: { code: string; language?: string }) {
-    const [copied, setCopied] = useState(false);
-    const onCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(code);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1200);
-        } catch {}
-    };
-    return (
-        <div className="relative">
-            {language ? <span className="absolute left-2 top-2 text-[11px] uppercase tracking-wide text-white/60">{language}</span> : null}
-            <button type="button" onClick={onCopy} className="absolute right-2 top-2 btn btn-ghost px-2 py-1 text-[11px]">Copy</button>
-            <pre className="rounded-xl border border-white/10 bg-black/40 p-4 overflow-auto">
-        <code className={language ? `language-${language}` : undefined}>{code}</code>
-      </pre>
-        </div>
-    );
-}
-
 function MermaidBlock({ code }: { code: string }) {
     const id = useId().replace(/:/g, "");
     const elRef = useRef<HTMLDivElement | null>(null);
@@ -155,7 +136,7 @@ function MermaidBlock({ code }: { code: string }) {
             mounted = false;
         };
     }, [code, id]);
-    if (!ok) return <CodeBlock code={code} language="mermaid" />;
+    if (!ok) return <CodeBlock className={`language-mermaid`}>{code}</CodeBlock>;
     return <div ref={elRef} className="rounded-xl border border-white/10 bg-black/30 p-3 overflow-auto" />;
 }
 
@@ -193,7 +174,7 @@ const components: Components = {
     },
     code(props: any) {
         const { inline, className, children } = props || {};
-        if (inline) return <code className="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[#2ee7d8] font-semibold">{children}</code>;
+        if (inline) return <CodeBlock inline={true} className={className}>{children}</CodeBlock>;
         return <code className={className}>{children}</code>;
     },
     pre(props: any) {
@@ -203,7 +184,7 @@ const components: Components = {
         const cls = child?.props?.className || "";
         const lang = cls.replace("language-", "").trim() || undefined;
         if (lang === "mermaid") return <MermaidBlock code={code} />;
-        return <CodeBlock code={code} language={lang} />;
+        return <CodeBlock className={cls}>{code}</CodeBlock>;
     },
     a(props: any) {
         return <a {...props} target="_blank" rel="noopener noreferrer nofollow" className="text-[#2ee7d8] underline decoration-1 underline-offset-[3px] hover:decoration-2 hover:text-[#5df4e9] hover:shadow-[0_0_8px_rgba(46,231,216,0.4)] transition-all font-medium" />;

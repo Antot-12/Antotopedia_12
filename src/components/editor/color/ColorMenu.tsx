@@ -13,6 +13,12 @@ const PALETTE = [
     "#f472b6", "#a78bfa", "#34d399", "#4ade80",
     "#f87171", "#fb923c", "#facc15", "#4caff0",
     "#7e22ce", "#a8a8a8", "#000000", "#ffffff",
+    "#ef4444", "#f97316", "#eab308", "#84cc16",
+    "#14b8a6", "#06b6d4", "#3b82f6", "#6366f1",
+    "#8b5cf6", "#a855f7", "#d946ef", "#ec4899",
+    "#e11d48", "#dc2626", "#ea580c", "#ca8a04",
+    "#65a30d", "#059669", "#0891b2", "#0284c7",
+    "#2563eb", "#4f46e5", "#7c3aed", "#9333ea",
 ];
 
 export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOpenAction }: Props) {
@@ -53,16 +59,26 @@ export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOp
             </button>
 
             {open && (
-                <div className="absolute z-[9999] mt-2 w-[240px] rounded-2xl border border-white/20 bg-black/95 backdrop-blur-sm p-3 shadow-xl left-0 md:left-auto">
-                    <div className="text-sm text-white/70 px-1 pb-2">Apply color to selection</div>
+                <div
+                    className="fixed mt-2 w-[300px] rounded-2xl border-2 border-accent bg-black backdrop-blur-sm p-4"
+                    style={{
+                        zIndex: 999999,
+                        boxShadow: '0 0 0 2px rgba(46, 231, 216, 0.3), 0 8px 32px rgba(0, 0, 0, 0.9)',
+                        top: 'auto',
+                        left: 'auto'
+                    }}
+                >
+                    <div className="text-sm text-white font-semibold px-1 pb-3 border-b border-accent/30">
+                        🎨 Pick a Color
+                    </div>
 
-                    <div className="grid grid-cols-8 gap-2 mb-2">
+                    <div className="grid grid-cols-8 gap-2.5 mt-3 mb-3">
                         {PALETTE.map(c => (
                             <button
                                 key={c}
                                 type="button"
-                                className="h-8 w-8 rounded-full border-2 border-white/30 hover:border-accent transition focus:outline-none focus:ring-2 focus:ring-accent hover:scale-110"
-                                style={{ backgroundColor: c }}
+                                className="h-9 w-9 rounded-lg border-2 border-white/40 hover:border-accent hover:scale-110 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-accent"
+                                style={{ backgroundColor: c, boxShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
                                 onClick={() => { onPickAction(c); setOpen(false); }}
                                 title={c}
                             />
@@ -70,13 +86,13 @@ export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOp
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
-                        <label className="btn btn-soft px-3 py-2 text-sm cursor-pointer min-h-[44px] touch-manipulation">
+                        <label className="btn btn-soft px-3 py-2 text-sm cursor-pointer min-h-[44px] touch-manipulation hover:bg-accent/20">
                             🎨 Custom…
                             <input type="color" className="sr-only" onChange={onCustom} />
                         </label>
                         <button
                             type="button"
-                            className="btn btn-ghost px-3 py-2 text-sm min-h-[44px] touch-manipulation"
+                            className="btn btn-ghost px-3 py-2 text-sm min-h-[44px] touch-manipulation hover:text-red-400"
                             onClick={() => { onClearAction(); setOpen(false); }}
                         >
                             ✕ Clear

@@ -48,7 +48,13 @@ export default function PostCard({
             ? metaBase.replace("min read", "хв читання")
             : metaBase;
 
-    const created = post.createdAt ? new Date(post.createdAt as any).toLocaleDateString() : undefined;
+    const created = post.createdAt
+        ? new Date(post.createdAt as any).toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+        : undefined;
     const imgSrc = post.coverImageUrl || "/no_image.jpg";
     const ringCls = bordered ? "ring-1 ring-white/10 hover:ring-accent/50" : "";
     const goToPost = () => router.push(href);

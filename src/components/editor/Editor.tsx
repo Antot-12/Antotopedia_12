@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toolbar from "./Toolbar";
+import ToolbarExtended from "./ToolbarExtended";
 import StatusPanel from "./StatusPanel";
 import PostMetadata from "./PostMetadata";
 import { Markdown } from "@/lib/markdown";
@@ -177,8 +178,11 @@ export default function Editor({ initial }: Props) {
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [fontFamily, setFontFamily] = useState<string>("JetBrains Mono");
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
+  const [editorHeight, setEditorHeight] = useState(600);
+  const [isResizing, setIsResizing] = useState(false);
   const [previewTheme, setPreviewTheme] = useState<"default" | "warm" | "cool" | "nature" | "minimal">("default");
   const [showFormatInfo, setShowFormatInfo] = useState(false);
+  const [showExtendedToolbar, setShowExtendedToolbar] = useState(true);
 
   const fontFamilies = [
     { name: "JetBrains Mono", value: '"JetBrains Mono", monospace' },
@@ -336,6 +340,36 @@ export default function Editor({ initial }: Props) {
     selRef.current = { start: ta.selectionStart ?? 0, end: ta.selectionEnd ?? 0 };
   }, []);
 
+  // Handle editor resizing
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const editorElement = document.querySelector('.markdown-editor');
+      if (editorElement) {
+        const rect = editorElement.getBoundingClientRect();
+        const newHeight = Math.max(300, Math.min(1200, e.clientY - rect.top));
+        setEditorHeight(newHeight);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isResizing]);
+
+  const handleResizeMouseDown = () => {
+    setIsResizing(true);
+  };
+
   const insertAtCursor = (md: string) => {
     const ta = editorRef.current;
     const value = form.contentMarkdown;
@@ -424,36 +458,8 @@ export default function Editor({ initial }: Props) {
         };
         applyWrapAt(`<span style="font-size:${sizeMap[size]}">`, "</span>", selRef.current);
       },
-      fontSize: (change: "increase" | "decrease") => {
-        const sizes = ["0.75em", "0.875em", "1em", "1.125em", "1.25em", "1.5em", "1.75em", "2em"];
-        const ta = editorRef.current;
-        if (!ta) return;
-        const start = ta.selectionStart ?? 0;
-        const end = ta.selectionEnd ?? 0;
-        const selected = form.contentMarkdown.slice(start, end);
-
-        // Check if already wrapped in font-size span
-        const match = selected.match(/^<span style="font-size:([^"]+)">(.+)<\/span>$/);
-        if (match) {
-          const currentSize = match[1];
-          const content = match[2];
-          const currentIndex = sizes.indexOf(currentSize);
-          let newIndex = currentIndex;
-          if (change === "increase" && currentIndex < sizes.length - 1) newIndex++;
-          if (change === "decrease" && currentIndex > 0) newIndex--;
-          const newSize = sizes[newIndex];
-          const wrapped = `<span style="font-size:${newSize}">${content}</span>`;
-          const next = form.contentMarkdown.slice(0, start) + wrapped + form.contentMarkdown.slice(end);
-          setForm((f) => ({ ...f, contentMarkdown: next }));
-          setTranslations((t) => ({
-            ...t,
-            [activeLocale]: { ...t[activeLocale], contentMarkdown: next },
-          }));
-        } else {
-          // Apply default size adjustment
-          const defaultIndex = change === "increase" ? 4 : 1; // 1.25em or 0.875em
-          applyWrapAt(`<span style="font-size:${sizes[defaultIndex]}">`, "</span>", selRef.current);
-        }
+      fontSize: (size: string) => {
+        applyWrapAt(`<span style="font-size:${size}">`, "</span>", selRef.current);
       },
       fontFamily: (font: string) => {
         applyWrapAt(`<span style="font-family:${font}">`, "</span>", selRef.current);
@@ -500,6 +506,137 @@ export default function Editor({ initial }: Props) {
       },
       insertPreset: (preset: string) => {
         insertAtCursor("\n\n" + preset + "\n\n");
+      },
+      underline: () => applyWrapAt("<u>", "</u>"),
+      subscript: () => applyWrapAt("<sub>", "</sub>"),
+      superscript: () => applyWrapAt("<sup>", "</sup>"),
+      textAlign: (align: string) => {
+        applyWrapAt(`<div style="text-align:${align}">`, "</div>", selRef.current);
+      },
+      backgroundColor: (color: string) => {
+        applyWrapAt(`<span style="background-color:${color};padding:2px 4px;border-radius:3px">`, "</span>", selRef.current);
+      },
+      letterSpacing: (spacing: string) => {
+        applyWrapAt(`<span style="letter-spacing:${spacing}">`, "</span>", selRef.current);
+      },
+      lineHeight: (height: string) => {
+        applyWrapAt(`<span style="line-height:${height}">`, "</span>", selRef.current);
+      },
+      textTransform: (transform: string) => {
+        const ta = editorRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart ?? 0;
+        const end = ta.selectionEnd ?? 0;
+        const selected = form.contentMarkdown.slice(start, end);
+        let transformed = selected;
+        if (transform === "uppercase") transformed = selected.toUpperCase();
+        else if (transform === "lowercase") transformed = selected.toLowerCase();
+        else if (transform === "capitalize") transformed = selected.replace(/\b\w/g, l => l.toUpperCase());
+        const next = form.contentMarkdown.slice(0, start) + transformed + form.contentMarkdown.slice(end);
+        setForm((f) => ({ ...f, contentMarkdown: next }));
+        setTranslations((t) => ({
+          ...t,
+          [activeLocale]: {
+            ...t[activeLocale],
+            contentMarkdown: next,
+          },
+        }));
+      },
+      horizontalRule: () => insertAtCursor("\n\n---\n\n"),
+      collapsible: () => insertAtCursor("\n\n<details>\n<summary>Click to expand</summary>\n\nContent here...\n\n</details>\n\n"),
+      footnote: () => insertAtCursor("[^1]\n\n[^1]: Footnote text here"),
+      taskList: () => insertAtCursor("\n- [ ] Task 1\n- [ ] Task 2\n- [x] Completed\n"),
+      emoji: (emoji: string) => insertAtCursor(emoji),
+      specialChar: (char: string) => insertAtCursor(char),
+      math: () => insertAtCursor("\n\n$$\nx = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}\n$$\n\n"),
+      mermaid: () => insertAtCursor("\n\n```mermaid\ngraph TD;\n    A-->B;\n    A-->C;\n    B-->D;\n    C-->D;\n```\n\n"),
+      htmlEmbed: () => {
+        const html = prompt("Enter HTML code:") || "";
+        if (html) insertAtCursor("\n\n" + html + "\n\n");
+      },
+      videoEmbed: () => {
+        const url = prompt("Video URL:") || "";
+        if (url) insertAtCursor(`\n\n<video controls src="${url}" style="max-width:100%;border-radius:0.5rem"></video>\n\n`);
+      },
+      audioEmbed: () => {
+        const url = prompt("Audio URL:") || "";
+        if (url) insertAtCursor(`\n\n<audio controls src="${url}" style="max-width:100%"></audio>\n\n`);
+      },
+      gif: () => {
+        const url = prompt("GIF URL:") || "";
+        if (url) insertAtCursor(`\n\n![GIF](${url})\n\n`);
+      },
+      youtubeEmbed: () => {
+        const url = prompt("YouTube URL (e.g., https://youtube.com/watch?v=VIDEO_ID):") || "";
+        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+        if (match) {
+          const videoId = match[1];
+          insertAtCursor(`\n\n<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="max-width:100%;border-radius:0.5rem"></iframe>\n\n`);
+        } else {
+          alert("Invalid YouTube URL");
+        }
+      },
+      undo: () => {
+        // Basic undo would need history management
+        alert("Undo: Use Ctrl+Z / Cmd+Z");
+      },
+      redo: () => {
+        // Basic redo would need history management
+        alert("Redo: Use Ctrl+Shift+Z / Cmd+Shift+Z");
+      },
+      findReplace: () => {
+        const find = prompt("Find:") || "";
+        if (!find) return;
+        const replace = prompt("Replace with:") || "";
+        const next = form.contentMarkdown.replace(new RegExp(find, 'g'), replace);
+        setForm((f) => ({ ...f, contentMarkdown: next }));
+        setTranslations((t) => ({
+          ...t,
+          [activeLocale]: {
+            ...t[activeLocale],
+            contentMarkdown: next,
+          },
+        }));
+      },
+      clearFormatting: () => {
+        const ta = editorRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart ?? 0;
+        const end = ta.selectionEnd ?? 0;
+        const selected = form.contentMarkdown.slice(start, end);
+        // Remove HTML tags and markdown formatting
+        const cleaned = selected
+          .replace(/<[^>]*>/g, '')
+          .replace(/\*\*/g, '')
+          .replace(/__|_/g, '')
+          .replace(/~~/g, '')
+          .replace(/`/g, '');
+        const next = form.contentMarkdown.slice(0, start) + cleaned + form.contentMarkdown.slice(end);
+        setForm((f) => ({ ...f, contentMarkdown: next }));
+        setTranslations((t) => ({
+          ...t,
+          [activeLocale]: {
+            ...t[activeLocale],
+            contentMarkdown: next,
+          },
+        }));
+      },
+      showHelp: () => {
+        alert(`Markdown Shortcuts:
+**Bold**: Ctrl/Cmd+B or **text**
+*Italic*: Ctrl/Cmd+I or *text*
+# Heading 1
+## Heading 2
+### Heading 3
+[Link](url)
+![Image](url)
+\`code\`
+> Quote
+- List item
+1. Numbered list
+---
+Horizontal rule
+\`\`\`code block\`\`\``);
       },
     };
   }, [applyWrapAt, form.contentMarkdown, activeLocale, copiedFormat]);
@@ -939,6 +1076,7 @@ export default function Editor({ initial }: Props) {
               className={`card p-3 grid gap-3 relative ${
                   dragActive ? "ring-2 ring-accent ring-offset-2 ring-offset-bg" : ""
               }`}
+              style={{ overflow: 'visible', isolation: 'auto' }}
               onDrop={onDropDiv}
               onDragOver={onDragOver}
               onDragEnter={onDragEnter}
@@ -1003,9 +1141,9 @@ export default function Editor({ initial }: Props) {
                 onTextSizeAction={(size) => {
                   actions.textSize(size);
                 }}
-                onFontSizeAction={(change) => {
+                onFontSizeAction={(size) => {
                   captureSelection();
-                  actions.fontSize(change);
+                  actions.fontSize(size);
                 }}
                 onFontFamilyAction={(font) => {
                   captureSelection();
@@ -1025,6 +1163,67 @@ export default function Editor({ initial }: Props) {
                 onInsertPresetAction={(preset) => {
                   actions.insertPreset(preset);
                 }}
+                onToggleExtendedToolbar={() => setShowExtendedToolbar(!showExtendedToolbar)}
+                showExtendedToolbar={showExtendedToolbar}
+            />
+            <ToolbarExtended
+                visible={showExtendedToolbar}
+                onUnderlineAction={() => {
+                  captureSelection();
+                  actions.underline();
+                }}
+                onSubscriptAction={() => {
+                  captureSelection();
+                  actions.subscript();
+                }}
+                onSuperscriptAction={() => {
+                  captureSelection();
+                  actions.superscript();
+                }}
+                onTextAlignAction={(align) => {
+                  captureSelection();
+                  actions.textAlign(align);
+                }}
+                onBackgroundColorAction={(color) => {
+                  captureSelection();
+                  actions.backgroundColor(color);
+                }}
+                onLetterSpacingAction={(spacing) => {
+                  captureSelection();
+                  actions.letterSpacing(spacing);
+                }}
+                onLineHeightAction={(height) => {
+                  captureSelection();
+                  actions.lineHeight(height);
+                }}
+                onTextTransformAction={(transform) => {
+                  captureSelection();
+                  actions.textTransform(transform);
+                }}
+                onHorizontalRuleAction={() => actions.horizontalRule()}
+                onCollapsibleAction={() => actions.collapsible()}
+                onFootnoteAction={() => actions.footnote()}
+                onTaskListAction={() => actions.taskList()}
+                onEmojiAction={(emoji) => actions.emoji(emoji)}
+                onSpecialCharAction={(char) => actions.specialChar(char)}
+                onMathAction={() => actions.math()}
+                onMermaidAction={() => actions.mermaid()}
+                onHtmlEmbedAction={() => actions.htmlEmbed()}
+                onVideoEmbedAction={() => actions.videoEmbed()}
+                onAudioEmbedAction={() => actions.audioEmbed()}
+                onGifAction={() => actions.gif()}
+                onYoutubeEmbedAction={() => actions.youtubeEmbed()}
+                onUndoAction={() => actions.undo()}
+                onRedoAction={() => actions.redo()}
+                onFindReplaceAction={() => actions.findReplace()}
+                onClearFormattingAction={() => {
+                  captureSelection();
+                  actions.clearFormatting();
+                }}
+                onShowHelpAction={() => actions.showHelp()}
+                onBeforeOpenAction={captureSelection}
+                wordCount={form.contentMarkdown.split(/\s+/).filter(Boolean).length}
+                charCount={form.contentMarkdown.length}
             />
             <div className="flex items-center gap-2 flex-wrap">
               <button
@@ -1157,7 +1356,7 @@ export default function Editor({ initial }: Props) {
               )}
             </div>
             {activeTab === "write" && (
-                <div className={`relative markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`}>
+                <div className={`relative markdown-editor ${showLineNumbers ? 'with-line-numbers' : ''}`} style={{ minHeight: `${editorHeight}px`, height: `${editorHeight}px` }}>
                   <CodeEditor
                     ref={editorRef as any}
                     value={form.contentMarkdown}
@@ -1186,6 +1385,7 @@ export default function Editor({ initial }: Props) {
                     onMouseUp={captureSelection}
                     padding={16}
                     data-enable-grammarly="false"
+                    data-color-mode="dark"
                     style={{
                       fontFamily: selectedFontValue,
                       fontSize: `${fontSize}px`,
@@ -1193,10 +1393,14 @@ export default function Editor({ initial }: Props) {
                       backgroundColor: 'rgba(0, 0, 0, 0.4)',
                       borderRadius: '0.75rem',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
-                      minHeight: '460px',
+                      height: `${editorHeight}px`,
                       caretColor: 'var(--accent)',
                       color: '#d1d5db',
                       paddingLeft: showLineNumbers ? '3.5rem' : '1rem',
+                      paddingBottom: '2rem',
+                      paddingRight: '0.5rem',
+                      overflowY: 'auto',
+                      overflowX: 'auto',
                     }}
                   />
                   {showLineNumbers && (
@@ -1245,6 +1449,15 @@ export default function Editor({ initial }: Props) {
                       </div>
                     </div>
                   )}
+                  {/* Resize Handle */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-accent/20 transition-colors flex items-center justify-center group"
+                    onMouseDown={handleResizeMouseDown}
+                    style={{ zIndex: 101 }}
+                    title="Drag to resize editor"
+                  >
+                    <div className="w-16 h-1 rounded-full bg-white/30 group-hover:bg-accent transition-all group-hover:w-20 group-hover:h-1.5"></div>
+                  </div>
                 </div>
             )}
             {activeTab === "markdown" && (
