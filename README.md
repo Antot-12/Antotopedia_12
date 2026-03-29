@@ -49,6 +49,39 @@ It has:
     * If a post has no cover URL → uses `/public/no_image.jpg`
     * API to upload to Cloudinary into a folder named by the **slug**
 
+### Enhanced UI Components
+
+* **Navbar** (mobile + desktop):
+
+    * 📱 **Mobile hamburger menu** — slide-out drawer from right, icons, clean sections, backdrop blur
+    * 🔍 **Live search** — autocomplete dropdown with thumbnails, titles, descriptions, tags (300ms debounce, min 2 chars)
+    * 📐 **Layout toggle** — grid/list view switcher, persists to localStorage, emits custom event
+* **PostCard** (blog cards):
+
+    * Lazy loading with shimmer skeleton
+    * Status badges (NEW ✨, TRENDING 🔥, UPDATED 🔄)
+    * Hover actions: bookmark 📑, share 🔗, 3-dot menu (copy link, report)
+    * Enhanced tags with icons and "show more/less"
+    * View count display with icons
+    * Mobile: floating action button (FAB) at bottom-right
+* **OnThisPage** (TOC sidebar):
+
+    * Progress indicator with percentage bar
+    * Reading time estimates per section
+    * Keyboard shortcuts: `Alt+↑` previous section, `Alt+↓` next section
+    * Visual progress dots (gray = unread, accent ring = active, green checkmark = completed)
+    * "Show/Hide" collapse toggle, state saved to localStorage
+    * Mobile: bottom drawer with backdrop
+* **ShareBar** (post share widget):
+
+    * Toast notifications for success/error feedback
+    * Native share API support (mobile-optimized)
+    * QR code generator modal (uses QR Server API)
+    * Ripple effects on button clicks
+    * Social links: YouTube, GitHub, LinkedIn
+    * Copy link with animated state transition
+    * Email share button
+
 ---
 
 ## 3) Project structure (what each file/folder does)
@@ -182,6 +215,11 @@ antotopedia_12/
 * `src/app/api/upload/route.ts` — Receives a file, uploads to Cloudinary under `posts/<slug>/...`, returns URL.
 * `src/components/editor/*` — The modular editor UI (toolbar, color, status, keyboard help).
 * `src/components/md/CodeBlock.tsx` — Better code blocks with copy button and language label.
+* `src/components/Navbar.tsx` — Enhanced navigation with mobile drawer, live search autocomplete, and grid/list toggle.
+* `src/components/NavbarWrapper.tsx` — Server-side wrapper that fetches user/locale/dict and passes to client Navbar.
+* `src/components/PostCard.tsx` — Blog post cards with lazy loading, status badges, quick actions (bookmark/share/menu), view counts.
+* `src/components/OnThisPage.tsx` — Table of contents with progress bar, reading time, keyboard nav, visual progress dots.
+* `src/components/ShareBar.tsx` — Share widget with toast notifications, native share API, QR code modal, social links.
 * `src/lib/auth.ts` — Session cookie handling and password checks.
 * `src/lib/prisma.ts` — Shared Prisma client with dev singleton.
 * `public/no_image.jpg` — Fallback image when a post has no cover.
@@ -198,6 +236,7 @@ antotopedia_12/
 * `PATCH /api/posts/[id]` — update one post.
 * `DELETE /api/posts/[id]` — delete one post.
 * `GET /api/tags` — list tags with counts.
+* `GET /api/search?q=...` — search posts with autocomplete (title, description, content), returns top 10 with thumbnails.
 * `POST /api/upload` — multipart file upload to Cloudinary (expects `slug` to build the folder).
 
 ---

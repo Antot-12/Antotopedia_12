@@ -58,12 +58,13 @@ export async function GET(req: NextRequest) {
     const posts = await prisma.post.findMany({
       where,
       orderBy,
-      take: 50,
+      take: 10, // Limit to 10 for autocomplete
       select: {
         id: true,
         slug: true,
         title: true,
         description: true,
+        coverImageUrl: true,
         contentMarkdown: true,
         createdAt: true,
         tags: {
@@ -97,6 +98,7 @@ export async function GET(req: NextRequest) {
         slug: post.slug,
         title: post.title,
         description: post.description,
+        coverImageUrl: post.coverImageUrl,
         createdAt: post.createdAt.toISOString(),
         tags: post.tags,
         excerpt,
