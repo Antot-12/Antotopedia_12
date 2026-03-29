@@ -1153,6 +1153,7 @@ export default function Editor({ initial }: Props) {
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       minHeight: '460px',
                       caretColor: 'var(--accent)',
+                      color: '#d1d5db',
                       paddingLeft: showLineNumbers ? '3.5rem' : '1rem',
                     }}
                   />
