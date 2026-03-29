@@ -1523,14 +1523,16 @@ div.markdown-editor textarea,
 .toolbar button {
   position: relative;
   overflow: visible;
+  isolation: isolate;
 }
 
 .toolbar button::after {
   content: attr(title);
-  position: absolute;
-  bottom: calc(100% + 8px);
+  position: fixed;
+  bottom: auto;
+  top: auto;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(calc(-100% - 12px));
   padding: 0.5rem 0.75rem;
   background: rgba(0, 0, 0, 0.95);
   color: #fff;
@@ -1542,7 +1544,7 @@ div.markdown-editor textarea,
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.2s ease, visibility 0s 0.2s;
-  z-index: 10000;
+  z-index: 99999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
@@ -1554,16 +1556,17 @@ div.markdown-editor textarea,
 
 .toolbar button::before {
   content: "";
-  position: absolute;
-  bottom: calc(100% + 2px);
+  position: fixed;
+  bottom: auto;
+  top: auto;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(calc(-100% - 6px));
   border: 6px solid transparent;
   border-top-color: rgba(0, 0, 0, 0.95);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0s 0.2s;
-  z-index: 10000;
+  z-index: 99998;
 }
 
 .toolbar button:hover::before {
