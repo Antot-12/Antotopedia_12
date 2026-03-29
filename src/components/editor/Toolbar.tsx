@@ -102,7 +102,7 @@ function example() {
     ];
 
     return (
-        <div className="card p-2 overflow-x-auto overflow-y-visible">
+        <div className="card p-2 overflow-x-auto overflow-y-visible relative z-[100]">
             <div className="toolbar flex flex-wrap gap-1 min-w-max md:min-w-0">
                 {/* Headings Group */}
                 <div className="flex gap-1 items-center">
@@ -223,7 +223,7 @@ function example() {
                             <span className="text-base">📏 Size</span>
                         </button>
                         {showTextSize && (
-                            <div className="absolute z-50 mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[160px] left-0 md:left-auto">
+                            <div className="absolute z-[9999] mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[160px] left-0 md:left-auto">
                                 <button
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-xs touch-manipulation"
                                     onClick={() => {
@@ -279,7 +279,7 @@ function example() {
                             <span className="text-base">🎨 Highlight</span>
                         </button>
                         {showHighlight && (
-                            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[280px] max-h-[420px] overflow-y-auto left-0 md:left-auto">
+                            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[280px] max-h-[420px] overflow-y-auto left-0 md:left-auto">
                                 <div className="grid grid-cols-2 gap-2">
                                     {highlightColors.map((item) => (
                                         <button
@@ -349,7 +349,7 @@ function example() {
                         <span className="text-base">⚡ Presets</span>
                     </button>
                     {showPresets && (
-                        <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
+                        <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
                             {textPresets.map((preset) => (
                                 <button
                                     key={preset.name}

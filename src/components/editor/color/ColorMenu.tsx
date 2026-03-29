@@ -53,15 +53,15 @@ export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOp
             </button>
 
             {open && (
-                <div className="absolute z-50 mt-2 w-[240px] rounded-2xl border border-white/20 bg-black/95 backdrop-blur-sm p-3 shadow-xl left-0 md:left-auto">
+                <div className="absolute z-[9999] mt-2 w-[240px] rounded-2xl border border-white/20 bg-black/95 backdrop-blur-sm p-3 shadow-xl left-0 md:left-auto">
                     <div className="text-sm text-white/70 px-1 pb-2">Apply color to selection</div>
 
-                    <div className="grid grid-cols-8 gap-2">
+                    <div className="grid grid-cols-8 gap-2 mb-2">
                         {PALETTE.map(c => (
                             <button
                                 key={c}
                                 type="button"
-                                className={`h-8 w-8 rounded-full border-2 border-white/20 hover:border-accent transition focus:outline-none focus:ring-2 focus:ring-accent ${c === "#ffffff" ? "ring-offset-black" : ""}`}
+                                className="h-8 w-8 rounded-full border-2 border-white/30 hover:border-accent transition focus:outline-none focus:ring-2 focus:ring-accent hover:scale-110"
                                 style={{ backgroundColor: c }}
                                 onClick={() => { onPickAction(c); setOpen(false); }}
                                 title={c}

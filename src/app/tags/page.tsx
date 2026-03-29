@@ -62,10 +62,10 @@ export default async function TagsPage(props: { searchParams: Promise<Search> })
   const tTotalTags = dict?.tags?.total_tags ?? "tags";
 
   return (
-    <div className="grid gap-6">
-      <div className="flex items-end justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-semibold">{tTitle}</h1>
-        <div className="text-sm text-dim">
+    <div className="grid gap-4 sm:gap-6">
+      <div className="flex items-end justify-between gap-3 sm:gap-4 flex-wrap">
+        <h1 className="text-xl sm:text-2xl font-semibold">{tTitle}</h1>
+        <div className="text-xs sm:text-sm text-dim">
           {tags.length} {tTotalTags}
         </div>
       </div>

@@ -76,7 +76,7 @@ export default function AdvancedToolbar(props: Props) {
             <span className="text-base">📝 Lists</span>
           </button>
           {showLists && (
-            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] left-0 md:left-auto">
+            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] left-0 md:left-auto">
               <button
                 className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-2"
                 onClick={() => {
@@ -142,7 +142,7 @@ export default function AdvancedToolbar(props: Props) {
             <span className="text-base">💬 Callouts</span>
           </button>
           {showCallouts && (
-            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
+            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[220px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
               {calloutTypes.map((type) => (
                 <button
                   key={type.style}
@@ -188,7 +188,7 @@ export default function AdvancedToolbar(props: Props) {
             <span className="text-base">⚡ Layouts</span>
           </button>
           {showLayouts && (
-            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] left-0 md:left-auto">
+            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] left-0 md:left-auto">
               {layouts.map((layout) => (
                 <button
                   key={layout.layout}
@@ -222,7 +222,7 @@ export default function AdvancedToolbar(props: Props) {
             <span className="text-base">🎨 Templates</span>
           </button>
           {showTemplates && (
-            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
+            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[240px] max-h-[480px] overflow-y-auto left-0 md:left-auto">
               {blogTemplates.map((template) => (
                 <button
                   key={template.template}
@@ -256,7 +256,7 @@ export default function AdvancedToolbar(props: Props) {
             <span className="text-base">∑ Math</span>
           </button>
           {showMath && (
-            <div className="absolute z-50 mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px] left-0 md:left-auto">
+            <div className="absolute z-[9999] mt-2 p-3 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[200px] left-0 md:left-auto">
               <button
                 className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm min-h-[44px] touch-manipulation flex items-center gap-3"
                 onClick={() => {
