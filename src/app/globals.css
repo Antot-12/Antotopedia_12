@@ -1520,6 +1520,11 @@ div.markdown-editor textarea,
 }
 
 /* Enhanced Tooltips for Editor Buttons */
+.toolbar {
+  position: relative;
+  z-index: 100;
+}
+
 .toolbar button {
   position: relative;
   overflow: visible;
@@ -1529,23 +1534,23 @@ div.markdown-editor textarea,
 .toolbar button::after {
   content: attr(title);
   position: fixed;
-  bottom: auto;
   top: auto;
-  left: 50%;
-  transform: translateX(-50%) translateY(calc(-100% - 12px));
+  left: auto;
+  transform: none;
   padding: 0.5rem 0.75rem;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.98);
   color: #fff;
   font-size: 0.75rem;
   white-space: nowrap;
   border-radius: 0.5rem;
-  border: 1px solid rgba(46, 231, 216, 0.3);
+  border: 1px solid rgba(46, 231, 216, 0.5);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.2s ease, visibility 0s 0.2s;
-  z-index: 99999;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 999999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
 }
 
 .toolbar button:hover::after {
@@ -1557,16 +1562,12 @@ div.markdown-editor textarea,
 .toolbar button::before {
   content: "";
   position: fixed;
-  bottom: auto;
-  top: auto;
-  left: 50%;
-  transform: translateX(-50%) translateY(calc(-100% - 6px));
   border: 6px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.95);
+  border-top-color: rgba(0, 0, 0, 0.98);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0s 0.2s;
-  z-index: 99998;
+  z-index: 999998;
 }
 
 .toolbar button:hover::before {

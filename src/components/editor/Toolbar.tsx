@@ -24,12 +24,25 @@ type Props = {
     onCopyFormatAction?: () => void;
     onPasteFormatAction?: () => void;
     onInsertPresetAction?: (preset: string) => void;
+    onFontSizeAction?: (change: "increase" | "decrease") => void;
+    onFontFamilyAction?: (font: string) => void;
 };
 
 export default function Toolbar(props: Props) {
     const [showTextSize, setShowTextSize] = useState(false);
     const [showHighlight, setShowHighlight] = useState(false);
     const [showPresets, setShowPresets] = useState(false);
+    const [showFontFamily, setShowFontFamily] = useState(false);
+
+    const fontFamilies = [
+        { name: "Sans-serif", value: "sans-serif" },
+        { name: "Serif", value: "serif" },
+        { name: "Monospace", value: "monospace" },
+        { name: "JetBrains Mono", value: "JetBrains Mono, monospace" },
+        { name: "Fira Code", value: "Fira Code, monospace" },
+        { name: "Inter", value: "Inter, sans-serif" },
+        { name: "Roboto", value: "Roboto, sans-serif" },
+    ];
 
     const highlightColors = [
         { name: "Yellow", color: "rgba(255, 235, 59, 0.4)", icon: "🟡" },
@@ -208,58 +221,54 @@ function example() {
 
                 {/* Styling Group */}
                 <div className="flex gap-1 items-center flex-wrap">
-                    {/* Text Size Menu */}
+                    {/* Text Size Controls */}
+                    <div className="flex gap-1 items-center">
+                        <button
+                            className="btn btn-soft px-2 py-2 min-h-[44px] touch-manipulation"
+                            onClick={() => props.onFontSizeAction?.("decrease")}
+                            title="Decrease font size of selection"
+                        >
+                            <span className="text-lg font-bold">A-</span>
+                        </button>
+                        <button
+                            className="btn btn-soft px-2 py-2 min-h-[44px] touch-manipulation"
+                            onClick={() => props.onFontSizeAction?.("increase")}
+                            title="Increase font size of selection"
+                        >
+                            <span className="text-lg font-bold">A+</span>
+                        </button>
+                    </div>
+
+                    {/* Font Family Menu */}
                     <div className="relative">
                         <button
                             className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
                             onClick={() => {
                                 props.onBeforeColorOpenAction?.();
-                                setShowTextSize(!showTextSize);
+                                setShowFontFamily(!showFontFamily);
+                                setShowTextSize(false);
                                 setShowHighlight(false);
                                 setShowPresets(false);
                             }}
-                            title="Text Size"
+                            title="Change font family"
                         >
-                            <span className="text-base">📏 Size</span>
+                            <span className="text-base">🔤 Font</span>
                         </button>
-                        {showTextSize && (
-                            <div className="absolute z-[9999] mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[160px] left-0 md:left-auto">
-                                <button
-                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-xs touch-manipulation"
-                                    onClick={() => {
-                                        props.onTextSizeAction?.("small");
-                                        setShowTextSize(false);
-                                    }}
-                                >
-                                    🔹 Small Text
-                                </button>
-                                <button
-                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm touch-manipulation"
-                                    onClick={() => {
-                                        props.onTextSizeAction?.("normal");
-                                        setShowTextSize(false);
-                                    }}
-                                >
-                                    ▫️ Normal Text
-                                </button>
-                                <button
-                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-base touch-manipulation"
-                                    onClick={() => {
-                                        props.onTextSizeAction?.("large");
-                                        setShowTextSize(false);
-                                    }}
-                                >
-                                    🔸 Large Text
-                                </button>
-                                <button
-                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-lg touch-manipulation"
-                                    onClick={() => {
-                                        props.onTextSizeAction?.("xlarge");
-                                        setShowTextSize(false);
-                                    }}
-                                >
-                                    🔶 X-Large Text
-                                </button>
+                        {showFontFamily && (
+                            <div className="absolute z-[9999] mt-2 p-2 bg-black/95 border border-white/20 rounded-xl shadow-xl backdrop-blur-sm min-w-[180px] left-0 md:left-auto">
+                                {fontFamilies.map((font) => (
+                                    <button
+                                        key={font.value}
+                                        className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition text-sm touch-manipulation"
+                                        style={{ fontFamily: font.value }}
+                                        onClick={() => {
+                                            props.onFontFamilyAction?.(font.value);
+                                            setShowFontFamily(false);
+                                        }}
+                                    >
+                                        {font.name}
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </div>

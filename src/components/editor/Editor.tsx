@@ -424,6 +424,40 @@ export default function Editor({ initial }: Props) {
         };
         applyWrapAt(`<span style="font-size:${sizeMap[size]}">`, "</span>", selRef.current);
       },
+      fontSize: (change: "increase" | "decrease") => {
+        const sizes = ["0.75em", "0.875em", "1em", "1.125em", "1.25em", "1.5em", "1.75em", "2em"];
+        const ta = editorRef.current;
+        if (!ta) return;
+        const start = ta.selectionStart ?? 0;
+        const end = ta.selectionEnd ?? 0;
+        const selected = form.contentMarkdown.slice(start, end);
+
+        // Check if already wrapped in font-size span
+        const match = selected.match(/^<span style="font-size:([^"]+)">(.+)<\/span>$/);
+        if (match) {
+          const currentSize = match[1];
+          const content = match[2];
+          const currentIndex = sizes.indexOf(currentSize);
+          let newIndex = currentIndex;
+          if (change === "increase" && currentIndex < sizes.length - 1) newIndex++;
+          if (change === "decrease" && currentIndex > 0) newIndex--;
+          const newSize = sizes[newIndex];
+          const wrapped = `<span style="font-size:${newSize}">${content}</span>`;
+          const next = form.contentMarkdown.slice(0, start) + wrapped + form.contentMarkdown.slice(end);
+          setForm((f) => ({ ...f, contentMarkdown: next }));
+          setTranslations((t) => ({
+            ...t,
+            [activeLocale]: { ...t[activeLocale], contentMarkdown: next },
+          }));
+        } else {
+          // Apply default size adjustment
+          const defaultIndex = change === "increase" ? 4 : 1; // 1.25em or 0.875em
+          applyWrapAt(`<span style="font-size:${sizes[defaultIndex]}">`, "</span>", selRef.current);
+        }
+      },
+      fontFamily: (font: string) => {
+        applyWrapAt(`<span style="font-family:${font}">`, "</span>", selRef.current);
+      },
       highlight: (color: string) =>
           applyWrapAt(`<mark style="background:${color};padding:2px 4px;border-radius:3px">`, "</mark>", selRef.current),
       copyFormat: () => {
@@ -968,6 +1002,14 @@ export default function Editor({ initial }: Props) {
                 onBeforeColorOpenAction={captureSelection}
                 onTextSizeAction={(size) => {
                   actions.textSize(size);
+                }}
+                onFontSizeAction={(change) => {
+                  captureSelection();
+                  actions.fontSize(change);
+                }}
+                onFontFamilyAction={(font) => {
+                  captureSelection();
+                  actions.fontFamily(font);
                 }}
                 onHighlightAction={(color) => {
                   actions.highlight(color);
