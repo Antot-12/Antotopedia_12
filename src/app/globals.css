@@ -1333,31 +1333,28 @@ button:focus-visible,
   margin-bottom: 0;
 }
 
-/* Fix for CodeEditor text selection duplication */
+/* Hide the syntax highlighting preview layer completely */
 .markdown-editor [class*="w-tc-editor-preview"] {
-  pointer-events: none !important;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  z-index: 1 !important;
+  display: none !important;
 }
 
-/* Ensure the syntax highlighting preview layer also has proper padding */
-.markdown-editor.with-line-numbers [class*="w-tc-editor-preview"] {
-  padding-left: 3.5rem !important;
-}
-
+/* Make textarea fully visible and functional */
 .markdown-editor textarea {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   caret-color: var(--accent) !important;
   pointer-events: auto !important;
+  color: #9ca3af !important;
 }
 
-/* More specific selectors for the CodeEditor textarea with higher specificity */
+.markdown-editor.with-line-numbers [class*="w-tc-editor-preview"] {
+  display: none !important;
+}
+
+/* More specific selectors for the CodeEditor textarea */
 .markdown-editor.w-tc-editor textarea,
 .markdown-editor [data-color-mode="dark"] textarea,
 .w-tc-editor textarea.w-tc-editor-text,
@@ -1365,8 +1362,8 @@ div.markdown-editor textarea,
 .markdown-editor .w-tc-editor-text,
 [data-color-mode="dark"] .w-tc-editor-text {
   caret-color: var(--accent) !important;
-  z-index: 10 !important;
   pointer-events: auto !important;
+  color: #9ca3af !important;
 }
 
 /* Show text selection */
@@ -1378,13 +1375,18 @@ div.markdown-editor textarea,
   background-color: rgba(46, 231, 216, 0.3);
 }
 
-/* Ensure the syntax highlighting overlay does not interfere with selection */
-.markdown-editor > div {
+/* Ensure the syntax highlighting overlay does not interfere */
+.markdown-editor > div[class*="w-tc-editor"] {
   pointer-events: none;
+}
+
+.markdown-editor > div[class*="w-tc-editor"] > div[class*="preview"] {
+  display: none !important;
 }
 
 .markdown-editor > textarea {
   pointer-events: auto;
+  color: #9ca3af !important;
 }
 
 /* Math equations styling (KaTeX) */
