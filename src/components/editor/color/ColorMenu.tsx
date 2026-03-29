@@ -43,24 +43,25 @@ export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOp
         <div ref={ref} className="relative">
             <button
                 type="button"
-                className="btn btn-soft px-3 py-1"
+                className="btn btn-soft px-3 py-2 min-h-[44px] touch-manipulation"
                 onClick={toggle}
                 aria-expanded={open}
                 aria-haspopup="true"
+                title="Text Color"
             >
-                Color
+                <span className="text-base">🎨 Color</span>
             </button>
 
             {open && (
-                <div className="absolute z-50 mt-2 w-[240px] rounded-2xl border border-white/15 bg-black/70 backdrop-blur p-3 shadow-xl -right-1/2 translate-x-1/2">
-                    <div className="text-sm text-white/70 px-1 pb-2">Apply to selection</div>
+                <div className="absolute z-50 mt-2 w-[240px] rounded-2xl border border-white/20 bg-black/95 backdrop-blur-sm p-3 shadow-xl left-0 md:left-auto">
+                    <div className="text-sm text-white/70 px-1 pb-2">Apply color to selection</div>
 
                     <div className="grid grid-cols-8 gap-2">
                         {PALETTE.map(c => (
                             <button
                                 key={c}
                                 type="button"
-                                className={`h-6 w-6 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 ${c === "#ffffff" ? "ring-offset-black" : ""}`}
+                                className={`h-8 w-8 rounded-full border-2 border-white/20 hover:border-accent transition focus:outline-none focus:ring-2 focus:ring-accent ${c === "#ffffff" ? "ring-offset-black" : ""}`}
                                 style={{ backgroundColor: c }}
                                 onClick={() => { onPickAction(c); setOpen(false); }}
                                 title={c}
@@ -69,16 +70,16 @@ export default function ColorMenu({ onPickAction, onClearAction, onBeforeColorOp
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
-                        <label className="btn btn-soft px-3 py-1 text-sm cursor-pointer">
-                            Custom…
+                        <label className="btn btn-soft px-3 py-2 text-sm cursor-pointer min-h-[44px] touch-manipulation">
+                            🎨 Custom…
                             <input type="color" className="sr-only" onChange={onCustom} />
                         </label>
                         <button
                             type="button"
-                            className="btn btn-ghost px-3 py-1 text-sm"
+                            className="btn btn-ghost px-3 py-2 text-sm min-h-[44px] touch-manipulation"
                             onClick={() => { onClearAction(); setOpen(false); }}
                         >
-                            Clear
+                            ✕ Clear
                         </button>
                     </div>
                 </div>
