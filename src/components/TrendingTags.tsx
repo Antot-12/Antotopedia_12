@@ -10,7 +10,15 @@ type Api = { tags?: Tag[] };
 const fetcher = (url: string) =>
     fetch(url, { cache: "no-store" }).then((r) => r.json() as Promise<Api | Tag[]>);
 
-export default function TrendingTags({ initial, title }: { initial?: Tag[]; title?: string }) {
+export default function TrendingTags({
+    initial,
+    title,
+    noTagsText
+}: {
+    initial?: Tag[];
+    title?: string;
+    noTagsText?: string;
+}) {
   const { data, isLoading, mutate } = useSWR("/api/tags", fetcher, {
     fallbackData: initial,
     revalidateOnFocus: false,
@@ -64,7 +72,7 @@ export default function TrendingTags({ initial, title }: { initial?: Tag[]; titl
                     <span className="ml-1 text-white/70 text-xs">{t._count?.posts ?? 0}</span>
                   </Link>
               ))}
-              {tags.length === 0 && <div className="text-dim text-sm">No tags yet.</div>}
+              {tags.length === 0 && <div className="text-dim text-sm">{noTagsText ?? "No tags yet."}</div>}
             </div>
         )}
       </div>

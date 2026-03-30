@@ -22,7 +22,25 @@ type SearchResult = {
   excerpt?: string;
 };
 
-export default function AdvancedSearch() {
+type Labels = {
+  placeholder?: string;
+  filters?: string;
+  advancedFilters?: string;
+  clearFilters?: string;
+  filterByTags?: string;
+  fromDate?: string;
+  toDate?: string;
+  sortBy?: string;
+  relevance?: string;
+  dateDesc?: string;
+  dateAsc?: string;
+  titleAsc?: string;
+  didYouMean?: string;
+  noResultsTitle?: string;
+  noResultsText?: string;
+};
+
+export default function AdvancedSearch({ labels }: { labels?: Labels }) {
   const router = useRouter();
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
@@ -108,7 +126,7 @@ export default function AdvancedSearch() {
               type="text"
               value={filters.query}
               onChange={(e) => setFilters((f) => ({ ...f, query: e.target.value }))}
-              placeholder="🔍 Search posts, tags, content..."
+              placeholder={labels?.placeholder || "🔍 Search posts, tags, content..."}
               className="input pr-10"
               autoFocus
             />
@@ -122,14 +140,14 @@ export default function AdvancedSearch() {
             onClick={() => setShowFilters(!showFilters)}
             className={`btn ${showFilters ? "btn-primary" : "btn-soft"} whitespace-nowrap`}
           >
-            🎛️ Filters
+            {labels?.filters || "🎛️ Filters"}
           </button>
         </div>
 
         {/* Suggestions */}
         {suggestions.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="text-xs text-white/60">Did you mean:</span>
+            <span className="text-xs text-white/60">{labels?.didYouMean || "Did you mean:"}</span>
             {suggestions.map((suggestion) => (
               <button
                 key={suggestion}
@@ -147,15 +165,15 @@ export default function AdvancedSearch() {
       {showFilters && (
         <div className="card p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold">Advanced Filters</h3>
+            <h3 className="font-semibold">{labels?.advancedFilters || "Advanced Filters"}</h3>
             <button onClick={clearFilters} className="text-xs text-accent hover:underline">
-              Clear all
+              {labels?.clearFilters || "Clear all"}
             </button>
           </div>
 
           {/* Tags Filter */}
           <div>
-            <label className="text-sm text-white/70 mb-2 block">Filter by tags:</label>
+            <label className="text-sm text-white/70 mb-2 block">{labels?.filterByTags || "Filter by tags:"}</label>
             <div className="flex flex-wrap gap-2">
               {Array.isArray(availableTags) && availableTags.slice(0, 20).map((tag) => (
                 <button
@@ -176,7 +194,7 @@ export default function AdvancedSearch() {
           {/* Date Range */}
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-white/70 mb-1 block">From date:</label>
+              <label className="text-sm text-white/70 mb-1 block">{labels?.fromDate || "From date:"}</label>
               <input
                 type="date"
                 value={filters.dateFrom}
@@ -185,7 +203,7 @@ export default function AdvancedSearch() {
               />
             </div>
             <div>
-              <label className="text-sm text-white/70 mb-1 block">To date:</label>
+              <label className="text-sm text-white/70 mb-1 block">{labels?.toDate || "To date:"}</label>
               <input
                 type="date"
                 value={filters.dateTo}
@@ -197,17 +215,26 @@ export default function AdvancedSearch() {
 
           {/* Sort By */}
           <div>
-            <label className="text-sm text-white/70 mb-2 block">Sort by:</label>
+            <label className="text-sm text-white/70 mb-2 block">{labels?.sortBy || "Sort by:"}</label>
             <div className="flex gap-2">
-              {(["relevance", "date", "title"] as const).map((sort) => (
-                <button
-                  key={sort}
-                  onClick={() => setFilters((f) => ({ ...f, sortBy: sort }))}
-                  className={`btn ${filters.sortBy === sort ? "btn-primary" : "btn-soft"} capitalize`}
-                >
-                  {sort}
-                </button>
-              ))}
+              <button
+                onClick={() => setFilters((f) => ({ ...f, sortBy: "relevance" }))}
+                className={`btn ${filters.sortBy === "relevance" ? "btn-primary" : "btn-soft"}`}
+              >
+                {labels?.relevance || "Relevance"}
+              </button>
+              <button
+                onClick={() => setFilters((f) => ({ ...f, sortBy: "date" }))}
+                className={`btn ${filters.sortBy === "date" ? "btn-primary" : "btn-soft"}`}
+              >
+                {labels?.dateDesc || "Date"}
+              </button>
+              <button
+                onClick={() => setFilters((f) => ({ ...f, sortBy: "title" }))}
+                className={`btn ${filters.sortBy === "title" ? "btn-primary" : "btn-soft"}`}
+              >
+                {labels?.titleAsc || "Title"}
+              </button>
             </div>
           </div>
         </div>
@@ -252,8 +279,8 @@ export default function AdvancedSearch() {
         ) : filters.query ? (
           <div className="card p-8 text-center text-white/60">
             <div className="text-4xl mb-3">🔍</div>
-            <div className="text-lg mb-2">No results found</div>
-            <div className="text-sm">Try different keywords or adjust your filters</div>
+            <div className="text-lg mb-2">{labels?.noResultsTitle || "No results found"}</div>
+            <div className="text-sm">{labels?.noResultsText || "Try different keywords or adjust your filters"}</div>
           </div>
         ) : null}
       </div>

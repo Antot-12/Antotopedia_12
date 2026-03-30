@@ -9,6 +9,21 @@ type Props = {
     github?: string;
     youtube?: string;
     linkedin?: string;
+    labels?: {
+        heading?: string;
+        copyLink?: string;
+        copied?: string;
+        linkCopiedClipboard?: string;
+        failedCopy?: string;
+        sharedSuccessfully?: string;
+        shareFailed?: string;
+        share?: string;
+        email?: string;
+        scanQRCode?: string;
+        scanWithPhone?: string;
+        showQRCode?: string;
+        close?: string;
+    };
 };
 
 // Toast Notification Component
@@ -30,7 +45,7 @@ function Toast({ message, show, type = "success" }: { message: string; show: boo
 }
 
 // QR Code Modal Component
-function QRCodeModal({ url, show, onClose }: { url: string; show: boolean; onClose: () => void }) {
+function QRCodeModal({ url, show, onClose, labels }: { url: string; show: boolean; onClose: () => void; labels?: Props['labels'] }) {
     const [qrCodeUrl, setQrCodeUrl] = useState("");
 
     useEffect(() => {
@@ -55,11 +70,11 @@ function QRCodeModal({ url, show, onClose }: { url: string; show: boolean; onClo
             <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 animate-in zoom-in-95 fade-in duration-200">
                 <div className="card p-6 max-w-sm w-full">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold">Scan QR Code</h3>
+                        <h3 className="text-lg font-semibold">{labels?.scanQRCode || "Scan QR Code"}</h3>
                         <button
                             onClick={onClose}
                             className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
-                            aria-label="Close"
+                            aria-label={labels?.close || "Close"}
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -79,7 +94,7 @@ function QRCodeModal({ url, show, onClose }: { url: string; show: boolean; onClo
                     </div>
 
                     <p className="text-sm text-dim text-center">
-                        Scan this code with your phone camera to open the page
+                        {labels?.scanWithPhone || "Scan this code with your phone camera to open the page"}
                     </p>
                 </div>
             </div>
@@ -155,6 +170,7 @@ export default function ShareBar({
     github = "https://github.com/Antot-12",
     youtube = "https://www.youtube.com/c/BOMBAProductionA",
     linkedin = "https://www.linkedin.com/in/anton-shyrko/",
+    labels,
 }: Props) {
     const [copied, setCopied] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -179,10 +195,10 @@ export default function ShareBar({
         try {
             await navigator.clipboard.writeText(url);
             setCopied(true);
-            showNotification("Link copied to clipboard!");
+            showNotification(labels?.linkCopiedClipboard || "Link copied to clipboard!");
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            showNotification("Failed to copy link", "error");
+            showNotification(labels?.failedCopy || "Failed to copy link", "error");
         }
     };
 
@@ -193,12 +209,12 @@ export default function ShareBar({
                     title: title,
                     url: url,
                 });
-                showNotification("Shared successfully!");
+                showNotification(labels?.sharedSuccessfully || "Shared successfully!");
             }
         } catch (error) {
             // User cancelled or share failed
             if (error instanceof Error && error.name !== 'AbortError') {
-                showNotification("Share failed", "error");
+                showNotification(labels?.shareFailed || "Share failed", "error");
             }
         }
     };
@@ -210,10 +226,10 @@ export default function ShareBar({
     return (
         <>
             <Toast message={toastMessage} show={showToast} type={toastType} />
-            <QRCodeModal url={url} show={showQRModal} onClose={() => setShowQRModal(false)} />
+            <QRCodeModal url={url} show={showQRModal} onClose={() => setShowQRModal(false)} labels={labels} />
 
             <div className="card p-4 grid gap-4">
-                <h3 className="text-sm font-semibold">Share</h3>
+                <h3 className="text-sm font-semibold">{labels?.heading || "Share"}</h3>
 
                 {/* Social Icons */}
                 <div className="flex items-center justify-center gap-5">
@@ -246,7 +262,7 @@ export default function ShareBar({
                             onClick={handleNativeShare}
                         >
                             <IconShare />
-                            <span>Share</span>
+                            <span>{labels?.share || "Share"}</span>
                         </button>
                     )}
 
@@ -256,10 +272,10 @@ export default function ShareBar({
                         onClick={copy}
                     >
                         <span className={`transition-all duration-300 ${copied ? "scale-0 opacity-0" : "scale-100 opacity-100"}`}>
-                            Copy link
+                            {labels?.copyLink || "Copy link"}
                         </span>
                         <span className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${copied ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}>
-                            ✓ Copied!
+                            ✓ {labels?.copied || "Copied!"}
                         </span>
                         {/* Ripple effect */}
                         <span className="absolute inset-0 bg-white/20 scale-0 group-active:scale-100 rounded transition-transform duration-500" />
@@ -270,7 +286,7 @@ export default function ShareBar({
                         className="btn btn-soft h-9 px-4 hover:scale-105 active:scale-95 transition-transform"
                         href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`}
                     >
-                        Email
+                        {labels?.email || "Email"}
                     </a>
                 </div>
 
@@ -280,7 +296,7 @@ export default function ShareBar({
                         onClick={handleQRCode}
                         className="text-xs text-accent hover:text-accent/80 transition-colors underline decoration-dotted"
                     >
-                        Show QR Code for mobile
+                        {labels?.showQRCode || "Show QR Code for mobile"}
                     </button>
                 </div>
             </div>

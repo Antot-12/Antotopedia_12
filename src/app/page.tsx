@@ -87,7 +87,11 @@ export default async function HomePage() {
                     </div>
                     <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
                         <QuickActions />
-                        <TrendingTags initial={tags as any} />
+                        <TrendingTags
+                            initial={tags as any}
+                            title={dict.trendingTags?.heading || "Trending tags"}
+                            noTagsText={dict.trendingTags?.noTags || "No tags yet."}
+                        />
                     </div>
                 </div>
             ) : (
@@ -128,7 +132,11 @@ export default async function HomePage() {
                     </div>
                     <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
                         <QuickLinks />
-                        <TrendingTags initial={tags as any} />
+                        <TrendingTags
+                            initial={tags as any}
+                            title={dict.trendingTags?.heading || "Trending tags"}
+                            noTagsText={dict.trendingTags?.noTags || "No tags yet."}
+                        />
                     </div>
                 </div>
             )}

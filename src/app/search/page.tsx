@@ -14,13 +14,27 @@ export default async function SearchPage() {
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">{dict.common.search}</h1>
-        <p className="text-white/70">
-          {locale === "uk"
-            ? "Знайдіть пости, теги та контент у блозі"
-            : "Find posts, tags, and content across the blog"}
-        </p>
+        <p className="text-white/70">{dict.search?.subtitle || "Find posts, tags, and content across the blog"}</p>
       </div>
-      <AdvancedSearch />
+      <AdvancedSearch
+        labels={{
+          placeholder: dict.search?.placeholder,
+          filters: dict.search?.filters,
+          advancedFilters: dict.search?.advancedFilters,
+          clearFilters: dict.search?.clearFilters,
+          filterByTags: dict.search?.filterByTags,
+          fromDate: dict.search?.fromDate,
+          toDate: dict.search?.toDate,
+          sortBy: dict.search?.sortBy,
+          relevance: dict.search?.relevance,
+          dateDesc: dict.search?.dateDesc,
+          dateAsc: dict.search?.dateAsc,
+          titleAsc: dict.search?.titleAsc,
+          didYouMean: dict.search?.didYouMean,
+          noResultsTitle: dict.search?.noResultsTitle,
+          noResultsText: dict.search?.noResultsText,
+        }}
+      />
     </div>
   );
 }

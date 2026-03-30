@@ -484,8 +484,40 @@ export default async function PostPage({ params, searchParams }: Props) {
             </div>
 
             <aside className="grid gap-4 content-start">
-                <OnThisPage items={toc} baseUrl={pageUrl} />
-                <ShareBar url={pageUrl} title={title} />
+                <OnThisPage
+                    items={toc}
+                    baseUrl={pageUrl}
+                    labels={{
+                        heading: dict.onThisPage?.heading,
+                        hide: dict.onThisPage?.hide,
+                        show: dict.onThisPage?.show,
+                        noSections: dict.onThisPage?.noSections,
+                        backToTop: dict.onThisPage?.backToTop,
+                        progress: dict.onThisPage?.progress,
+                        readingTime: dict.onThisPage?.readingTime,
+                        minRead: dict.onThisPage?.minRead,
+                        secRead: dict.onThisPage?.secRead,
+                    }}
+                />
+                <ShareBar
+                    url={pageUrl}
+                    title={title}
+                    labels={{
+                        heading: dict.shareBar?.heading,
+                        copyLink: dict.shareBar?.copyLink,
+                        copied: dict.shareBar?.copied,
+                        linkCopiedClipboard: dict.shareBar?.linkCopiedClipboard,
+                        failedCopy: dict.shareBar?.failedCopy,
+                        sharedSuccessfully: dict.shareBar?.sharedSuccessfully,
+                        shareFailed: dict.shareBar?.shareFailed,
+                        share: dict.shareBar?.share,
+                        email: dict.shareBar?.email,
+                        scanQRCode: dict.shareBar?.scanQRCode,
+                        scanWithPhone: dict.shareBar?.scanWithPhone,
+                        showQRCode: dict.shareBar?.showQRCode,
+                        close: dict.shareBar?.close,
+                    }}
+                />
             </aside>
         </article>
     );
