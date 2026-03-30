@@ -73,6 +73,7 @@ function formatReadingTime(seconds: number, minLabel: string): string {
 
 export default function OnThisPage({ items, baseUrl, labels }: Props) {
     const [active, setActive] = useState<string | null>(null);
+    const [visitedSections, setVisitedSections] = useState<Set<string>>(new Set());
     const [open, setOpen] = useState(() => {
         // Load saved state from localStorage
         if (typeof window !== "undefined") {
@@ -131,9 +132,14 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                 const visible = entries
                     .filter(e => e.isIntersecting)
                     .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-                if (visible[0]?.target?.id) setActive(visible[0].target.id);
+                if (visible[0]?.target?.id) {
+                    const sectionId = visible[0].target.id;
+                    setActive(sectionId);
+                    // Mark section as visited
+                    setVisitedSections(prev => new Set(prev).add(sectionId));
+                }
             },
-            { rootMargin: "0px 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
+            { rootMargin: "-140px 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
         );
         ids.forEach(id => {
             const el = document.getElementById(id);
@@ -172,17 +178,38 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
 
     const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-    const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-        e.preventDefault();
+    const scrollToSection = useCallback((id: string) => {
         const element = document.getElementById(id);
-        if (element) {
-            const offset = 80; // Offset for fixed headers
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.scrollY - offset;
-            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        if (!element) {
+            console.warn(`Element with id "${id}" not found`);
+            return;
         }
+
+        const offset = 140;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - offset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
+
+        // Mark as visited
+        setVisitedSections(prev => {
+            const newSet = new Set(prev);
+            newSet.add(id);
+            return newSet;
+        });
+
         if (isMobile) setMobileOpen(false);
     }, [isMobile]);
+
+    const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+        console.log('handleNavClick called with id:', id);
+        e.preventDefault();
+        e.stopPropagation();
+        scrollToSection(id);
+    }, [scrollToSection]);
 
     // Calculate progress and remaining time
     const currentIndex = useMemo(() => {
@@ -191,14 +218,16 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         return foundIndex !== -1 ? foundIndex : 0;
     }, [active, items]);
 
-    const completedSections = currentIndex;
+    const completedSections = visitedSections.size;
     const totalSections = ids.length;
-    const sectionProgress = totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
+    const sectionProgress = totalSections > 0 ? Math.round((visitedSections.size / totalSections) * 100) : 0;
 
     const remainingTime = useMemo(() => {
-        const remaining = itemsWithTime.slice(currentIndex).reduce((sum, item) => sum + (item.readingTime || 0), 0);
+        // Calculate remaining time based on unvisited sections
+        const unvisitedItems = itemsWithTime.filter(item => !visitedSections.has(item.id));
+        const remaining = unvisitedItems.reduce((sum, item) => sum + (item.readingTime || 0), 0);
         return remaining;
-    }, [itemsWithTime, currentIndex]);
+    }, [itemsWithTime, visitedSections]);
 
     const t = {
         heading: labels?.heading ?? "On this page",
@@ -246,31 +275,19 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                 <nav className="grid gap-1">
                     {items.map((it, idx) => {
                         const isActive = active === it.id;
-                        const isCompleted = !isActive && currentIndex > idx;
+                        const isCompleted = visitedSections.has(it.id) && !isActive;
 
-                        // Debug logging
-                        if (idx === 0) {
-                            console.log('OnThisPage Debug:', {
-                                active,
-                                currentIndex,
-                                totalItems: items.length
-                            });
-                        }
-                        console.log(`Item ${idx} (${it.text}):`, {
-                            isActive,
-                            isCompleted,
-                            id: it.id
-                        });
                         return (
                             <div
                                 key={`${it.id}-${idx}`}
-                                className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-all duration-200 ${
+                                className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-all duration-200 cursor-pointer ${
                                     isActive
                                         ? "bg-accent/15 shadow-sm border-l-2 border-accent"
                                         : isCompleted
                                         ? "bg-green-500/5 border-l-2 border-green-500/30"
                                         : "hover:bg-muted/50 border-l-2 border-transparent"
                                 }`}
+                                onClick={() => scrollToSection(it.id)}
                             >
                                 {/* Progress dot */}
                                 <div className="flex-shrink-0">
@@ -303,10 +320,8 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                     </div>
                                 </div>
 
-                                <a
-                                    href={`#${it.id}`}
-                                    onClick={(e) => handleNavClick(e, it.id)}
-                                    className={`truncate text-sm flex-1 transition-all duration-200 ${
+                                <span
+                                    className={`truncate text-sm flex-1 transition-all duration-200 text-left ${
                                         it.level === 3 ? "pl-4" : ""
                                     } ${
                                         isActive
@@ -317,12 +332,16 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                     }`}
                                 >
                                     {it.text}
-                                </a>
+                                </span>
 
                                 <button
                                     aria-label="Copy section link"
                                     className="btn btn-ghost px-1.5 py-1 text-xs opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity flex-shrink-0"
-                                    onClick={() => copyAnchor(it.id)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        copyAnchor(it.id);
+                                    }}
                                 >
                                     <LinkIcon />
                                 </button>
@@ -350,8 +369,9 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                 <>
                     <button
                         onClick={() => setMobileOpen(true)}
-                        className="fixed bottom-4 right-4 z-40 btn btn-primary w-12 h-12 rounded-full shadow-lg flex items-center justify-center md:hidden"
+                        className="fixed bottom-4 right-4 z-40 w-14 h-14 rounded-full bg-accent/90 hover:bg-accent shadow-lg flex items-center justify-center md:hidden transition-all hover:scale-110"
                         aria-label={t.heading}
+                        style={{ backdropFilter: 'blur(8px)' }}
                     >
                         <MenuIcon />
                     </button>
@@ -366,9 +386,10 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
 
                     {/* Mobile Drawer */}
                     <div
-                        className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl shadow-2xl z-50 transition-transform duration-300 md:hidden max-h-[80vh] overflow-y-auto ${
+                        className={`fixed bottom-0 left-0 right-0 bg-[#0f151c] border-t-2 border-accent/50 rounded-t-2xl shadow-2xl z-50 transition-transform duration-300 md:hidden max-h-[80vh] overflow-y-auto ${
                             mobileOpen ? "translate-y-0" : "translate-y-full"
                         }`}
+                        style={{ background: 'linear-gradient(to bottom, rgba(15, 21, 28, 0.98), rgba(15, 21, 28, 1))' }}
                     >
                         <div className="p-4 grid gap-3">
                             <div className="flex items-center justify-between border-b border-border pb-3">
@@ -388,7 +409,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
 
             {/* Desktop Sidebar */}
             {!isMobile && (
-                <div className="card p-4 grid gap-3 sticky top-4">
+                <div className="card p-4 grid gap-3 sticky top-24">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-semibold">{t.heading}</h3>
                         <button
