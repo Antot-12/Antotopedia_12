@@ -13,105 +13,193 @@ type NavbarProps = {
 
 // Mobile Menu Drawer Component
 function MobileMenu({ isOpen, onClose, dict, user, locale }: any) {
+    const [isAnimating, setIsAnimating] = useState(false);
+
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
+            setIsAnimating(true);
         } else {
             document.body.style.overflow = "";
+            // Delay to allow exit animation
+            const timer = setTimeout(() => setIsAnimating(false), 300);
+            return () => clearTimeout(timer);
         }
         return () => {
             document.body.style.overflow = "";
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    if (!isOpen && !isAnimating) return null;
 
     return (
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 animate-in fade-in duration-200"
+                className={`fixed inset-0 bg-black/80 backdrop-blur-md z-[60] ${
+                    isOpen ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                    transitionProperty: "opacity",
+                    transitionDuration: "400ms",
+                    transitionTimingFunction: "ease-out"
+                }}
                 onClick={onClose}
             />
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 right-0 h-full w-[280px] bg-card border-l border-border z-50 shadow-2xl transition-transform duration-300 ${
-                    isOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-[300px] bg-gradient-to-br from-[#0f151c] to-[#141b24] border-l border-accent/20 z-[70] shadow-[0_0_60px_rgba(46,231,216,0.15)] ${
+                    isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
                 }`}
+                style={{
+                    transitionProperty: "transform, opacity",
+                    transitionDuration: "500ms",
+                    transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+                }}
             >
-                <div className="flex flex-col h-full">
-                    {/* Header */}
-                    <div className="flex items-center justify-between p-4 border-b border-border">
-                        <h2 className="text-lg font-semibold text-accent">{dict.nav.brand}</h2>
+                <div className="flex flex-col h-full relative">
+                    {/* Decorative gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Header with stagger animation */}
+                    <div className={`relative flex items-center justify-between p-6 border-b border-accent/20 ${
+                        isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
+                    }`} style={{
+                        transitionProperty: "all",
+                        transitionDuration: "500ms",
+                        transitionTimingFunction: "ease-out",
+                        transitionDelay: isOpen ? "200ms" : "0ms"
+                    }}>
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-8 bg-accent rounded-full shadow-[0_0_12px_rgba(46,231,216,0.6)] animate-pulse" />
+                            <h2 className="text-xl font-bold text-accent tracking-tight">{dict.nav.brand}</h2>
+                        </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
+                            className="w-10 h-10 rounded-xl hover:bg-accent/10 hover:rotate-90 flex items-center justify-center transition-all duration-300 border border-transparent hover:border-accent/30"
                             aria-label="Close menu"
                         >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                                 <line x1="18" y1="6" x2="6" y2="18" />
                                 <line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
                         </button>
                     </div>
 
-                    {/* Navigation Links */}
-                    <nav className="flex-1 overflow-y-auto p-4">
+                    {/* Navigation Links with stagger animation */}
+                    <nav className="relative flex-1 overflow-y-auto p-6 custom-scrollbar">
                         <div className="space-y-2">
                             <Link
                                 href="/blog"
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent/10 transition-colors"
+                                className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] ${
+                                    isOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
+                                }`}
+                                style={{
+                                    transitionProperty: "all",
+                                    transitionDuration: "500ms",
+                                    transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                    transitionDelay: isOpen ? "300ms" : "0ms"
+                                }}
                                 onClick={onClose}
                             >
-                                <span className="text-xl">📝</span>
-                                <span className="font-medium">{dict.nav.blog}</span>
+                                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">📝</span>
+                                <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.blog}</span>
                             </Link>
                             <Link
                                 href="/tags"
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent/10 transition-colors"
+                                className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] ${
+                                    isOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
+                                }`}
+                                style={{
+                                    transitionProperty: "all",
+                                    transitionDuration: "500ms",
+                                    transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                    transitionDelay: isOpen ? "400ms" : "0ms"
+                                }}
                                 onClick={onClose}
                             >
-                                <span className="text-xl">🏷️</span>
-                                <span className="font-medium">{dict.nav.tags}</span>
+                                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">🏷️</span>
+                                <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.tags}</span>
                             </Link>
                             <Link
                                 href="/search"
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent/10 transition-colors"
+                                className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] ${
+                                    isOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
+                                }`}
+                                style={{
+                                    transitionProperty: "all",
+                                    transitionDuration: "500ms",
+                                    transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                    transitionDelay: isOpen ? "500ms" : "0ms"
+                                }}
                                 onClick={onClose}
                             >
-                                <span className="text-xl">🔍</span>
-                                <span className="font-medium">{dict.nav.search}</span>
+                                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">🔍</span>
+                                <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.search}</span>
                             </Link>
 
                             {user && (
                                 <>
-                                    <div className="border-t border-border my-2" />
+                                    <div className={`relative my-6 ${
+                                        isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
+                                    }`} style={{
+                                        transitionProperty: "all",
+                                        transitionDuration: "400ms",
+                                        transitionTimingFunction: "ease-out",
+                                        transitionDelay: isOpen ? "600ms" : "0ms"
+                                    }}>
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-accent/20" />
+                                        </div>
+                                        <div className="relative flex justify-center">
+                                            <span className="bg-[#0f151c] px-3 text-xs text-accent/60 uppercase tracking-wider">Admin</span>
+                                        </div>
+                                    </div>
                                     <Link
                                         href="/admin"
-                                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent/10 transition-colors"
+                                        className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] ${
+                                            isOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
+                                        }`}
+                                        style={{
+                                            transitionProperty: "all",
+                                            transitionDuration: "500ms",
+                                            transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                            transitionDelay: isOpen ? "700ms" : "0ms"
+                                        }}
                                         onClick={onClose}
                                     >
-                                        <span className="text-xl">⚙️</span>
-                                        <span className="font-medium">{dict.nav.admin}</span>
+                                        <span className="text-2xl group-hover:scale-110 transition-transform duration-200">⚙️</span>
+                                        <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.admin}</span>
                                     </Link>
                                 </>
                             )}
                         </div>
                     </nav>
 
-                    {/* Footer Actions */}
-                    <div className="p-4 border-t border-border space-y-2">
+                    {/* Footer Actions with animation */}
+                    <div className={`relative p-6 border-t border-accent/20 ${
+                        isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                    }`} style={{
+                        transitionProperty: "all",
+                        transitionDuration: "500ms",
+                        transitionTimingFunction: "ease-out",
+                        transitionDelay: isOpen ? "800ms" : "0ms"
+                    }}>
                         {user ? (
                             <form action="/api/auth/logout" method="post" className="w-full">
-                                <button className="btn btn-ghost w-full justify-start">
-                                    <span className="text-xl mr-3">🚪</span>
-                                    Logout
+                                <button className="flex items-center justify-center gap-4 w-full px-5 py-4 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 transition-all duration-200 text-left group border border-red-500/20 hover:border-red-500/40 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                                    <span className="text-2xl group-hover:scale-110 transition-transform duration-200">🚪</span>
+                                    <span className="font-bold text-base text-red-400 group-hover:text-red-300 transition-colors">Logout</span>
                                 </button>
                             </form>
                         ) : (
-                            <Link href="/login" className="btn btn-primary w-full" onClick={onClose}>
-                                <span className="text-xl mr-2">🔑</span>
+                            <Link
+                                href="/login"
+                                className="flex items-center justify-center gap-3 w-full px-5 py-4 rounded-xl bg-gradient-to-r from-accent/15 to-accent/10 hover:from-accent/25 hover:to-accent/15 border border-accent/40 hover:border-accent transition-all duration-200 font-bold text-base text-accent hover:shadow-[0_0_24px_rgba(46,231,216,0.3)]"
+                                onClick={onClose}
+                            >
+                                <span className="text-xl">🔑</span>
                                 {dict.nav.login_aria}
                             </Link>
                         )}
@@ -344,17 +432,27 @@ export default function Navbar({ user, locale, dict, initialViewMode = "grid" }:
                         )}
                     </nav>
 
-                    {/* Mobile: Hamburger Menu */}
+                    {/* Mobile: Hamburger Menu with animation */}
                     <button
                         onClick={() => setMobileMenuOpen(true)}
-                        className="md:hidden btn btn-ghost w-10 h-10 p-0"
+                        className="md:hidden btn btn-ghost w-10 h-10 p-0 group relative overflow-hidden"
                         aria-label="Open menu"
                     >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="3" y1="12" x2="21" y2="12" />
-                            <line x1="3" y1="6" x2="21" y2="6" />
-                            <line x1="3" y1="18" x2="21" y2="18" />
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="relative z-10 transition-transform duration-300 group-hover:scale-110"
+                        >
+                            <line x1="3" y1="12" x2="21" y2="12" className="transition-transform duration-300 group-hover:translate-x-1" />
+                            <line x1="3" y1="6" x2="21" y2="6" className="transition-transform duration-300 group-hover:translate-x-0.5" />
+                            <line x1="3" y1="18" x2="21" y2="18" className="transition-transform duration-300 group-hover:translate-x-0.5" />
                         </svg>
+                        {/* Ripple effect on hover */}
+                        <span className="absolute inset-0 rounded-xl bg-accent/20 scale-0 group-hover:scale-100 transition-transform duration-300 opacity-0 group-hover:opacity-100" />
                     </button>
                 </div>
 
