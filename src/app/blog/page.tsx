@@ -1,6 +1,7 @@
 import { prisma, withDbRetry } from "@/lib/prisma";
 import Link from "next/link";
 import PostCard from "@/components/PostCard";
+import { getLocale, getDictionary } from "@/lib/i18n";
 
 type Search = { q?: string; page?: string };
 
@@ -18,6 +19,8 @@ type ListItem = {
 export const revalidate = 0;
 
 export default async function BlogIndex(props: { searchParams: Promise<Search> }) {
+    const locale = await getLocale();
+    const dict = await getDictionary(locale);
     const { q = "", page = "1" } = await props.searchParams;
     const query = (q ?? "").toString().trim();
     const pageNum = Math.max(1, Number(page) || 1);
@@ -66,14 +69,14 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
         <div className="grid gap-4 sm:gap-6">
             <div className="card p-3 sm:p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
                 <form className="grid gap-2 sm:gap-3 md:grid-cols-[1fr_auto]">
-                    <input name="q" defaultValue={query} placeholder="Search posts..." className="input text-sm sm:text-base" />
-                    <button className="btn btn-primary text-sm sm:text-base">Search</button>
+                    <input name="q" defaultValue={query} placeholder={dict.blog?.searchPosts || "Search posts..."} className="input text-sm sm:text-base" />
+                    <button className="btn btn-primary text-sm sm:text-base">{dict.common.search}</button>
                 </form>
-                <div className="text-xs sm:text-sm text-dim">Page {pageNum} of {pages}</div>
+                <div className="text-xs sm:text-sm text-dim">{locale === "uk" ? "Сторінка" : "Page"} {pageNum} {locale === "uk" ? "з" : "of"} {pages}</div>
             </div>
 
             {list.length === 0 ? (
-                <div className="card p-4 sm:p-6 text-dim text-sm sm:text-base">No posts found.</div>
+                <div className="card p-4 sm:p-6 text-dim text-sm sm:text-base">{dict.blog?.noPosts || "No posts found."}</div>
             ) : (
                 <section className="grid gap-4 sm:gap-6">
                     <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 items-stretch auto-rows-fr">

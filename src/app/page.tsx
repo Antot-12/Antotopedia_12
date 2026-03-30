@@ -115,7 +115,7 @@ export default async function HomePage() {
                                             href={`/blog/${p.slug}`}
                                             className="card card-hover p-3 sm:p-4 ring-1 ring-white/10 hover:ring-accent/50 h-full"
                                         >
-                                            <div className="text-xs sm:text-sm text-accent mb-1">Pick</div>
+                                            <div className="text-xs sm:text-sm text-accent mb-1">{dict.common.pick}</div>
                                             <div className="font-medium text-sm sm:text-base">{p.title}</div>
                                             <div className="text-dim text-xs sm:text-sm line-clamp-2">
                                                 {p.description}
