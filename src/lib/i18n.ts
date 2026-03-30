@@ -11,8 +11,15 @@ export async function getLocale(): Promise<Locale> {
 
     const hdrs = await headers();
     const acc = hdrs.get("accept-language") || "";
-    const found = locales.find((l) => acc.toLowerCase().startsWith(l));
-    return found || defaultLocale;
+    const lowerAcc = acc.toLowerCase();
+
+    // Check for Ukrainian-related languages (Ukrainian, Russian, Belarusian)
+    if (lowerAcc.includes("uk") || lowerAcc.includes("ru") || lowerAcc.includes("be")) {
+        return "uk";
+    }
+
+    // English and Slovak use English, as well as all other languages
+    return "en";
 }
 
 export async function getDictionary(locale: Locale) {

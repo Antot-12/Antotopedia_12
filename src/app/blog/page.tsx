@@ -1,6 +1,6 @@
 import { prisma, withDbRetry } from "@/lib/prisma";
 import Link from "next/link";
-import PostCard from "@/components/PostCard";
+import PostGrid from "@/components/PostGrid";
 import { getLocale, getDictionary } from "@/lib/i18n";
 
 type Search = { q?: string; page?: string };
@@ -79,11 +79,7 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
                 <div className="card p-4 sm:p-6 text-dim text-sm sm:text-base">{dict.blog?.noPosts || "No posts found."}</div>
             ) : (
                 <section className="grid gap-4 sm:gap-6">
-                    <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 items-stretch auto-rows-fr">
-                        {list.map((p) => (
-                            <PostCard key={p.id} post={p} bordered />
-                        ))}
-                    </div>
+                    <PostGrid posts={list} locale={locale} labels={dict.posts} />
                 </section>
             )}
 

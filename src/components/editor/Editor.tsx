@@ -182,7 +182,7 @@ export default function Editor({ initial }: Props) {
   const [isResizing, setIsResizing] = useState(false);
   const [previewTheme, setPreviewTheme] = useState<"default" | "warm" | "cool" | "nature" | "minimal">("default");
   const [showFormatInfo, setShowFormatInfo] = useState(false);
-  const [showExtendedToolbar, setShowExtendedToolbar] = useState(true);
+  const [showExtendedToolbar, setShowExtendedToolbar] = useState(false);
 
   const fontFamilies = [
     { name: "JetBrains Mono", value: '"JetBrains Mono", monospace' },

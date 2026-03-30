@@ -1,7 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { getLocale, getDictionary } from "@/lib/i18n";
 
 export default async function AdminPage() {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+
   const posts = prisma
     ? await prisma.post.findMany({ orderBy: { updatedAt: "desc" } })
     : [{ id: 1, title: "Demo Post", slug: "demo-post", status: "draft", updatedAt: new Date() }];
@@ -9,9 +13,9 @@ export default async function AdminPage() {
   return (
     <div className="grid gap-4 sm:gap-6">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-2xl sm:text-3xl font-semibold">Admin</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold">{dict.nav.admin}</h1>
         <Link href="/admin/editor/new" className="btn btn-primary min-h-[44px] touch-manipulation">
-          ➕ New post
+          ➕ {dict.admin.newPost}
         </Link>
       </div>
 
@@ -20,11 +24,11 @@ export default async function AdminPage() {
         <table className="min-w-full text-sm">
           <thead className="bg-white/5 sticky top-0">
             <tr>
-              <th className="text-left px-4 py-3">Title</th>
-              <th className="text-left px-4 py-3">Slug</th>
-              <th className="text-left px-4 py-3">Status</th>
-              <th className="text-left px-4 py-3">Updated</th>
-              <th className="text-left px-4 py-3">Actions</th>
+              <th className="text-left px-4 py-3">{dict.admin.title}</th>
+              <th className="text-left px-4 py-3">{dict.admin.slug}</th>
+              <th className="text-left px-4 py-3">{dict.admin.status}</th>
+              <th className="text-left px-4 py-3">{dict.admin.updated}</th>
+              <th className="text-left px-4 py-3">{dict.admin.actions}</th>
             </tr>
           </thead>
           <tbody>
@@ -36,13 +40,13 @@ export default async function AdminPage() {
                   <span className={`px-2 py-1 rounded text-xs ${
                     p.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
                   }`}>
-                    {p.status}
+                    {p.status === 'published' ? dict.admin.published : dict.admin.drafts}
                   </span>
                 </td>
                 <td className="px-4 py-3">{new Date(p.updatedAt).toLocaleDateString()}</td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/editor/${p.id}`} className="text-accent hover:underline">
-                    Edit
+                    {dict.admin.edit}
                   </Link>
                 </td>
               </tr>
@@ -60,16 +64,16 @@ export default async function AdminPage() {
               <span className={`px-2 py-1 rounded text-xs whitespace-nowrap ${
                 p.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
               }`}>
-                {p.status}
+                {p.status === 'published' ? dict.admin.published : dict.admin.drafts}
               </span>
             </div>
             <div className="text-sm text-white/60 space-y-1 mb-3">
               <div className="flex gap-2">
-                <span className="text-white/40">Slug:</span>
+                <span className="text-white/40">{dict.admin.slug}:</span>
                 <span className="font-mono text-xs">{p.slug}</span>
               </div>
               <div className="flex gap-2">
-                <span className="text-white/40">Updated:</span>
+                <span className="text-white/40">{dict.admin.updated}:</span>
                 <span>{new Date(p.updatedAt).toLocaleDateString()}</span>
               </div>
             </div>
@@ -77,7 +81,7 @@ export default async function AdminPage() {
               href={`/admin/editor/${p.id}`}
               className="btn btn-soft w-full min-h-[44px] touch-manipulation"
             >
-              ✏️ Edit Post
+              ✏️ {dict.admin.editPost}
             </Link>
           </div>
         ))}
@@ -86,8 +90,8 @@ export default async function AdminPage() {
       {posts.length === 0 && (
         <div className="card p-8 text-center text-white/60">
           <div className="text-4xl mb-3">📝</div>
-          <div className="text-lg mb-2">No posts yet</div>
-          <div className="text-sm">Create your first post to get started</div>
+          <div className="text-lg mb-2">{dict.admin.noPosts}</div>
+          <div className="text-sm">{dict.admin.createFirst}</div>
         </div>
       )}
     </div>

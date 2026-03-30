@@ -7,6 +7,8 @@ export const dict = {
         search_placeholder: "Пошук публікацій...",
         search: "Пошук",
         login_aria: "Адмін",
+        logout: "Вийти",
+        switchLanguage: "Змінити мову",
     },
     hero: {
         title: "Досліджуй і читай",
@@ -47,6 +49,7 @@ export const dict = {
     footer: {
         latest: "Останнє",
         topics: "Теми",
+        adminLogin: "Адмін панель",
     },
     quickLinks: {
         heading: "Швидкі посилання",
@@ -78,6 +81,8 @@ export const dict = {
         readingTime: "Час читання",
         minRead: "хв",
         secRead: "сек",
+        of: "з",
+        sections: "розділів",
     },
     shareBar: {
         heading: "Поділитися",
@@ -186,6 +191,16 @@ export const dict = {
         tags: "Теги",
         settings: "Налаштування",
         logout: "Вийти",
+        title: "Назва",
+        slug: "Посилання",
+        status: "Статус",
+        updated: "Оновлено",
+        actions: "Дії",
+        edit: "Редагувати",
+        noPosts: "Постів ще немає",
+        createFirst: "Створіть свій перший пост, щоб почати",
+        editPost: "Редагувати пост",
+        createPost: "Створити пост",
     },
     editor: {
         // Панель інструментів

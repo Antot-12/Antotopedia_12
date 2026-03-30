@@ -497,6 +497,8 @@ export default async function PostPage({ params, searchParams }: Props) {
                         readingTime: dict.onThisPage?.readingTime,
                         minRead: dict.onThisPage?.minRead,
                         secRead: dict.onThisPage?.secRead,
+                        of: dict.onThisPage?.of,
+                        sections: dict.onThisPage?.sections,
                     }}
                 />
                 <ShareBar

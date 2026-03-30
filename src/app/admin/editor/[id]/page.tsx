@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Editor from "@/components/editor/Editor";
+import { getLocale, getDictionary } from "@/lib/i18n";
 
 export default async function EditPostPage(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const idNum = Number(id);
+    const locale = await getLocale();
+    const dict = await getDictionary(locale);
 
     const post =
         prisma && (prisma as any).post?.findUnique
@@ -27,7 +30,7 @@ export default async function EditPostPage(props: { params: Promise<{ id: string
 
     return (
         <div className="grid gap-4">
-            <h1 className="text-2xl font-semibold">Edit post</h1>
+            <h1 className="text-2xl font-semibold">{dict.admin.editPost}</h1>
             <Editor
                 initial={{
                     id: post?.id ?? null,

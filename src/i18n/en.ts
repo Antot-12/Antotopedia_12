@@ -7,6 +7,8 @@ export const dict = {
         search_placeholder: "Search posts...",
         search: "Search",
         login_aria: "Admin",
+        logout: "Logout",
+        switchLanguage: "Switch language",
     },
     hero: {
         title: "Discover and read",
@@ -47,6 +49,7 @@ export const dict = {
     footer: {
         latest: "Latest",
         topics: "Topics",
+        adminLogin: "Admin Login",
     },
     quickLinks: {
         heading: "Quick Links",
@@ -78,6 +81,8 @@ export const dict = {
         readingTime: "Reading time",
         minRead: "min",
         secRead: "sec",
+        of: "of",
+        sections: "sections",
     },
     shareBar: {
         heading: "Share",
@@ -179,13 +184,23 @@ export const dict = {
     },
     admin: {
         dashboard: "Dashboard",
-        newPost: "New Post",
-        allPosts: "All Posts",
+        newPost: "New post",
+        allPosts: "All posts",
         drafts: "Drafts",
         published: "Published",
         tags: "Tags",
         settings: "Settings",
         logout: "Logout",
+        title: "Title",
+        slug: "Slug",
+        status: "Status",
+        updated: "Updated",
+        actions: "Actions",
+        edit: "Edit",
+        noPosts: "No posts yet",
+        createFirst: "Create your first post to get started",
+        editPost: "Edit Post",
+        createPost: "Create post",
     },
     editor: {
         // Toolbar

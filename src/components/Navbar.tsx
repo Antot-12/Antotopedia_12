@@ -11,6 +11,41 @@ type NavbarProps = {
     initialViewMode?: "grid" | "list";
 };
 
+// Language Switcher Component
+function LanguageSwitcher({ locale }: { locale: string }) {
+    const router = useRouter();
+    const [switching, setSwitching] = useState(false);
+
+    const switchLanguage = async () => {
+        const newLocale = locale === "en" ? "uk" : "en";
+        setSwitching(true);
+        try {
+            await fetch("/api/locale", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ locale: newLocale }),
+            });
+            router.refresh();
+        } catch (error) {
+            console.error("Failed to switch language:", error);
+        } finally {
+            setSwitching(false);
+        }
+    };
+
+    return (
+        <button
+            onClick={switchLanguage}
+            disabled={switching}
+            className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4 flex items-center gap-1.5"
+            title={locale === "en" ? "Switch to Ukrainian" : "Перемкнути на англійську"}
+        >
+            <span className="text-base">🌐</span>
+            <span className="hidden sm:inline font-semibold">{locale.toUpperCase()}</span>
+        </button>
+    );
+}
+
 // Mobile Menu Drawer Component
 function MobileMenu({ isOpen, onClose, dict, user, locale }: any) {
     const [isAnimating, setIsAnimating] = useState(false);
@@ -190,19 +225,10 @@ function MobileMenu({ isOpen, onClose, dict, user, locale }: any) {
                             <form action="/api/auth/logout" method="post" className="w-full">
                                 <button className="flex items-center justify-center gap-4 w-full px-5 py-4 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 transition-all duration-200 text-left group border border-red-500/20 hover:border-red-500/40 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]">
                                     <span className="text-2xl group-hover:scale-110 transition-transform duration-200">🚪</span>
-                                    <span className="font-bold text-base text-red-400 group-hover:text-red-300 transition-colors">Logout</span>
+                                    <span className="font-bold text-base text-red-400 group-hover:text-red-300 transition-colors">{dict.nav.logout || "Logout"}</span>
                                 </button>
                             </form>
-                        ) : (
-                            <Link
-                                href="/login"
-                                className="flex items-center justify-center gap-3 w-full px-5 py-4 rounded-xl bg-gradient-to-r from-accent/15 to-accent/10 hover:from-accent/25 hover:to-accent/15 border border-accent/40 hover:border-accent transition-all duration-200 font-bold text-base text-accent hover:shadow-[0_0_24px_rgba(46,231,216,0.3)]"
-                                onClick={onClose}
-                            >
-                                <span className="text-xl">🔑</span>
-                                {dict.nav.login_aria}
-                            </Link>
-                        )}
+                        ) : null}
                     </div>
                 </div>
             </div>
@@ -420,16 +446,18 @@ export default function Navbar({ user, locale, dict, initialViewMode = "grid" }:
                         <Link href="/blog" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.blog}</Link>
                         <Link href="/tags" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.tags}</Link>
                         <Link href="/search" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4" title="Search">🔍</Link>
+
+                        {/* Language Switcher */}
+                        <LanguageSwitcher locale={locale} />
+
                         {user ? (
                             <>
                                 <Link href="/admin" className="btn btn-primary text-xs sm:text-sm px-2 sm:px-4">{dict.nav.admin}</Link>
                                 <form action="/api/auth/logout" method="post">
-                                    <button className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4">Logout</button>
+                                    <button className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4">{dict.nav.logout || "Logout"}</button>
                                 </form>
                             </>
-                        ) : (
-                            <Link href="/login" aria-label={dict.nav.login_aria} title={dict.nav.login_aria} className="btn btn-ghost w-10 h-10 p-0 text-base sm:text-lg">🔑</Link>
-                        )}
+                        ) : null}
                     </nav>
 
                     {/* Mobile: Hamburger Menu with animation */}

@@ -22,6 +22,8 @@ type Props = {
         readingTime?: string;
         minRead?: string;
         secRead?: string;
+        of?: string;
+        sections?: string;
     };
 };
 
@@ -228,6 +230,8 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         readingTime: labels?.readingTime ?? "Reading time",
         minRead: labels?.minRead ?? "min",
         secRead: labels?.secRead ?? "sec",
+        of: labels?.of ?? "of",
+        sections: labels?.sections ?? "sections",
     };
 
     // Desktop TOC content
@@ -235,18 +239,22 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         <>
             {/* Progress Section */}
             {items.length > 0 && (
-                <div className="grid gap-2 pb-2 border-b border-border">
+                <div className="grid gap-3 pb-2 border-b border-border">
                     <div className="flex items-center justify-between text-xs text-dim">
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1.5">
                             <ClockIcon />
                             {t.readingTime}
                         </span>
-                        <span>{formatReadingTime(remainingTime, t.minRead, t.secRead)}</span>
+                        <span className="font-medium text-white/80">{formatReadingTime(remainingTime, t.minRead, t.secRead)}</span>
                     </div>
-                    <div className="space-y-1">
+
+                    {/* Separator */}
+                    <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+                    <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-xs">
                             <span className="text-dim">{t.progress}</span>
-                            <span className="font-medium">{sectionProgress}%</span>
+                            <span className="font-medium text-accent">{sectionProgress}%</span>
                         </div>
                         <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                             <div
@@ -256,7 +264,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                         </div>
                     </div>
                     <div className="text-xs text-dim">
-                        {completedSections} of {totalSections} sections
+                        {completedSections} {t.of || 'of'} {totalSections} {t.sections || 'sections'}
                     </div>
                 </div>
             )}
