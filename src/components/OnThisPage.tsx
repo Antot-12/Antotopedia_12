@@ -21,6 +21,7 @@ type Props = {
         progress?: string;
         readingTime?: string;
         minRead?: string;
+        secRead?: string;
     };
 };
 
@@ -66,14 +67,16 @@ function estimateReadingTime(text: string): number {
     return Math.ceil((words / 200) * 60); // returns seconds
 }
 
-function formatReadingTime(seconds: number, minLabel: string): string {
+function formatReadingTime(seconds: number, minLabel: string, secLabel: string): string {
+    if (seconds < 60) {
+        return `${Math.ceil(seconds)} ${secLabel}`;
+    }
     const mins = Math.ceil(seconds / 60);
     return `${mins} ${minLabel}`;
 }
 
 export default function OnThisPage({ items, baseUrl, labels }: Props) {
     const [active, setActive] = useState<string | null>(null);
-    const [visitedSections, setVisitedSections] = useState<Set<string>>(new Set());
     const [open, setOpen] = useState(() => {
         // Load saved state from localStorage
         if (typeof window !== "undefined") {
@@ -133,10 +136,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                     .filter(e => e.isIntersecting)
                     .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
                 if (visible[0]?.target?.id) {
-                    const sectionId = visible[0].target.id;
-                    setActive(sectionId);
-                    // Mark section as visited
-                    setVisitedSections(prev => new Set(prev).add(sectionId));
+                    setActive(visible[0].target.id);
                 }
             },
             { rootMargin: "-140px 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
@@ -176,30 +176,19 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         try { await navigator.clipboard.writeText(url); } catch {}
     };
 
-    const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+    const scrollTop = () => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        // Reset active section to null so reading time shows full content
+        setActive(null);
+    };
 
     const scrollToSection = useCallback((id: string) => {
         const element = document.getElementById(id);
-        if (!element) {
-            console.warn(`Element with id "${id}" not found`);
-            return;
-        }
+        if (!element) return;
 
-        const offset = 140;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - offset;
-
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-        });
-
-        // Mark as visited
-        setVisitedSections(prev => {
-            const newSet = new Set(prev);
-            newSet.add(id);
-            return newSet;
-        });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         if (isMobile) setMobileOpen(false);
     }, [isMobile]);
@@ -211,23 +200,23 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         scrollToSection(id);
     }, [scrollToSection]);
 
-    // Calculate progress and remaining time
+    // Calculate progress based on current section
     const currentIndex = useMemo(() => {
         if (!active) return 0;
         const foundIndex = items.findIndex(item => item.id === active);
         return foundIndex !== -1 ? foundIndex : 0;
     }, [active, items]);
 
-    const completedSections = visitedSections.size;
+    const completedSections = active ? currentIndex + 1 : 0;
     const totalSections = ids.length;
-    const sectionProgress = totalSections > 0 ? Math.round((visitedSections.size / totalSections) * 100) : 0;
+    const sectionProgress = totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
 
+    // Calculate remaining reading time (from current section onwards)
     const remainingTime = useMemo(() => {
-        // Calculate remaining time based on unvisited sections
-        const unvisitedItems = itemsWithTime.filter(item => !visitedSections.has(item.id));
-        const remaining = unvisitedItems.reduce((sum, item) => sum + (item.readingTime || 0), 0);
+        if (!active) return itemsWithTime.reduce((sum, item) => sum + (item.readingTime || 60), 0);
+        const remaining = itemsWithTime.slice(currentIndex).reduce((sum, item) => sum + (item.readingTime || 60), 0);
         return remaining;
-    }, [itemsWithTime, visitedSections]);
+    }, [itemsWithTime, currentIndex, active]);
 
     const t = {
         heading: labels?.heading ?? "On this page",
@@ -238,6 +227,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
         progress: labels?.progress ?? "Progress",
         readingTime: labels?.readingTime ?? "Reading time",
         minRead: labels?.minRead ?? "min",
+        secRead: labels?.secRead ?? "sec",
     };
 
     // Desktop TOC content
@@ -251,7 +241,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                             <ClockIcon />
                             {t.readingTime}
                         </span>
-                        <span>{formatReadingTime(remainingTime, t.minRead)}</span>
+                        <span>{formatReadingTime(remainingTime, t.minRead, t.secRead)}</span>
                     </div>
                     <div className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
@@ -275,7 +265,6 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                 <nav className="grid gap-1">
                     {items.map((it, idx) => {
                         const isActive = active === it.id;
-                        const isCompleted = visitedSections.has(it.id) && !isActive;
 
                         return (
                             <div
@@ -283,8 +272,6 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                 className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-all duration-200 cursor-pointer ${
                                     isActive
                                         ? "bg-accent/15 shadow-sm border-l-2 border-accent"
-                                        : isCompleted
-                                        ? "bg-green-500/5 border-l-2 border-green-500/30"
                                         : "hover:bg-muted/50 border-l-2 border-transparent"
                                 }`}
                                 onClick={() => scrollToSection(it.id)}
@@ -292,32 +279,12 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                 {/* Progress dot */}
                                 <div className="flex-shrink-0">
                                     <div
-                                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${
-                                            isCompleted
-                                                ? "bg-green-500 scale-100"
-                                                : isActive
-                                                ? "bg-accent ring-2 ring-accent/30 scale-125 shadow-[0_0_8px_rgba(var(--accent-rgb),0.4)]"
+                                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                                            isActive
+                                                ? "bg-accent ring-2 ring-accent/30 scale-125"
                                                 : "bg-muted/50 scale-90"
                                         }`}
-                                    >
-                                        {isCompleted && (
-                                            <svg
-                                                width="10"
-                                                height="10"
-                                                viewBox="0 0 12 12"
-                                                fill="none"
-                                                className="text-white"
-                                            >
-                                                <path
-                                                    d="M2 6l2.5 2.5L10 3"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        )}
-                                    </div>
+                                    />
                                 </div>
 
                                 <span
@@ -326,8 +293,6 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                     } ${
                                         isActive
                                             ? "text-accent font-semibold tracking-wide"
-                                            : isCompleted
-                                            ? "text-green-600 dark:text-green-400 font-medium line-through decoration-green-500/40 decoration-1"
                                             : "text-muted-foreground hover:text-accent hover:translate-x-0.5"
                                     }`}
                                 >

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const locale = await getLocale();
     return (
-        <html lang={locale}>
+        <html lang={locale} data-scroll-behavior="smooth">
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         </head>

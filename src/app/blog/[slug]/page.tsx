@@ -77,29 +77,43 @@ function slugifyHeading(s: string) {
     return s
         .toLowerCase()
         .trim()
-        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/[^\p{L}\p{N}\s-]/gu, "") // Keep Unicode letters, numbers, spaces, and dashes
         .replace(/\s+/g, "-")
-        .replace(/-+/g, "-");
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, ""); // Remove leading/trailing dashes
 }
 
 function extractToc(md?: string | null) {
     const lines = (md || "").split("\n");
-    const items: { id: string; text: string; level: 2 | 3 }[] = [];
-    for (const line of lines) {
+    const items: { id: string; text: string; level: 2 | 3; readingTime?: number }[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
         const m2 = /^##\s+(.+)$/.exec(line);
         const m3 = /^###\s+(.+)$/.exec(line);
-        if (m2)
+
+        if (m2 || m3) {
+            const text = (m2 || m3)![1].trim();
+            const level = m2 ? 2 : 3;
+
+            // Calculate content until next heading
+            let content = "";
+            for (let j = i + 1; j < lines.length; j++) {
+                if (/^#{2,3}\s+/.test(lines[j])) break;
+                content += lines[j] + " ";
+            }
+
+            // Calculate reading time: 200 words per minute
+            const words = content.trim().split(/\s+/).filter(Boolean).length;
+            const readingTime = Math.max(10, Math.ceil((words / 200) * 60)); // minimum 10 seconds
+
             items.push({
-                id: slugifyHeading(m2[1].trim()),
-                text: m2[1].trim(),
-                level: 2,
+                id: slugifyHeading(text),
+                text: text,
+                level: level as 2 | 3,
+                readingTime: readingTime,
             });
-        else if (m3)
-            items.push({
-                id: slugifyHeading(m3[1].trim()),
-                text: m3[1].trim(),
-                level: 3,
-            });
+        }
     }
     return items.slice(0, 30);
 }
