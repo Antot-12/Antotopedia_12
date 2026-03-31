@@ -11,7 +11,7 @@ export default async function SearchPage() {
   const dict = await getDictionary(locale);
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">{dict.common.search}</h1>
         <p className="text-white/70">{dict.search?.subtitle || "Find posts, tags, and content across the blog"}</p>

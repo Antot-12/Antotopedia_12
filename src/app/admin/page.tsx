@@ -11,7 +11,7 @@ export default async function AdminPage() {
     : [{ id: 1, title: "Demo Post", slug: "demo-post", status: "draft", updatedAt: new Date() }];
 
   return (
-    <div className="grid gap-4 sm:gap-6">
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-4 sm:gap-6">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <h1 className="text-2xl sm:text-3xl font-semibold">{dict.nav.admin}</h1>
         <Link href="/admin/editor/new" className="btn btn-primary min-h-[44px] touch-manipulation">
