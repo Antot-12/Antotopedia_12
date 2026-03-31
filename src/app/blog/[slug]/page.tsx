@@ -268,11 +268,11 @@ export default async function PostPage({ params, searchParams }: Props) {
     const tPosts = dict.posts;
 
     return (
-        <article className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <article className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
             <ReadingProgress />
 
             <div className="grid gap-6">
-                <div className="card p-0 overflow-hidden max-w-4xl mx-auto w-full">
+                <div className="card p-0 overflow-hidden w-full">
                     <div className="relative w-full max-h-[360px] overflow-hidden">
                         <div className="relative w-full" style={{ aspectRatio: "16 / 6" }}>
                             <Image
@@ -345,7 +345,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                     </div>
                 </div>
 
-                <div className="card p-6 max-w-4xl mx-auto w-full">
+                <div className="card p-6 w-full">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[
@@ -438,7 +438,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                 </div>
 
                 {(prev || next) && (
-                    <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto w-full">
+                    <div className="grid md:grid-cols-2 gap-4 w-full">
                         {prev ? (
                             <Link
                                 href={`/blog/${prev.slug}?lang=${locale}`}
@@ -473,7 +473,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                 )}
 
                 {related.length > 0 && (
-                    <section className="grid gap-3 max-w-4xl mx-auto w-full">
+                    <section className="grid gap-3 w-full">
                         <h3 className="text-lg font-semibold">
                             {tPosts?.related ?? (locale === "uk" ? "Схожі пости" : "Related posts")}
                         </h3>
@@ -486,7 +486,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                     </section>
                 )}
 
-                <div className="max-w-4xl mx-auto w-full">
+                <div className="w-full">
                     <Link href="/blog" className="btn btn-soft">
                         {locale === "uk" ? "Назад до списку" : "Back to list"}
                     </Link>

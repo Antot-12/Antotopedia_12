@@ -296,7 +296,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                 </div>
 
                                 <span
-                                    className={`truncate text-sm flex-1 transition-all duration-200 text-left ${
+                                    className={`text-sm flex-1 transition-all duration-200 text-left break-words whitespace-normal ${
                                         it.level === 3 ? "pl-4" : ""
                                     } ${
                                         isActive

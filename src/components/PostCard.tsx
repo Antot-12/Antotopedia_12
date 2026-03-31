@@ -311,7 +311,7 @@ export default function PostCard({
             </div>
 
             {/* Content Section */}
-            <div className={`${featured ? "p-4 sm:p-5 md:p-6" : "p-4"} flex flex-col ${isListView ? "w-2/3" : ""}`}>
+            <div className={`${featured ? "p-4 sm:p-5 md:p-6" : "p-4 sm:p-5"} flex flex-col ${isListView ? "w-2/3" : ""}`}>
                 {/* Title with Better Typography */}
                 <h3
                     className={`font-semibold leading-snug line-clamp-2 transition-colors group-hover:text-accent ${
@@ -324,7 +324,7 @@ export default function PostCard({
                 {/* Description with Truncation */}
                 {post.description && (
                     <p
-                        className={`text-dim mt-2 line-clamp-2 text-sm sm:text-base ${
+                        className={`text-dim mt-3 sm:mt-4 line-clamp-2 text-sm sm:text-base ${
                             infoCentered ? "text-center" : ""
                         }`}
                     >
@@ -334,7 +334,7 @@ export default function PostCard({
 
                 {/* Metadata Row with View Count */}
                 <div
-                    className={`mt-2 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-dim ${
+                    className={`mt-3 sm:mt-4 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-dim ${
                         infoCentered ? "justify-center" : ""
                     }`}
                 >
@@ -363,7 +363,7 @@ export default function PostCard({
 
                 {/* Enhanced Tags with Icons and Show More */}
                 {post.tags && post.tags.length > 0 && (
-                    <div className={`mt-2 ${infoCentered ? "text-center" : ""}`}>
+                    <div className={`mt-3 sm:mt-4 ${infoCentered ? "text-center" : ""}`}>
                         <div className={`flex flex-wrap gap-1.5 sm:gap-2 ${infoCentered ? "justify-center" : ""}`}>
                             {visibleTags?.map((tag, i) => (
                                 <button
@@ -406,7 +406,7 @@ export default function PostCard({
                 )}
 
                 {/* Read Button with Enhanced Styling */}
-                <div className={`mt-3 ${infoCentered ? "text-center" : ""}`}>
+                <div className={`mt-4 sm:mt-5 ${infoCentered ? "text-center" : ""}`}>
                     <button
                         type="button"
                         aria-label="Read post"

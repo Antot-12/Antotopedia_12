@@ -9,6 +9,10 @@ export const dict = {
         login_aria: "Admin",
         logout: "Logout",
         switchLanguage: "Switch language",
+        viewMode: "View Mode",
+        gridView: "Grid",
+        listView: "List",
+        language: "Language",
     },
     hero: {
         title: "Discover and read",
