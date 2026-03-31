@@ -18,6 +18,7 @@ import PostCard from "@/components/PostCard";
 import OnThisPage from "@/components/OnThisPage";
 import ReactionsBar from "@/components/ReactionsBar";
 import { getLocale, getDictionary } from "@/lib/i18n";
+import StickyWrapper from "@/components/StickyWrapper";
 import type { Locale } from "@/lib/i18n";
 import PostLangSwitcher from "@/components/PostLangSwitcher";
 
@@ -268,7 +269,7 @@ export default async function PostPage({ params, searchParams }: Props) {
     const tPosts = dict.posts;
 
     return (
-        <article className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <article className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] items-start">
             <ReadingProgress />
 
             <div className="grid gap-6">
@@ -492,9 +493,33 @@ export default async function PostPage({ params, searchParams }: Props) {
                         {locale === "uk" ? "Назад до списку" : "Back to list"}
                     </Link>
                 </div>
+
+                {/* Mobile Share Section */}
+                <div className="lg:hidden w-full">
+                    <ShareBar
+                        url={pageUrl}
+                        title={title}
+                        labels={{
+                            heading: dict.shareBar?.heading,
+                            copyLink: dict.shareBar?.copyLink,
+                            copied: dict.shareBar?.copied,
+                            linkCopiedClipboard: dict.shareBar?.linkCopiedClipboard,
+                            failedCopy: dict.shareBar?.failedCopy,
+                            sharedSuccessfully: dict.shareBar?.sharedSuccessfully,
+                            shareFailed: dict.shareBar?.shareFailed,
+                            share: dict.shareBar?.share,
+                            email: dict.shareBar?.email,
+                            scanQRCode: dict.shareBar?.scanQRCode,
+                            scanWithPhone: dict.shareBar?.scanWithPhone,
+                            showQRCode: dict.shareBar?.showQRCode,
+                            close: dict.shareBar?.close,
+                        }}
+                    />
+                </div>
             </div>
 
-            <aside className="grid gap-4 content-start">
+            {/* Mobile FAB & Drawer only (OnThisPage handles mobile internally) */}
+            <div className="lg:hidden">
                 <OnThisPage
                     items={toc}
                     baseUrl={pageUrl}
@@ -512,10 +537,33 @@ export default async function PostPage({ params, searchParams }: Props) {
                         sections: dict.onThisPage?.sections,
                     }}
                 />
+            </div>
+
+            {/* Desktop Sidebar with both OnThisPage and ShareBar */}
+            <aside className="hidden lg:flex flex-col gap-4">
+                <StickyWrapper>
+                    <OnThisPage
+                        items={toc}
+                        baseUrl={pageUrl}
+                        labels={{
+                            heading: dict.onThisPage?.heading,
+                            hide: dict.onThisPage?.hide,
+                            show: dict.onThisPage?.show,
+                            noSections: dict.onThisPage?.noSections,
+                            backToTop: dict.onThisPage?.backToTop,
+                            progress: dict.onThisPage?.progress,
+                            readingTime: dict.onThisPage?.readingTime,
+                            minRead: dict.onThisPage?.minRead,
+                            secRead: dict.onThisPage?.secRead,
+                            of: dict.onThisPage?.of,
+                            sections: dict.onThisPage?.sections,
+                        }}
+                    />
+                </StickyWrapper>
                 <ShareBar
-                    url={pageUrl}
-                    title={title}
-                    labels={{
+                            url={pageUrl}
+                            title={title}
+                            labels={{
                         heading: dict.shareBar?.heading,
                         copyLink: dict.shareBar?.copyLink,
                         copied: dict.shareBar?.copied,

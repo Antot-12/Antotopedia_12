@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
+import StickyWrapper from "./StickyWrapper";
 
 type TocItem = {
     id: string;
@@ -12,6 +13,7 @@ type TocItem = {
 type Props = {
     items: TocItem[];
     baseUrl?: string;
+    mobileExtraContent?: React.ReactNode;
     labels?: {
         heading?: string;
         hide?: string;
@@ -77,7 +79,7 @@ function formatReadingTime(seconds: number, minLabel: string, secLabel: string):
     return `${mins} ${minLabel}`;
 }
 
-export default function OnThisPage({ items, baseUrl, labels }: Props) {
+export default function OnThisPage({ items, baseUrl, labels, mobileExtraContent }: Props) {
     const [active, setActive] = useState<string | null>(null);
     const [open, setOpen] = useState(() => {
         // Load saved state from localStorage
@@ -103,7 +105,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
 
     // Detect mobile viewport
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
         checkMobile();
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
@@ -375,6 +377,11 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
                                 </button>
                             </div>
                             {tocContent}
+                            {mobileExtraContent && (
+                                <div className="border-t border-border pt-3 mt-3">
+                                    {mobileExtraContent}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </>
@@ -382,7 +389,7 @@ export default function OnThisPage({ items, baseUrl, labels }: Props) {
 
             {/* Desktop Sidebar */}
             {!isMobile && (
-                <div className="card p-4 grid gap-3 sticky top-24">
+                <div className="card p-4 grid gap-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-semibold">{t.heading}</h3>
                         <button
