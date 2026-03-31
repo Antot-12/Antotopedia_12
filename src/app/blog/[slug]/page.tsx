@@ -281,6 +281,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                                 fill
                                 className="object-cover max-h-[420px]"
                                 priority
+                                sizes="(max-width: 768px) 100vw, (max-width: 1600px) 1200px, 1600px"
                             />
                         </div>
                         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
