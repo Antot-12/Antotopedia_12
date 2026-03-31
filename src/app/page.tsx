@@ -86,7 +86,7 @@ export default async function HomePage() {
                         />
                     </div>
                     <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
-                        <QuickActions />
+                        <QuickActions heading={dict.quickActions?.heading} />
                         <TrendingTags
                             initial={tags as any}
                             title={dict.trendingTags?.heading || "Trending tags"}

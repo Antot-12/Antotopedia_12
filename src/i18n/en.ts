@@ -201,6 +201,20 @@ export const dict = {
         createFirst: "Create your first post to get started",
         editPost: "Edit Post",
         createPost: "Create post",
+        // Status Panel
+        statusLabel: "Status",
+        draft: "Draft",
+        save: "Save",
+        saving: "Saving…",
+        update: "Update",
+        publish: "Publish",
+        deletePost: "Delete Post",
+        // Post Info
+        postInfo: "Post Info",
+        id: "ID",
+        new: "New",
+        created: "Created",
+        viewPost: "View Post",
     },
     editor: {
         // Toolbar

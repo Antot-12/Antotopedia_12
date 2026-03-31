@@ -15,10 +15,24 @@ type NavbarProps = {
 function LanguageSwitcher({ locale }: { locale: string }) {
     const router = useRouter();
     const [switching, setSwitching] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const switchLanguage = async () => {
-        const newLocale = locale === "en" ? "uk" : "en";
+    const languages = [
+        { code: "en", name: "English", flag: "🇺🇸" },
+        { code: "uk", name: "Українська", flag: "🇺🇦" },
+    ];
+
+    const currentLang = languages.find(l => l.code === locale) || languages[0];
+
+    const switchLanguage = async (newLocale: string) => {
+        if (newLocale === locale) {
+            setIsOpen(false);
+            return;
+        }
+
         setSwitching(true);
+        setIsOpen(false);
         try {
             await fetch("/api/locale", {
                 method: "POST",
@@ -33,16 +47,56 @@ function LanguageSwitcher({ locale }: { locale: string }) {
         }
     };
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isOpen]);
+
     return (
-        <button
-            onClick={switchLanguage}
-            disabled={switching}
-            className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4 flex items-center gap-1.5"
-            title={locale === "en" ? "Switch to Ukrainian" : "Перемкнути на англійську"}
-        >
-            <span className="text-base">🌐</span>
-            <span className="hidden sm:inline font-semibold">{locale.toUpperCase()}</span>
-        </button>
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                disabled={switching}
+                className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4 flex items-center gap-1.5"
+                title={currentLang.name}
+            >
+                <span className="text-base">{currentLang.flag}</span>
+                <span className="hidden sm:inline font-semibold">{currentLang.code.toUpperCase()}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+            </button>
+
+            {isOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-card border border-border rounded-lg shadow-2xl overflow-hidden z-50 min-w-[160px] animate-in fade-in slide-in-from-top-2 duration-200">
+                    {languages.map((lang) => (
+                        <button
+                            key={lang.code}
+                            onClick={() => switchLanguage(lang.code)}
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-accent/10 transition-colors ${
+                                lang.code === locale ? "bg-accent/20 text-accent" : ""
+                            }`}
+                        >
+                            <span className="text-xl">{lang.flag}</span>
+                            <span className="font-medium">{lang.name}</span>
+                            {lang.code === locale && (
+                                <span className="ml-auto text-accent">✓</span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 

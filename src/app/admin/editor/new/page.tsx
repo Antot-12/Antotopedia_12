@@ -21,6 +21,22 @@ export default async function NewPostPage() {
                     tags: [],
                     i18n: [],
                 }}
+                labels={{
+                    statusLabel: dict.admin.statusLabel,
+                    draft: dict.admin.draft,
+                    published: dict.admin.published,
+                    save: dict.admin.save,
+                    saving: dict.admin.saving,
+                    update: dict.admin.update,
+                    publish: dict.admin.publish,
+                    deletePost: dict.admin.deletePost,
+                    postInfo: dict.admin.postInfo,
+                    id: dict.admin.id,
+                    new: dict.admin.new,
+                    status: dict.admin.status,
+                    created: dict.admin.created,
+                    viewPost: dict.admin.viewPost,
+                }}
             />
         </div>
     );

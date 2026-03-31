@@ -7,9 +7,19 @@ type Props = {
     slug: string;
     status: "draft" | "published";
     createdAt: Date | undefined;
+    labels?: {
+        postInfo?: string;
+        id?: string;
+        new?: string;
+        status?: string;
+        created?: string;
+        viewPost?: string;
+        draft?: string;
+        published?: string;
+    };
 };
 
-export default function PostMetadata({ id, slug, status, createdAt }: Props) {
+export default function PostMetadata({ id, slug, status, createdAt, labels }: Props) {
 
     const formatDate = (date: Date | undefined) => {
         if (!date) return '—';
@@ -24,16 +34,17 @@ export default function PostMetadata({ id, slug, status, createdAt }: Props) {
 
     return (
         <section className="card p-3 text-sm">
-            <div className="font-medium mb-2">Post Info</div>
+            <div className="font-medium mb-2">{labels?.postInfo || "Post Info"}</div>
             <ul className="grid gap-1 text-dim">
                 <li>
-                    <span className="font-semibold text-white/80 w-16 inline-block">ID:</span> {id ?? "New"}
+                    <span className="font-semibold text-white/80 w-16 inline-block">{labels?.id || "ID"}:</span> {id ?? (labels?.new || "New")}
                 </li>
                 <li>
-                    <span className="font-semibold text-white/80 w-16 inline-block">Status:</span> <span className="capitalize">{status}</span>
+                    <span className="font-semibold text-white/80 w-16 inline-block">{labels?.status || "Status"}:</span>{" "}
+                    <span className="capitalize">{status === "draft" ? (labels?.draft || "Draft") : (labels?.published || "Published")}</span>
                 </li>
                 <li>
-                    <span className="font-semibold text-white/80 w-16 inline-block">Created:</span> {formatDate(createdAt)}
+                    <span className="font-semibold text-white/80 w-16 inline-block">{labels?.created || "Created"}:</span> {formatDate(createdAt)}
                 </li>
             </ul>
 
@@ -44,7 +55,7 @@ export default function PostMetadata({ id, slug, status, createdAt }: Props) {
                         target="_blank"
                         className="btn btn-soft w-full h-8 text-sm px-2 flex justify-center items-center"
                     >
-                        View Post
+                        {labels?.viewPost || "View Post"}
                     </Link>
                 </div>
             )}

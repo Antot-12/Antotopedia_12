@@ -201,6 +201,20 @@ export const dict = {
         createFirst: "Створіть свій перший пост, щоб почати",
         editPost: "Редагувати пост",
         createPost: "Створити пост",
+        // Status Panel
+        statusLabel: "Статус",
+        draft: "Чернетка",
+        save: "Зберегти",
+        saving: "Збереження…",
+        update: "Оновити",
+        publish: "Опублікувати",
+        deletePost: "Видалити пост",
+        // Post Info
+        postInfo: "Інформація про пост",
+        id: "ID",
+        new: "Новий",
+        created: "Створено",
+        viewPost: "Переглянути пост",
     },
     editor: {
         // Панель інструментів

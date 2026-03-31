@@ -38,14 +38,16 @@ export default function QuickActions({
                                          github = "https://github.com/Antot-12",
                                          youtube = "https://www.youtube.com/c/BOMBAProductionA",
                                          linkedin = "https://www.linkedin.com/in/anton-shyrko/",
+                                         heading,
                                      }: {
     github?: string;
     youtube?: string;
     linkedin?: string;
+    heading?: string;
 }) {
     return (
         <div className="card p-4">
-            <h3 className="text-sm font-semibold mb-3 text-center">Quick actions</h3>
+            <h3 className="text-sm font-semibold mb-3 text-center">{heading || "Quick actions"}</h3>
             <div className="flex items-center justify-center gap-4">
                 <Link href={youtube} target="_blank" rel="noreferrer" aria-label="YouTube">
                     <NeonIconWrapper><IconYoutube /></NeonIconWrapper>

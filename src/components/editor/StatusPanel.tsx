@@ -40,6 +40,16 @@ type Props = {
     onSaveDraftAction: () => void;
     onPublishAction: () => void;
     onDeleteAction: () => void;
+    labels?: {
+        statusLabel?: string;
+        draft?: string;
+        published?: string;
+        save?: string;
+        saving?: string;
+        update?: string;
+        publish?: string;
+        deletePost?: string;
+    };
 };
 
 export default function StatusPanel({
@@ -51,8 +61,9 @@ export default function StatusPanel({
                                         onSaveDraftAction,
                                         onPublishAction,
                                         onDeleteAction,
+                                        labels,
                                     }: Props) {
-    const publishLabel = status === "published" ? "Update" : "Publish";
+    const publishLabel = status === "published" ? (labels?.update || "Update") : (labels?.publish || "Publish");
 
     const onSegmentKey = useCallback(
         (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -68,7 +79,7 @@ export default function StatusPanel({
         <section className="card p-2 grid gap-1" aria-busy={busy}>
 
             <div className="grid gap-1">
-                <div className="text-sm font-medium px-1">Status</div>
+                <div className="text-sm font-medium px-1">{labels?.statusLabel || "Status"}</div>
                 <div
                     role="radiogroup"
                     aria-label="Post status"
@@ -90,7 +101,7 @@ export default function StatusPanel({
                             }`}
                             title="Keep as a draft"
                         >
-                            Draft
+                            {labels?.draft || "Draft"}
                         </button>
                         <button
                             type="button"
@@ -105,7 +116,7 @@ export default function StatusPanel({
                             }`}
                             title="Make it visible"
                         >
-                            Published
+                            {labels?.published || "Published"}
                         </button>
                     </div>
                 </div>
@@ -122,7 +133,7 @@ export default function StatusPanel({
                         onClick={onSaveDraftAction}
                         title="Save current changes (Ctrl/⌘ + S)"
                     >
-                        {busy ? <SpinnerWithText text="Saving…" /> : "Save"}
+                        {busy ? <SpinnerWithText text={labels?.saving || "Saving…"} /> : (labels?.save || "Save")}
                     </button>
 
                     <button
@@ -143,7 +154,7 @@ export default function StatusPanel({
                     onClick={onDeleteAction}
                     title="Permanently delete the post"
                 >
-                    Delete Post
+                    {labels?.deletePost || "Delete Post"}
                 </button>
             </div>
 

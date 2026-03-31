@@ -46,6 +46,22 @@ type Props = {
     createdAt?: Date;
     i18n?: InitialI18n[];
   };
+  labels?: {
+    statusLabel?: string;
+    draft?: string;
+    published?: string;
+    save?: string;
+    saving?: string;
+    update?: string;
+    publish?: string;
+    deletePost?: string;
+    postInfo?: string;
+    id?: string;
+    new?: string;
+    status?: string;
+    created?: string;
+    viewPost?: string;
+  };
 };
 
 const EDIT_LOCALES: LocaleCode[] = ["uk", "en"];
@@ -141,7 +157,7 @@ function buildInitialTranslations(initial: Props["initial"]): Record<LocaleCode,
   return map;
 }
 
-export default function Editor({ initial }: Props) {
+export default function Editor({ initial, labels }: Props) {
   const router = useRouter();
 
   const translationsInitial = buildInitialTranslations(initial);
@@ -1490,12 +1506,14 @@ Horizontal rule
               onPublishAction={() => submitTo("published")}
               onDeleteAction={onDelete}
               error={error}
+              labels={labels}
           />
           <PostMetadata
               id={form.id}
               slug={form.slug}
               status={form.status}
               createdAt={initial.createdAt}
+              labels={labels}
           />
         </aside>
       </div>
