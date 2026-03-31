@@ -9,6 +9,12 @@ type Props = {
     postId: number | string;
     compact?: boolean;
     className?: string;
+    labels?: {
+        like?: string;
+        love?: string;
+        wow?: string;
+        fire?: string;
+    };
 };
 
 const EMOJI: Record<string, string> = {
@@ -18,7 +24,7 @@ const EMOJI: Record<string, string> = {
     fire: "🔥",
 };
 
-export default function Reactions({ postId, compact, className }: Props) {
+export default function Reactions({ postId, compact, className, labels }: Props) {
     const url = `/api/posts/${postId}/reactions`;
     const { data, mutate, isLoading } = useSWR(url, fetcher);
     const [popping, setPopping] = useState<string | null>(null);
@@ -42,6 +48,16 @@ export default function Reactions({ postId, compact, className }: Props) {
     };
 
     const counts = data || { likes: 0, love: 0, wow: 0, fire: 0 };
+
+    const getLabel = (key: string) => {
+        const labelMap: Record<string, string> = {
+            likes: labels?.like || "Like",
+            love: labels?.love || "Love",
+            wow: labels?.wow || "Wow",
+            fire: labels?.fire || "Fire",
+        };
+        return labelMap[key] || key;
+    };
 
     if (compact) {
         return (
@@ -76,7 +92,7 @@ export default function Reactions({ postId, compact, className }: Props) {
                 >
                     <span aria-hidden="true">{EMOJI[k]}</span>
                     <span>{isLoading ? "…" : counts[k as keyof typeof counts] ?? 0}</span>
-                    <span className="sr-only">{label}</span>
+                    <span className="sr-only">{getLabel(k)}</span>
                 </button>
             ))}
         </div>

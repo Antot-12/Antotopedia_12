@@ -111,6 +111,8 @@ export const dict = {
         haha: "Haha",
         sad: "Sad",
         angry: "Angry",
+        fire: "Fire",
+        total: "total",
     },
     home: {
         popularPosts: "Popular Posts",
@@ -209,12 +211,19 @@ export const dict = {
         update: "Update",
         publish: "Publish",
         deletePost: "Delete Post",
+        saveAndPublish: "Save & Publish",
+        allChangesSaved: "All changes saved",
+        unsavedChanges: "Unsaved changes",
         // Post Info
         postInfo: "Post Info",
         id: "ID",
         new: "New",
         created: "Created",
         viewPost: "View Post",
+        wordCount: "Words",
+        readingTime: "Read",
+        copyUrl: "Copy URL",
+        copied: "Copied!",
     },
     editor: {
         // Toolbar

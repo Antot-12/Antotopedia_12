@@ -55,12 +55,19 @@ type Props = {
     update?: string;
     publish?: string;
     deletePost?: string;
+    saveAndPublish?: string;
+    allChangesSaved?: string;
+    unsavedChanges?: string;
     postInfo?: string;
     id?: string;
     new?: string;
     status?: string;
     created?: string;
     viewPost?: string;
+    wordCount?: string;
+    readingTime?: string;
+    copyUrl?: string;
+    copied?: string;
   };
 };
 
@@ -187,6 +194,7 @@ export default function Editor({ initial, labels }: Props) {
   const [tagInput, setTagInput] = useState("");
   const [activeTab, setActiveTab] = useState<"write" | "preview" | "markdown">("write");
   const [busy, setBusy] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "unsaved" | "saving">("saved");
   const [error, setError] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -321,6 +329,7 @@ export default function Editor({ initial, labels }: Props) {
         activeLocale,
       };
       localStorage.setItem(draftKey, JSON.stringify(payload));
+      setSaveStatus("unsaved");
     } catch {}
   }, [form, translations, activeLocale, draftKey]);
 
@@ -688,6 +697,7 @@ Horizontal rule
   const submitTo = async (status: PostForm["status"]) => {
     if (tagInput.trim()) commitTagInput();
     setBusy(true);
+    setSaveStatus("saving");
     setError(null);
     try {
       const rows = EDIT_LOCALES.map((loc) => ({
@@ -749,8 +759,10 @@ Horizontal rule
       if (!isNew || !data?.id) {
         alert(status === "published" ? "Published" : "Saved");
       }
+      setSaveStatus("saved");
     } catch (e: any) {
       setError(e?.message || "Failed to save");
+      setSaveStatus("unsaved");
     } finally {
       setBusy(false);
     }
@@ -1496,6 +1508,7 @@ Horizontal rule
               status={form.status}
               busy={busy}
               canDelete={!!form.id}
+              saveStatus={saveStatus}
               onChangeStatusAction={(s) =>
                   setForm((f) => ({
                     ...f,
@@ -1513,6 +1526,7 @@ Horizontal rule
               slug={form.slug}
               status={form.status}
               createdAt={initial.createdAt}
+              contentMarkdown={form.contentMarkdown}
               labels={labels}
           />
         </aside>

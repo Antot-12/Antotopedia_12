@@ -25,9 +25,17 @@ function ico(t: TypeKey) {
 export default function ReactionsBar({
                                          postId,
                                          initial,
+                                         labels,
                                      }: {
     postId: number | string;
     initial?: any;
+    labels?: {
+        total?: string;
+        like?: string;
+        love?: string;
+        wow?: string;
+        fire?: string;
+    };
 }) {
     const [counts, setCounts] = useState<Counts>(() => normalizeCounts(initial));
     const [busy, setBusy] = useState<Partial<Record<TypeKey, boolean>>>({});
@@ -75,6 +83,16 @@ export default function ReactionsBar({
         }
     };
 
+    const getLabel = (type: TypeKey) => {
+        const labelMap: Record<TypeKey, string> = {
+            likes: labels?.like || "Like",
+            love: labels?.love || "Love",
+            wow: labels?.wow || "Wow",
+            fire: labels?.fire || "Fire",
+        };
+        return labelMap[type];
+    };
+
     return (
         <div className="inline-flex items-center gap-2 w-fit self-start">
             {TYPES.map((t) => (
@@ -83,13 +101,13 @@ export default function ReactionsBar({
                     type="button"
                     className={`btn ${busy[t] ? "btn-soft opacity-70" : "btn-soft"} h-9 px-3 inline-flex items-center gap-2 active:scale-95`}
                     onClick={() => bump(t, 1)}
-                    aria-label={t}
+                    aria-label={getLabel(t)}
                 >
                     <span aria-hidden="true">{ico(t)}</span>
                     <span>{Number(counts[t]) || 0}</span>
                 </button>
             ))}
-            <span className="text-xs text-dim ml-1">{total} total</span>
+            <span className="text-xs text-dim ml-1">{total} {labels?.total || "total"}</span>
         </div>
     );
 }

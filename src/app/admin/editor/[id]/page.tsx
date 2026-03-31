@@ -54,12 +54,19 @@ export default async function EditPostPage(props: { params: Promise<{ id: string
                     update: dict.admin.update,
                     publish: dict.admin.publish,
                     deletePost: dict.admin.deletePost,
+                    saveAndPublish: dict.admin.saveAndPublish,
+                    allChangesSaved: dict.admin.allChangesSaved,
+                    unsavedChanges: dict.admin.unsavedChanges,
                     postInfo: dict.admin.postInfo,
                     id: dict.admin.id,
                     new: dict.admin.new,
                     status: dict.admin.status,
                     created: dict.admin.created,
                     viewPost: dict.admin.viewPost,
+                    wordCount: dict.admin.wordCount,
+                    readingTime: dict.admin.readingTime,
+                    copyUrl: dict.admin.copyUrl,
+                    copied: dict.admin.copied,
                 }}
             />
         </div>

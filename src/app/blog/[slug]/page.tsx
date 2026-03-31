@@ -331,7 +331,17 @@ export default async function PostPage({ params, searchParams }: Props) {
                             </div>
                         )}
 
-                        <ReactionsBar postId={post.id} initial={post.reaction || undefined} />
+                        <ReactionsBar
+                            postId={post.id}
+                            initial={post.reaction || undefined}
+                            labels={{
+                                total: dict.reactions?.total,
+                                like: dict.reactions?.like,
+                                love: dict.reactions?.love,
+                                wow: dict.reactions?.wow,
+                                fire: dict.reactions?.fire,
+                            }}
+                        />
                     </div>
                 </div>
 

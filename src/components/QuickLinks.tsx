@@ -62,16 +62,14 @@ export default async function QuickLinks() {
 
                 <form action="/blog" className="grid gap-3">
                     <div className="relative group">
-                        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-accent transition-colors pointer-events-none">
-                            <SearchIcon />
-                        </div>
                         <input
                             name="q"
                             placeholder={t.searchPlaceholder || "Search posts..."}
-                            className="input pl-12 pr-4 w-full bg-muted/30 border-muted hover:border-accent/50 focus:border-accent transition-all"
+                            className="input pl-4 pr-4 w-full bg-muted/30 border-muted hover:border-accent/50 focus:border-accent transition-all"
                         />
                     </div>
-                    <button className="btn btn-primary h-11 font-medium shadow-lg shadow-accent/20 hover:shadow-accent/30 transition-all">
+                    <button className="btn btn-primary h-11 font-medium shadow-lg shadow-accent/20 hover:shadow-accent/30 transition-all flex items-center justify-center gap-2">
+                        <SearchIcon />
                         {t.searchButton || "Search"}
                     </button>
                 </form>

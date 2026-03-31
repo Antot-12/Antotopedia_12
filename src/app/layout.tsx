@@ -17,10 +17,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         </head>
-        <body className="no-glow min-h-screen grid grid-rows-[auto_1fr_auto]">
+        <body className="no-glow min-h-screen flex flex-col">
         <DevSWKiller />
         <NavbarWrapper />
-        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">{children}</main>
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">{children}</main>
         <Footer />
         </body>
         </html>

@@ -111,6 +111,8 @@ export const dict = {
         haha: "Хаха",
         sad: "Сумно",
         angry: "Сердитий",
+        fire: "Вогонь",
+        total: "всього",
     },
     home: {
         popularPosts: "Популярні пости",
@@ -209,12 +211,19 @@ export const dict = {
         update: "Оновити",
         publish: "Опублікувати",
         deletePost: "Видалити пост",
+        saveAndPublish: "Зберегти та опублікувати",
+        allChangesSaved: "Всі зміни збережено",
+        unsavedChanges: "Незбережені зміни",
         // Post Info
         postInfo: "Інформація про пост",
         id: "ID",
         new: "Новий",
         created: "Створено",
         viewPost: "Переглянути пост",
+        wordCount: "Слів",
+        readingTime: "Читати",
+        copyUrl: "Копіювати URL",
+        copied: "Скопійовано!",
     },
     editor: {
         // Панель інструментів
