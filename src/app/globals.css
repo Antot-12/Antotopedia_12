@@ -439,6 +439,58 @@ select option {
   word-break: break-word;
 }
 
+/* Code block wrapper */
+.code-block-wrapper {
+  margin: 1.5rem 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.code-block-wrapper pre {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.code-block-wrapper pre code {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-block-language {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.code-block-copy-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  background: rgba(46, 231, 216, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(46, 231, 216, 0.3);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.code-block-copy-btn:hover {
+  background: rgba(46, 231, 216, 0.2);
+  border-color: var(--accent);
+}
+
 .prose pre:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
@@ -655,26 +707,21 @@ html {
   .code-block-wrapper {
     margin: 1.5rem 0;
     max-width: 100%;
-  }
-
-  .code-block-header {
-    padding: 0.5rem 0.75rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .code-block-language {
-    font-size: 0.625rem;
-  }
-
-  .code-block-copy-btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.625rem;
+    overflow: hidden;
   }
 
   .code-block-wrapper pre {
     font-size: 0.75rem !important;
     padding: 0.75rem !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .code-block-wrapper pre code {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 }
 

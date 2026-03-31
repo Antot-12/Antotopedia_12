@@ -53,25 +53,31 @@ It has:
 
 * **Navbar** (mobile + desktop):
 
-    * 📱 **Mobile hamburger menu** — slide-out drawer from right, icons, clean sections, backdrop blur
+    * 📱 **Mobile hamburger menu** — slide-out drawer from right with swipe-to-close gesture, smooth spring animations
     * 🔍 **Live search** — autocomplete dropdown with thumbnails, titles, descriptions, tags (300ms debounce, min 2 chars)
     * 📐 **Layout toggle** — grid/list view switcher, persists to localStorage, emits custom event
-    * 🌐 **Language switcher** — dropdown with flags (EN/UK), persists selection, refreshes page
+    * 🌐 **Language switcher** — vertical selectable list with flags (EN/UK) in mobile menu, dropdown on desktop, persists selection
+    * 👤 **User info display** — shows avatar, name, and email when logged in (mobile menu)
+    * ✨ **Smooth animations** — staggered menu item animations, burger button rotation, backdrop blur effects
+    * **Menu organization** — navigation links (Blog/Tags/Search) at top, settings (view mode, language, logout) at bottom
 * **PostCard** (blog cards):
 
+    * Enhanced spacing between elements (title, description, metadata, tags, button)
     * Lazy loading with shimmer skeleton
     * Status badges (NEW ✨, TRENDING 🔥, UPDATED 🔄)
     * Hover actions: bookmark 📑, share 🔗, 3-dot menu (copy link, report)
     * Enhanced tags with icons and "show more/less"
     * View count display with icons
     * Mobile: floating action button (FAB) at bottom-right
-    * Compact layout with optimized spacing
+    * Haptic feedback on all interactive elements (active:scale-[0.98])
 * **OnThisPage** (TOC sidebar):
 
+    * Wider sidebar (380px) to accommodate long section titles
+    * Text wrapping instead of truncation for better readability
     * Progress indicator with percentage bar
     * Reading time estimates per section
     * Keyboard shortcuts: `Alt+↑` previous section, `Alt+↓` next section
-    * Visual progress dots (gray = unread, accent ring = active, green checkmark = completed)
+    * Visual progress dots (gray = unread, accent ring = active)
     * "Show/Hide" collapse toggle, state saved to localStorage
     * Mobile: bottom drawer with backdrop
 * **ShareBar** (post share widget):
@@ -99,6 +105,15 @@ It has:
     * Glowing CTAs with shimmer effects
     * Bouncing emoji reactions
     * Corner decorations with pulse effects
+
+### Layout & Responsiveness
+
+* **Wider desktop layout** — All pages use `max-w-[1600px]` container for better content display on large screens
+* **Editor workspace** — Extra wide (`max-w-[1800px]`) for comfortable editing experience
+* **Blog post pages** — Optimized grid layout: main content (`minmax(0,1fr)`) + sidebar (380px)
+* **Responsive containers** — Consistent padding (`px-4 sm:px-6 lg:px-8`) across all pages
+* **Mobile-first design** — All components adapt seamlessly from mobile to desktop
+* **Footer positioning** — Fixed mobile footer scroll behavior (no longer locked to screen)
 
 ### Editor Enhancements
 
@@ -523,8 +538,14 @@ npm run start
 
 * Tailwind is enabled via `globals.css` (custom utility classes for `card`, `btn`, `chip`, `skeleton`, etc.).
 * The accent color is `#2ee7d8`.
-* Right sidebar on home is **narrow (≈ 320px)**: `lg:grid-cols-[1fr_320px]`.
+* **Desktop layout**: All pages use wider containers for better content display:
+    * Standard pages: `max-w-[1600px]` (home, blog, tags, search, admin)
+    * Editor pages: `max-w-[1800px]` (extra workspace for editing)
+    * Blog post pages: Main content (`minmax(0,1fr)`) + TOC sidebar (380px)
+* **Responsive padding**: Consistent `px-4 sm:px-6 lg:px-8` across all pages
 * `PostCard` uses `Image` with `post.coverImageUrl || "/no_image.jpg"`.
+* Enhanced spacing between card elements for better readability
+* Mobile menu with swipe gestures and smooth animations
 
 ---
 
@@ -640,8 +661,11 @@ Fix DB connection and refresh.
 * Slug is auto-generated from title but can be edited.
 * Tags are typed without `#` (UI shows `#tag`).
 * Cover image is optional (fallback used).
-* Right column is 320px on large screens.
+* Desktop pages use wider containers (1600px) for better content display
+* Editor pages use extra-wide layout (1800px) for comfortable editing
+* Blog post sidebar is 380px to accommodate long section titles
 * Keep components small and reusable.
+* Removed unused components for cleaner codebase
 
 ---
 

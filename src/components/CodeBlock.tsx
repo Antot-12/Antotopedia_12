@@ -20,35 +20,86 @@ export default function CodeBlock({ children, className, inline }: CodeBlockProp
   // Language display names
   const languageNames: { [key: string]: string } = {
     javascript: 'JavaScript',
+    js: 'JavaScript',
     typescript: 'TypeScript',
+    ts: 'TypeScript',
     jsx: 'JSX',
     tsx: 'TSX',
     python: 'Python',
+    py: 'Python',
     java: 'Java',
     cpp: 'C++',
+    'c++': 'C++',
     c: 'C',
     csharp: 'C#',
+    'c#': 'C#',
+    cs: 'C#',
     php: 'PHP',
     ruby: 'Ruby',
+    rb: 'Ruby',
     go: 'Go',
+    golang: 'Go',
     rust: 'Rust',
+    rs: 'Rust',
     swift: 'Swift',
     kotlin: 'Kotlin',
+    kt: 'Kotlin',
     sql: 'SQL',
+    mysql: 'MySQL',
+    postgresql: 'PostgreSQL',
     html: 'HTML',
     css: 'CSS',
     scss: 'SCSS',
+    sass: 'Sass',
+    less: 'Less',
     json: 'JSON',
     yaml: 'YAML',
+    yml: 'YAML',
+    toml: 'TOML',
+    xml: 'XML',
     markdown: 'Markdown',
+    md: 'Markdown',
     bash: 'Bash',
+    sh: 'Shell',
     shell: 'Shell',
     powershell: 'PowerShell',
+    ps1: 'PowerShell',
     dockerfile: 'Dockerfile',
+    docker: 'Docker',
     graphql: 'GraphQL',
-    xml: 'XML',
+    gql: 'GraphQL',
     diff: 'Diff',
+    git: 'Git',
+    vim: 'Vim',
+    lua: 'Lua',
+    perl: 'Perl',
+    r: 'R',
+    matlab: 'MATLAB',
+    scala: 'Scala',
+    haskell: 'Haskell',
+    clojure: 'Clojure',
+    elixir: 'Elixir',
+    erlang: 'Erlang',
+    dart: 'Dart',
+    vue: 'Vue',
+    svelte: 'Svelte',
+    angular: 'Angular',
+    react: 'React',
+    nginx: 'Nginx',
+    apache: 'Apache',
+    makefile: 'Makefile',
+    cmake: 'CMake',
+    latex: 'LaTeX',
+    tex: 'TeX',
+    solidity: 'Solidity',
+    sol: 'Solidity',
+    wasm: 'WebAssembly',
+    wat: 'WebAssembly Text',
+    asm: 'Assembly',
+    nasm: 'NASM',
     text: 'Plain Text',
+    txt: 'Plain Text',
+    plaintext: 'Plain Text',
   };
 
   const displayLanguage = languageNames[language] || language.toUpperCase();
@@ -91,11 +142,28 @@ export default function CodeBlock({ children, className, inline }: CodeBlockProp
           lineHeight: '1.5',
           maxWidth: '100%',
           overflowX: 'auto',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+        }}
+        codeTagProps={{
+          style: {
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+          }
         }}
         showLineNumbers={true}
         wrapLines={true}
         wrapLongLines={true}
         PreTag="div"
+        lineProps={{
+          style: {
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+          }
+        }}
       >
         {children}
       </SyntaxHighlighter>
