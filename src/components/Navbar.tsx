@@ -499,7 +499,6 @@ export default function Navbar({ user, locale, dict, initialViewMode = "grid" }:
 
                         <Link href="/blog" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.blog}</Link>
                         <Link href="/tags" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4">{dict.nav.tags}</Link>
-                        <Link href="/search" className="btn btn-soft text-xs sm:text-sm px-2 sm:px-4" title="Search">🔍</Link>
 
                         {/* Language Switcher */}
                         <LanguageSwitcher locale={locale} />

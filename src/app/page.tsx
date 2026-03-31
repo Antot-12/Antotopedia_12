@@ -112,12 +112,12 @@ export default async function HomePage() {
                         {popular.length > 0 && (
                             <div className="grid gap-3 sm:gap-4">
                                 <h2 className="text-xl sm:text-2xl font-semibold">{dict.common.popular}</h2>
-                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 items-stretch auto-rows-fr">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                     {popular.map((p) => (
                                         <Link
                                             key={p.id}
                                             href={`/blog/${p.slug}`}
-                                            className="card card-hover p-3 sm:p-4 ring-1 ring-white/10 hover:ring-accent/50 h-full"
+                                            className="card card-hover p-3 sm:p-4 ring-1 ring-white/10 hover:ring-accent/50"
                                         >
                                             <div className="text-xs sm:text-sm text-accent mb-1">{dict.common.pick}</div>
                                             <div className="font-medium text-sm sm:text-base">{p.title}</div>

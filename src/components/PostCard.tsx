@@ -167,7 +167,7 @@ export default function PostCard({
             aria-label={post.title}
             onClick={goToPost}
             onKeyDown={onKey}
-            className={`group card card-hover overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer h-full flex ${
+            className={`group card card-hover overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer flex ${
                 isListView ? "flex-row" : "flex-col"
             } ${ringCls}`}
         >
@@ -311,7 +311,7 @@ export default function PostCard({
             </div>
 
             {/* Content Section */}
-            <div className={`${featured ? "p-4 sm:p-5 md:p-6" : "p-3"} flex flex-col ${isListView ? "w-2/3" : ""}`}>
+            <div className={`${featured ? "p-4 sm:p-5 md:p-6" : "p-4"} flex flex-col ${isListView ? "w-2/3" : ""}`}>
                 {/* Title with Better Typography */}
                 <h3
                     className={`font-semibold leading-snug line-clamp-2 transition-colors group-hover:text-accent ${
@@ -324,7 +324,7 @@ export default function PostCard({
                 {/* Description with Truncation */}
                 {post.description && (
                     <p
-                        className={`text-dim mt-1 line-clamp-2 text-sm sm:text-base ${
+                        className={`text-dim mt-2 line-clamp-2 text-sm sm:text-base ${
                             infoCentered ? "text-center" : ""
                         }`}
                     >
@@ -414,12 +414,12 @@ export default function PostCard({
                             e.stopPropagation();
                             goToPost();
                         }}
-                        className="group/btn inline-flex items-center justify-center gap-2 rounded-xl sm:rounded-2xl bg-accent text-black font-semibold h-10 px-6 sm:h-12 sm:px-8 md:h-14 md:px-10 text-sm sm:text-base md:text-lg shadow-[0_8px_24px_-8px_rgba(46,231,216,.5)] sm:shadow-[0_10px_30px_-10px_rgba(46,231,216,.5)] hover:shadow-[0_12px_32px_-10px_rgba(46,231,216,.65)] sm:hover:shadow-[0_18px_36px_-12px_rgba(46,231,216,.65)] hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent/60 touch-manipulation transition-all duration-300"
+                        className="group/btn inline-flex items-center justify-center gap-2 rounded-xl bg-accent text-black font-semibold h-9 px-5 sm:h-10 sm:px-6 text-sm sm:text-base shadow-[0_4px_16px_-4px_rgba(46,231,216,.5)] hover:shadow-[0_8px_24px_-6px_rgba(46,231,216,.65)] hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent/60 touch-manipulation transition-all duration-300"
                     >
                         <span>{t.read}</span>
                         <svg
-                            width="16"
-                            height="16"
+                            width="14"
+                            height="14"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"

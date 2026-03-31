@@ -56,6 +56,7 @@ It has:
     * 📱 **Mobile hamburger menu** — slide-out drawer from right, icons, clean sections, backdrop blur
     * 🔍 **Live search** — autocomplete dropdown with thumbnails, titles, descriptions, tags (300ms debounce, min 2 chars)
     * 📐 **Layout toggle** — grid/list view switcher, persists to localStorage, emits custom event
+    * 🌐 **Language switcher** — dropdown with flags (EN/UK), persists selection, refreshes page
 * **PostCard** (blog cards):
 
     * Lazy loading with shimmer skeleton
@@ -64,6 +65,7 @@ It has:
     * Enhanced tags with icons and "show more/less"
     * View count display with icons
     * Mobile: floating action button (FAB) at bottom-right
+    * Compact layout with optimized spacing
 * **OnThisPage** (TOC sidebar):
 
     * Progress indicator with percentage bar
@@ -81,6 +83,73 @@ It has:
     * Social links: YouTube, GitHub, LinkedIn
     * Copy link with animated state transition
     * Email share button
+* **ReactionsBar** (post reactions):
+
+    * Multi-emotion reactions: like ❤️, love 💕, wow 😮, fire 🔥
+    * Real-time count updates
+    * Animated emoji scaling on hover/click
+    * Persisted user selections per post
+    * Compact and expanded display modes
+    * Full i18n support for emotion labels
+* **404 Page**:
+
+    * Animated 404 with eyes that follow mouse cursor
+    * Floating background particles with staggered animations
+    * Cycling funny error messages (6 variants)
+    * Glowing CTAs with shimmer effects
+    * Bouncing emoji reactions
+    * Corner decorations with pulse effects
+
+### Editor Enhancements
+
+* **Status Panel**:
+
+    * Color-coded status badges (draft 📝, published ✅)
+    * Visual status icons (pencil, checkmark)
+    * "Save & Publish" combo button for quick workflow
+    * Auto-save indicator showing "All changes saved" / "Unsaved changes" / "Saving..."
+    * Animated status transitions
+    * Hover scale effects on buttons
+* **Post Info Panel**:
+
+    * Word count with formatted numbers
+    * Reading time calculation (200 words/min)
+    * Copy URL button with success feedback
+    * View Post link (opens in new tab)
+    * Status badge with emoji indicators
+    * Emoji icons for each metadata field
+* **Toolbar Extensions**:
+
+    * Text size controls (small, normal, large, x-large)
+    * Highlight color picker with preset colors
+    * Text color selector
+    * Format painter (copy/paste formatting)
+    * Preset templates dropdown
+    * Advanced formatting options
+
+### Internationalization (i18n)
+
+* **Dual language support**: English (EN) and Ukrainian (UK)
+* **Auto-detected locale** from cookies or browser settings
+* **Persisted language choice** via cookie storage
+* **Full coverage**:
+
+    * Navigation, footer, hero section
+    * Blog listings, post pages, tag pages
+    * Search interface, filters, sort options
+    * Admin dashboard, editor, status labels
+    * Post metadata, reactions, share options
+    * Error messages, loading states, tooltips
+* **Per-post translations**:
+
+    * Title, description, content in multiple languages
+    * Language switcher on post pages
+    * Fallback to default locale if translation missing
+* **Localized formatting**:
+
+    * Date formats (e.g., "22 бер. 2026 р., 22:56" for UK)
+    * Number formatting with locale-specific separators
+    * Reading time calculations
 
 ---
 

@@ -57,7 +57,7 @@ export default function RecentPosts({
     return (
         <section className="grid gap-6">
             <div className={viewMode === "grid"
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
                 : "grid gap-4"
             }>
                 {ordered.map((p) => (

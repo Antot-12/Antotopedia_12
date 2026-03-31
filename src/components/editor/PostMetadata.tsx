@@ -97,7 +97,7 @@ export default function PostMetadata({ id, slug, status, createdAt, contentMarkd
                 <li className="flex items-center gap-2">
                     <span className="text-white/40">📅</span>
                     <span className="font-semibold text-white/80 w-16">{labels?.created || "Created"}:</span>
-                    <span className="text-xs">{formatDate(createdAt)}</span>
+                    <span className="text-xs">{formatDate(createdAt).replace(":", ": ")}</span>
                 </li>
 
                 {/* Separator */}

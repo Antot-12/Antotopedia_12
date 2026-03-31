@@ -9,7 +9,7 @@
     color-scheme:dark;
 }
 
-html,body{height:100%;max-width:100%;position:relative;overflow-x:hidden;width:100vw;margin:0;padding:0}
+html,body{min-height:100vh;height:100%;max-width:100%;position:relative;overflow-x:hidden;width:100vw;margin:0;padding:0}
 
 body{
     background:var(--bg);
@@ -18,6 +18,8 @@ body{
     width:100%;
     max-width:100vw;
     box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
 }
 
 a,button,input,textarea,select{
@@ -1892,6 +1894,35 @@ div.markdown-editor textarea,
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out;
 }
@@ -1902,6 +1933,18 @@ div.markdown-editor textarea,
 
 .animate-scaleIn {
   animation: scaleIn 0.2s ease-out;
+}
+
+.animate-float {
+  animation: float ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
 }
 
 /* Smooth transitions for all interactive elements */
