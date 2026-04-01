@@ -29,7 +29,7 @@ export default async function EditPostPage(props: { params: Promise<{ id: string
             };
 
     return (
-        <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-4">
+        <div className="w-full max-w-[1800px] mx-auto px-2 sm:px-6 lg:px-8 grid gap-4">
             <h1 className="text-2xl font-semibold">{dict.admin.editPost}</h1>
             <Editor
                 initial={{

@@ -268,7 +268,7 @@ export default async function PostPage({ params, searchParams }: Props) {
     const tPosts = dict.posts;
 
     return (
-        <article className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] items-start">
+        <article className="w-full max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] items-start">
             <ReadingProgress />
 
             <div className="grid gap-6">
@@ -287,7 +287,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
 
-                    <div className="p-6 md:p-8 grid gap-4">
+                    <div className="p-2 md:p-8 grid gap-4">
                         <div className="flex items-start justify-between gap-3 flex-wrap">
                             <div className="flex flex-col gap-2 min-w-0">
                                 <h1 className="text-3xl md:text-4xl font-semibold leading-tight break-words">
@@ -346,7 +346,7 @@ export default async function PostPage({ params, searchParams }: Props) {
                     </div>
                 </div>
 
-                <div className="card p-6 w-full">
+                <div className="card p-2 md:p-6 w-full">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[

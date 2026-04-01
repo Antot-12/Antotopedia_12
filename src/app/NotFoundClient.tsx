@@ -142,7 +142,7 @@ export default function NotFoundClient({
                 ))}
             </div>
 
-            <div className="relative z-10 w-full max-w-5xl px-4">
+            <div className="relative z-10 w-full max-w-5xl px-2 sm:px-4">
                 <div className="text-center mb-12">
                     {/* Animated 404 with eyes */}
                     <div className="relative inline-block mb-8">

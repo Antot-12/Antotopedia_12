@@ -39,6 +39,7 @@ export default function ReactionsBar({
 }) {
     const [counts, setCounts] = useState<Counts>(() => normalizeCounts(initial));
     const [busy, setBusy] = useState<Partial<Record<TypeKey, boolean>>>({});
+    const [userReactions, setUserReactions] = useState<Partial<Record<TypeKey, boolean>>>({});
 
     const total = useMemo(
         () => TYPES.reduce((s, k) => s + (Number(counts[k]) || 0), 0),
@@ -61,12 +62,33 @@ export default function ReactionsBar({
         };
     }, [postId]);
 
-    const bump = async (type: TypeKey, delta = 1) => {
+    // Load user reactions from localStorage
+    useEffect(() => {
+        const stored = localStorage.getItem(`reactions_${postId}`);
+        if (stored) {
+            try {
+                setUserReactions(JSON.parse(stored));
+            } catch {}
+        }
+    }, [postId]);
+
+    const bump = async (type: TypeKey) => {
         if (busy[type]) return;
+
+        // Toggle: if user already reacted, remove it (-1), otherwise add it (+1)
+        const hasReacted = userReactions[type];
+        const delta = hasReacted ? -1 : 1;
+
         setBusy((b) => ({ ...b, [type]: true }));
         const prev = counts;
         const next = { ...prev, [type]: Math.max(0, (prev[type] || 0) + delta) };
         setCounts(next);
+
+        // Update user reactions state
+        const newUserReactions = { ...userReactions, [type]: !hasReacted };
+        setUserReactions(newUserReactions);
+        localStorage.setItem(`reactions_${postId}`, JSON.stringify(newUserReactions));
+
         try {
             const res = await fetch(`/api/posts/${postId}/reactions`, {
                 method: "POST",
@@ -78,6 +100,9 @@ export default function ReactionsBar({
             setCounts(server);
         } catch {
             setCounts(prev);
+            // Revert user reaction on error
+            setUserReactions(userReactions);
+            localStorage.setItem(`reactions_${postId}`, JSON.stringify(userReactions));
         } finally {
             setBusy((b) => ({ ...b, [type]: false }));
         }
@@ -99,8 +124,8 @@ export default function ReactionsBar({
                 <button
                     key={t}
                     type="button"
-                    className={`btn ${busy[t] ? "btn-soft opacity-70" : "btn-soft"} h-9 px-3 inline-flex items-center gap-2 active:scale-95`}
-                    onClick={() => bump(t, 1)}
+                    className={`btn ${userReactions[t] ? "btn-primary" : "btn-soft"} ${busy[t] ? "opacity-70" : ""} h-9 px-3 inline-flex items-center gap-2 active:scale-95`}
+                    onClick={() => bump(t)}
                     aria-label={getLabel(t)}
                 >
                     <span aria-hidden="true">{ico(t)}</span>

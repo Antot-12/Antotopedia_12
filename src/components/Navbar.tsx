@@ -106,6 +106,7 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
     const [touchStart, setTouchStart] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState(0);
+    const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
     const router = useRouter();
 
     const languages = [
@@ -240,6 +241,16 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
                                 <span className="text-2xl group-hover:scale-110 group-active:scale-90 transition-transform duration-200">📝</span>
                                 <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.blog}</span>
                             </Link>
+
+                            {/* Separator */}
+                            <div className={`h-px bg-accent/10 my-2 ${
+                                isOpen ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+                            }`} style={{
+                                transitionProperty: "all",
+                                transitionDuration: "200ms",
+                                transitionDelay: isOpen ? "125ms" : "0ms"
+                            }} />
+
                             <Link
                                 href="/tags"
                                 className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] active:scale-[0.98] ${
@@ -256,6 +267,16 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
                                 <span className="text-2xl group-hover:scale-110 group-active:scale-90 transition-transform duration-200">🏷️</span>
                                 <span className="font-semibold text-base group-hover:text-accent transition-colors">{dict.nav.tags}</span>
                             </Link>
+
+                            {/* Separator */}
+                            <div className={`h-px bg-accent/10 my-2 ${
+                                isOpen ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+                            }`} style={{
+                                transitionProperty: "all",
+                                transitionDuration: "200ms",
+                                transitionDelay: isOpen ? "175ms" : "0ms"
+                            }} />
+
                             <Link
                                 href="/search"
                                 className={`flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-gradient-to-r hover:from-accent/15 hover:to-accent/5 group border border-transparent hover:border-accent/30 hover:shadow-[0_0_20px_rgba(46,231,216,0.1)] active:scale-[0.98] ${
@@ -313,7 +334,7 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
                         </div>
                     </nav>
 
-                    {/* Footer - BOTTOM with User Info, View Mode, Language */}
+                    {/* Footer - BOTTOM with View Mode, Language */}
                     <div className={`relative border-t border-accent/20 ${
                         isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     }`} style={{
@@ -323,19 +344,6 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
                         transitionDelay: isOpen ? "350ms" : "0ms"
                     }}>
                         <div className="p-6 space-y-4">
-                            {/* User Info */}
-                            {user && (
-                                <div className="bg-gradient-to-r from-accent/10 to-accent/5 border border-accent/20 rounded-xl p-3 flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center text-lg font-bold text-accent">
-                                        {user.name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || "A"}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="font-semibold text-xs truncate">{user.name || user.email}</div>
-                                        <div className="text-[10px] text-dim truncate">{user.email}</div>
-                                    </div>
-                                </div>
-                            )}
-
                             {/* View Mode Toggle */}
                             <div>
                                 <div className="text-[10px] text-accent/60 uppercase tracking-wider mb-2">{dict.nav.viewMode || "View Mode"}</div>
@@ -377,32 +385,45 @@ function MobileMenu({ isOpen, onClose, dict, user, locale, viewMode, onViewModeC
                                 </div>
                             </div>
 
-                            {/* Language Switcher - Vertical List */}
+                            {/* Language Switcher - Dropdown */}
                             <div>
                                 <div className="text-[10px] text-accent/60 uppercase tracking-wider mb-2">{dict.nav.language || "Language"}</div>
-                                <div className="space-y-1">
-                                    {languages.map((lang) => (
-                                        <button
-                                            key={lang.code}
-                                            onClick={() => switchLanguage(lang.code)}
-                                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg active:scale-[0.98] transition-all duration-200 ${
-                                                lang.code === locale
-                                                    ? "bg-accent/20 text-accent border-2 border-accent/60 shadow-[0_0_12px_rgba(46,231,216,0.2)]"
-                                                    : "hover:bg-white/5 border-2 border-transparent hover:border-white/10"
-                                            }`}
-                                        >
-                                            <span className="text-2xl">{lang.flag}</span>
-                                            <span className="font-medium text-sm flex-1 text-left">{lang.name}</span>
-                                            {lang.code === locale && (
-                                                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-accent">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-black">
-                                                        <polyline points="20 6 9 17 4 12" />
-                                                    </svg>
-                                                </div>
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
+                                <button
+                                    onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
+                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg active:scale-[0.98] transition-all duration-200 bg-accent/10 hover:bg-accent/15 border-2 border-accent/30"
+                                >
+                                    <span className="text-2xl">{languages.find(l => l.code === locale)?.flag}</span>
+                                    <span className="font-medium text-sm flex-1 text-left">{languages.find(l => l.code === locale)?.name}</span>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        className={`transition-transform duration-200 ${languageDropdownOpen ? 'rotate-180' : ''}`}
+                                    >
+                                        <polyline points="6 9 12 15 18 9" />
+                                    </svg>
+                                </button>
+
+                                {languageDropdownOpen && (
+                                    <div className="mt-2 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {languages.filter(lang => lang.code !== locale).map((lang) => (
+                                            <button
+                                                key={lang.code}
+                                                onClick={() => {
+                                                    switchLanguage(lang.code);
+                                                    setLanguageDropdownOpen(false);
+                                                }}
+                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg active:scale-[0.98] transition-all duration-200 hover:bg-white/5 border-2 border-transparent hover:border-white/10"
+                                            >
+                                                <span className="text-2xl">{lang.flag}</span>
+                                                <span className="font-medium text-sm flex-1 text-left">{lang.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Logout Button */}
@@ -639,7 +660,10 @@ export default function Navbar({ user, locale, dict, initialViewMode = "grid" }:
 
                         {user ? (
                             <>
-                                <Link href="/admin" className="btn btn-primary text-xs sm:text-sm px-2 sm:px-4">{dict.nav.admin}</Link>
+                                <Link href="/admin" className="btn btn-primary text-xs sm:text-sm px-2 sm:px-4 flex items-center gap-2">
+                                    <span>⚙️</span>
+                                    <span>{dict.nav.admin}</span>
+                                </Link>
                                 <form action="/api/auth/logout" method="post">
                                     <button className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4">{dict.nav.logout || "Logout"}</button>
                                 </form>
@@ -647,7 +671,7 @@ export default function Navbar({ user, locale, dict, initialViewMode = "grid" }:
                         ) : null}
                     </nav>
 
-                    {/* Mobile: Hamburger Menu with animation */}
+                    {/* Mobile: Hamburger Menu */}
                     <button
                         onClick={() => setMobileMenuOpen(true)}
                         className={`md:hidden btn btn-ghost w-10 h-10 p-0 group relative overflow-hidden transition-all duration-300 ${

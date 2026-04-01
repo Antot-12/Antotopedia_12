@@ -68,7 +68,7 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
     const pages = Math.max(1, Math.ceil(total / pageSize));
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-4 sm:gap-6">
+        <div className="w-full max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 grid gap-4 sm:gap-6">
             <div className="card p-3 sm:p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
                 <form className="grid gap-2 sm:gap-3 md:grid-cols-[1fr_auto]">
                     <input name="q" defaultValue={query} placeholder={dict.blog?.searchPosts || "Search posts..."} className="input text-sm sm:text-base" />

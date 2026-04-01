@@ -68,7 +68,7 @@ export default async function HomePage() {
     const popular = posts.slice(6, 12);
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 sm:gap-8 lg:gap-10">
+        <div className="w-full max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 grid gap-6 sm:gap-8 lg:gap-10">
             <Hero title={dict.hero.title} subtitle={dict.hero.subtitle_short} />
             {user ? (
                 <div className="grid gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
