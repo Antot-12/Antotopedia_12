@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { calculateReadingTime } from "@/lib/reading-time";
 
 type Tag = { name: string; slug?: string | null };
 type Post = {
@@ -17,13 +18,8 @@ type Post = {
     isNew?: boolean;
     isTrending?: boolean;
     isUpdated?: boolean;
+    contentMarkdown?: string | null; // Add this for accurate reading time
 };
-
-function readingTime(text?: string | null) {
-    const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
-    const min = Math.max(1, Math.round(words / 200));
-    return `${min} min read`;
-}
 
 // Status Badge Component
 function StatusBadge({ type, label }: { type: "new" | "trending" | "updated"; label: string }) {
@@ -97,7 +93,13 @@ export default function PostCard({
     }, [showQuickActions]);
 
     const href = `/blog/${post.slug}`;
-    const metaBase = readingTime(`${post.title} ${post.description || ""}`);
+
+    // Use full content for accurate reading time if available
+    const readingContent = post.contentMarkdown
+        ? `${post.title} ${post.description || ""} ${post.contentMarkdown}`
+        : `${post.title} ${post.description || ""}`;
+
+    const metaBase = calculateReadingTime(readingContent);
     const meta =
         locale === "uk"
             ? metaBase.replace("min read", "хв читання")

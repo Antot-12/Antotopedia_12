@@ -8,6 +8,7 @@ type ListItem = {
     slug?: string | null;
     title?: string | null;
     description?: string | null;
+    contentMarkdown?: string | null;
     coverImageUrl?: string | null;
     createdAt?: Date | string | null;
     updatedAt?: Date | string | null;

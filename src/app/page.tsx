@@ -16,6 +16,7 @@ type PostListItem = {
     slug: string;
     title: string;
     description: string | null;
+    contentMarkdown?: string | null; // Add for reading time
     coverImageUrl: string | null;
     createdAt?: string | Date | null;
     tags?: { name: string; slug?: string }[];
@@ -37,6 +38,7 @@ export default async function HomePage() {
                 slug: true,
                 title: true,
                 description: true,
+                contentMarkdown: true, // Add for accurate reading time
                 coverImageUrl: true,
                 createdAt: true,
                 tags: { select: { name: true, slug: true } },

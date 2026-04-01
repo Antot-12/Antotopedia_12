@@ -67,6 +67,7 @@ export default async function EditPostPage(props: { params: Promise<{ id: string
                     readingTime: dict.admin.readingTime,
                     copyUrl: dict.admin.copyUrl,
                     copied: dict.admin.copied,
+                    errors: dict.editor.errors,
                 }}
             />
         </div>

@@ -8,6 +8,7 @@ type PostListItem = {
     slug: string;
     title: string;
     description: string | null;
+    contentMarkdown?: string | null;
     coverImageUrl: string | null;
     createdAt?: string | Date | null;
     tags?: { name: string; slug?: string }[];

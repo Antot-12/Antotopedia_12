@@ -10,6 +10,7 @@ type ListItem = {
     slug?: string | null;
     title?: string | null;
     description?: string | null;
+    contentMarkdown?: string | null; // Add for reading time
     coverImageUrl?: string | null;
     createdAt?: Date | string | null;
     updatedAt?: Date | string | null;
@@ -50,6 +51,7 @@ export default async function BlogIndex(props: { searchParams: Promise<Search> }
                     slug: true,
                     title: true,
                     description: true,
+                    contentMarkdown: true, // Add for accurate reading time
                     coverImageUrl: true,
                     createdAt: true,
                     updatedAt: true,

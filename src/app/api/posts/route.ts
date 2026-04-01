@@ -66,47 +66,101 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const tagEntities = await ensureTags(Array.isArray(body.tags) ? body.tags : []);
-  const i18nRaw = Array.isArray(body.i18n) ? body.i18n : [];
-  const i18nData = i18nRaw
-      .filter(
-          (r: any) =>
-              r &&
-              typeof r.locale === "string" &&
-              typeof r.title === "string" &&
-              r.locale.length === 2
-      )
-      .map((r: any) => ({
-        locale: String(r.locale).toLowerCase(),
-        title: r.title,
-        description: typeof r.description === "string" ? r.description : null,
-        contentMarkdown:
-            typeof r.contentMarkdown === "string" ? r.contentMarkdown : null,
-      }));
+  try {
+    const body = await req.json();
 
-  const post = await prisma.post.create({
-    data: {
-      slug: body.slug,
-      title: body.title,
-      description: body.description,
-      contentMarkdown: body.contentMarkdown,
-      status: body.status === "published" ? "published" : "draft",
-      coverImageUrl: body.coverImageUrl,
-      coverImagePublicId: body.coverImagePublicId,
-      tags: { connect: tagEntities.map((t) => ({ id: t.id })) },
-      i18n: i18nData.length
-          ? {
-            createMany: {
-              data: i18nData,
-            },
+    // Validate required fields
+    if (!body.slug || !body.title) {
+      return NextResponse.json(
+        {
+          error: "VALIDATION_ERROR",
+          message: "Slug and title are required",
+          fields: {
+            slug: !body.slug ? "required" : undefined,
+            title: !body.title ? "required" : undefined,
           }
-          : undefined,
-    },
-    include: { i18n: true },
-  });
+        },
+        { status: 400 }
+      );
+    }
 
-  await cleanupOrphanTags();
+    const tagEntities = await ensureTags(Array.isArray(body.tags) ? body.tags : []);
+    const i18nRaw = Array.isArray(body.i18n) ? body.i18n : [];
+    const i18nData = i18nRaw
+        .filter(
+            (r: any) =>
+                r &&
+                typeof r.locale === "string" &&
+                typeof r.title === "string" &&
+                r.locale.length === 2
+        )
+        .map((r: any) => ({
+          locale: String(r.locale).toLowerCase(),
+          title: r.title,
+          description: typeof r.description === "string" ? r.description : null,
+          contentMarkdown:
+              typeof r.contentMarkdown === "string" ? r.contentMarkdown : null,
+        }));
 
-  return NextResponse.json({ id: post.id, slug: post.slug });
+    const post = await prisma.post.create({
+      data: {
+        slug: body.slug,
+        title: body.title,
+        description: body.description,
+        contentMarkdown: body.contentMarkdown,
+        status: body.status === "published" ? "published" : "draft",
+        coverImageUrl: body.coverImageUrl,
+        coverImagePublicId: body.coverImagePublicId,
+        tags: { connect: tagEntities.map((t) => ({ id: t.id })) },
+        i18n: i18nData.length
+            ? {
+              createMany: {
+                data: i18nData,
+              },
+            }
+            : undefined,
+      },
+      include: { i18n: true },
+    });
+
+    await cleanupOrphanTags();
+
+    return NextResponse.json({ id: post.id, slug: post.slug });
+  } catch (error: any) {
+    console.error("Error creating post:", error);
+
+    // Handle Prisma unique constraint violation
+    if (error.code === "P2002") {
+      const fields = error.meta?.target || [];
+      return NextResponse.json(
+        {
+          error: "DUPLICATE_SLUG",
+          message: "A post with this slug already exists",
+          fields: fields.includes("slug") ? { slug: "duplicate" } : {},
+        },
+        { status: 409 }
+      );
+    }
+
+    // Handle other Prisma errors
+    if (error.code?.startsWith("P")) {
+      return NextResponse.json(
+        {
+          error: "DATABASE_ERROR",
+          message: "Database operation failed",
+          code: error.code,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Generic error
+    return NextResponse.json(
+      {
+        error: "INTERNAL_ERROR",
+        message: "Failed to create post",
+      },
+      { status: 500 }
+    );
+  }
 }

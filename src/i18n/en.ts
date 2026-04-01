@@ -339,5 +339,40 @@ export const dict = {
         copyFormattingTooltip: "Copy formatting from selected text",
         pasteFormattingTooltip: "Paste formatting to selected text",
         insertTemplateTooltip: "Insert Template",
+
+        // Error Messages
+        errors: {
+            duplicateSlug: "A post with this slug already exists. Please use a different slug.",
+            slugRequired: "Slug is required",
+            titleRequired: "Title is required",
+            validationError: "Please fix the errors before saving",
+            databaseError: "Database error occurred. Please try again.",
+            saveFailed: "Failed to save post. Please try again.",
+            deleteFailed: "Failed to delete post. Please try again.",
+            uploadFailed: "Failed to upload image. Please try again.",
+            networkError: "Network error. Please check your connection.",
+        },
+    },
+    notFound: {
+        title: "Page Not Found",
+        messages: [
+            "Oops! Page not found",
+            "Houston, we have a problem...",
+            "This is not the page you're looking for",
+            "Error 404: Page is shy",
+            "Lost in the digital void",
+            "Page.exe has stopped working",
+        ],
+        description: "Looks like this page went on vacation without telling anyone...",
+        searchPlaceholder: "🔍 Search for content instead...",
+        searchButton: "Search",
+        recentPosts: "Or check out these recent posts",
+        takeHome: "Take Me Home",
+        browseBlog: "Browse Blog",
+        breadcrumb: {
+            home: "Home",
+            blog: "Blog",
+            tags: "Tags",
+        }
     },
 };

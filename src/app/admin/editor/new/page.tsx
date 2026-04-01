@@ -43,6 +43,7 @@ export default async function NewPostPage() {
                     readingTime: dict.admin.readingTime,
                     copyUrl: dict.admin.copyUrl,
                     copied: dict.admin.copied,
+                    errors: dict.editor.errors,
                 }}
             />
         </div>

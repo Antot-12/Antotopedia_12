@@ -68,6 +68,17 @@ type Props = {
     readingTime?: string;
     copyUrl?: string;
     copied?: string;
+    errors?: {
+      duplicateSlug?: string;
+      slugRequired?: string;
+      titleRequired?: string;
+      validationError?: string;
+      databaseError?: string;
+      saveFailed?: string;
+      deleteFailed?: string;
+      uploadFailed?: string;
+      networkError?: string;
+    };
   };
 };
 
@@ -735,11 +746,37 @@ Horizontal rule
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error((await res.text()) || "Request failed");
+
       let data: any = {};
+      let errorData: any = {};
+
       try {
         data = await res.json();
-      } catch {}
+        if (!res.ok) {
+          errorData = data;
+          throw new Error(data.message || "Request failed");
+        }
+      } catch (parseError) {
+        if (!res.ok) {
+          throw new Error((await res.text()) || "Request failed");
+        }
+      }
+
+      // Handle specific error cases
+      if (!res.ok) {
+        if (errorData.error === "DUPLICATE_SLUG") {
+          throw new Error(labels?.errors?.duplicateSlug || "A post with this slug already exists");
+        } else if (errorData.error === "VALIDATION_ERROR") {
+          const fieldErrors = [];
+          if (errorData.fields?.slug) fieldErrors.push(labels?.errors?.slugRequired || "Slug is required");
+          if (errorData.fields?.title) fieldErrors.push(labels?.errors?.titleRequired || "Title is required");
+          throw new Error(fieldErrors.join(", ") || labels?.errors?.validationError || "Validation error");
+        } else if (errorData.error === "DATABASE_ERROR") {
+          throw new Error(labels?.errors?.databaseError || "Database error");
+        }
+        throw new Error(labels?.errors?.saveFailed || "Failed to save");
+      }
+
       window.dispatchEvent(new Event("tags:changed"));
       if (isNew && data?.id) {
         localStorage.removeItem(draftKey);
@@ -761,7 +798,10 @@ Horizontal rule
       }
       setSaveStatus("saved");
     } catch (e: any) {
-      setError(e?.message || "Failed to save");
+      console.error("Save error:", e);
+      const errorMessage = e?.message || labels?.errors?.saveFailed || "Failed to save";
+      setError(errorMessage);
+      alert(`Error: ${errorMessage}`);
       setSaveStatus("unsaved");
     } finally {
       setBusy(false);
@@ -775,13 +815,19 @@ Horizontal rule
     setError(null);
     try {
       const res = await fetch(`/api/posts/${form.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || labels?.errors?.deleteFailed || "Failed to delete");
+      }
       await res.json().catch(() => ({}));
       window.dispatchEvent(new Event("tags:changed"));
       alert("Deleted");
       router.push("/admin");
     } catch (e: any) {
-      setError(e?.message || "Failed to delete");
+      console.error("Delete error:", e);
+      const errorMessage = e?.message || labels?.errors?.deleteFailed || "Failed to delete";
+      setError(errorMessage);
+      alert(`Error: ${errorMessage}`);
     } finally {
       setBusy(false);
     }

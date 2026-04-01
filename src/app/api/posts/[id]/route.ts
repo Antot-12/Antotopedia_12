@@ -125,76 +125,114 @@ export async function GET(_: Request, ctx: { params: Promise<{ id: string }> }) 
 }
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const { id } = await ctx.params;
-  const idNum = Number(id);
-  if (!Number.isFinite(idNum))
-    return NextResponse.json({ error: "Bad id" }, { status: 400 });
+  try {
+    const { id } = await ctx.params;
+    const idNum = Number(id);
+    if (!Number.isFinite(idNum))
+      return NextResponse.json(
+        { error: "INVALID_ID", message: "Invalid post ID" },
+        { status: 400 }
+      );
 
-  const body = await req.json();
-  const {
-    title,
-    description,
-    contentMarkdown,
-    status,
-    coverImageUrl,
-    coverImagePublicId,
-    tags,
-    i18n,
-  } = body || {};
+    const body = await req.json();
+    const {
+      title,
+      description,
+      contentMarkdown,
+      status,
+      coverImageUrl,
+      coverImagePublicId,
+      tags,
+      i18n,
+    } = body || {};
 
-  const connectTags = await ensureTags(Array.isArray(tags) ? tags : []);
+    const connectTags = await ensureTags(Array.isArray(tags) ? tags : []);
 
-  const i18nData = Array.isArray(i18n)
-      ? i18n
-          .filter(
-              (r: any) =>
-                  r &&
-                  typeof r.locale === "string" &&
-                  typeof r.title === "string" &&
-                  r.locale.length === 2
-          )
-          .map((r: any) => ({
-            locale: String(r.locale).toLowerCase(),
-            title: r.title,
-            description: typeof r.description === "string" ? r.description : null,
-            contentMarkdown:
-                typeof r.contentMarkdown === "string" ? r.contentMarkdown : null,
-          }))
-      : [];
+    const i18nData = Array.isArray(i18n)
+        ? i18n
+            .filter(
+                (r: any) =>
+                    r &&
+                    typeof r.locale === "string" &&
+                    typeof r.title === "string" &&
+                    r.locale.length === 2
+            )
+            .map((r: any) => ({
+              locale: String(r.locale).toLowerCase(),
+              title: r.title,
+              description: typeof r.description === "string" ? r.description : null,
+              contentMarkdown:
+                  typeof r.contentMarkdown === "string" ? r.contentMarkdown : null,
+            }))
+        : [];
 
-  const updated = await prisma.post.update({
-    where: { id: idNum },
-    data: {
-      title: typeof title === "string" ? title : undefined,
-      description: typeof description === "string" ? description : undefined,
-      contentMarkdown: typeof contentMarkdown === "string" ? contentMarkdown : undefined,
-      status: status === "draft" || status === "published" ? status : undefined,
-      coverImageUrl: typeof coverImageUrl === "string" ? coverImageUrl : undefined,
-      coverImagePublicId:
-          typeof coverImagePublicId === "string" ? coverImagePublicId : undefined,
-      tags: {
-        set: [],
-        connect: connectTags,
+    const updated = await prisma.post.update({
+      where: { id: idNum },
+      data: {
+        title: typeof title === "string" ? title : undefined,
+        description: typeof description === "string" ? description : undefined,
+        contentMarkdown: typeof contentMarkdown === "string" ? contentMarkdown : undefined,
+        status: status === "draft" || status === "published" ? status : undefined,
+        coverImageUrl: typeof coverImageUrl === "string" ? coverImageUrl : undefined,
+        coverImagePublicId:
+            typeof coverImagePublicId === "string" ? coverImagePublicId : undefined,
+        tags: {
+          set: [],
+          connect: connectTags,
+        },
+        i18n: Array.isArray(i18n)
+            ? {
+              deleteMany: { postId: idNum },
+              createMany: {
+                data: i18nData,
+              },
+            }
+            : undefined,
       },
-      i18n: Array.isArray(i18n)
-          ? {
-            deleteMany: { postId: idNum },
-            createMany: {
-              data: i18nData,
-            },
-          }
-          : undefined,
-    },
-    include: {
-      tags: { select: { id: true, name: true, slug: true } },
-      reaction: true,
-      i18n: true,
-    },
-  });
+      include: {
+        tags: { select: { id: true, name: true, slug: true } },
+        reaction: true,
+        i18n: true,
+      },
+    });
 
-  await cleanupOrphanTags();
+    await cleanupOrphanTags();
 
-  return NextResponse.json(updated);
+    return NextResponse.json(updated);
+  } catch (error: any) {
+    console.error("Error updating post:", error);
+
+    // Handle Prisma errors
+    if (error.code === "P2025") {
+      return NextResponse.json(
+        {
+          error: "NOT_FOUND",
+          message: "Post not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    if (error.code?.startsWith("P")) {
+      return NextResponse.json(
+        {
+          error: "DATABASE_ERROR",
+          message: "Database operation failed",
+          code: error.code,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Generic error
+    return NextResponse.json(
+      {
+        error: "INTERNAL_ERROR",
+        message: "Failed to update post",
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(_: Request, ctx: { params: Promise<{ id: string }> }) {

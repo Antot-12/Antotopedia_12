@@ -21,6 +21,7 @@ import { getLocale, getDictionary } from "@/lib/i18n";
 import StickyWrapper from "@/components/StickyWrapper";
 import type { Locale } from "@/lib/i18n";
 import PostLangSwitcher from "@/components/PostLangSwitcher";
+import { calculateReadingTime } from "@/lib/reading-time";
 
 export const revalidate = 0;
 
@@ -37,9 +38,7 @@ type PostWithAll = Prisma.PostGetPayload<{
 }>;
 
 function readingTime(text?: string | null) {
-    const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
-    const min = Math.max(1, Math.round(words / 200));
-    return `${min} min read`;
+    return calculateReadingTime(text);
 }
 
 const colorStyleRegex = /^color\s*:\s*([#a-zA-Z0-9()\s.,%-]+)\s*;?$/;
